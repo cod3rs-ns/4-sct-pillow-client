@@ -9,6 +9,20 @@ Predmetni projekat iz predmeta Konstrukcija i testiranje softvera i Napredne veb
 - SWF-2013  Dragutin Marjanović
 - SW20-2013 Aleksa Zrnić
 
+## Struktura projekta
+
+Organizacija entiteta projekta organizovana je na sledeći način:
+```
+- app 
+  - shared          // komponente koje se koriste na više mesta
+  - components      // komponente, svaka u svom folderu (HTML, controller.js, directive.js, service.js)
+- assets
+  - css             // svi stilovi i stvari vezane za stilove
+  - img             // sve slike
+  - js              // JavaScript koji nije vezan za Angular konkretno
+  - libs            // biblioteke, bower ih tu smešta
+- index.html
+``` 
 
 ## Rad sa **bower**-om
 
