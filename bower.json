@@ -1,0 +1,26 @@
+{
+  "name": "awt-cts-project",
+  "homepage": "https://github.com/dmarjanovic94/awt-test-siit-project-2016-client",
+  "authors": [
+    "Stefan Ristanović <st.keky@gmail.com>",
+    "Bojan Blagojević",
+    "Dragutin Marjanović",
+    "Aleksa Zrnić"
+  ],
+  "description": "Joint project for courses AWT and CTS",
+  "main": "index.html",
+  "license": "MIT",
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "bootstrap": "^3.3.7",
+    "angular": "^1.5.8",
+    "angular-ui-router": "^0.3.1"
+  }
+}
