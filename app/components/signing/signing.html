@@ -27,17 +27,17 @@
                         </div>
 
                         <div class="form-bottom">
-                            <form role="form" class="login-form" ng-submit="loginVm.login();">
+                            <form role="form" class="login-form" ng-submit="signingVm.login();">
                                 <div class="form-group">
                                     <div class="input-group">
                                         <span class="input-group-addon" id="basic-addon1"> <i class="glyphicon glyphicon-user"></i></span>
-                                        <input type="text" name="form-username" ng-model="loginVm.credentials.email" placeholder="Korisničko ime..." class="form-control" id="form-username">
+                                        <input type="text" name="form-username" ng-model="signingVm.credentials.email" placeholder="Korisničko ime..." class="form-control" id="form-username">
                                     </div>
                                 </div>
                                 <div class="form-group">
                                     <div class="input-group">
                                         <span class="input-group-addon" id="basic-addon1"> <i class="glyphicon glyphicon-lock"></i></span>
-                                        <input type="password" name="form-password" ng-model="loginVm.credentials.password" placeholder="Šifra..." class="form-control" id="form-password">
+                                        <input type="password" name="form-password" ng-model="signingVm.credentials.password" placeholder="Šifra..." class="form-control" id="form-password">
                                     </div>
                                 </div>
 
@@ -79,18 +79,18 @@
                             </div>
                         </div>
                         <div class="form-bottom">
-                            <form role="form" action="" method="post" class="registration-form">
+                            <form role="form" ng-submit="signingVm.register();" class="registration-form">
                                 <div class="form-group">
                                     <div class="input-group">
                                         <span class="input-group-addon" id="basic-addon1"> <i class="glyphicon glyphicon-user"></i></span>
-                                        <input type="text" placeholder="Korisničko ime..." class="form-control" id="sign-up-username">
+                                        <input type="text" ng-model="signingVm.registrationUser.username" placeholder="Korisničko ime..." class="form-control" id="sign-up-username">
                                     </div>
                                 </div>
 
                                 <div class="form-group">
                                     <div class="input-group">
                                         <span class="input-group-addon" id="basic-addon1"> <i class="glyphicon glyphicon-lock"></i></span>
-                                        <input type="text" placeholder="Šifra..." class="form-control" id="sign-up-password">
+                                        <input type="text" ng-model="signingVm.registrationUser.password" placeholder="Šifra..." class="form-control" id="sign-up-password">
                                     </div>
                                 </div>
 
@@ -104,21 +104,21 @@
                                 <div class="form-group">
                                     <div class="input-group">
                                         <span class="input-group-addon" id="basic-addon1"> <i class="glyphicon glyphicon-user"></i></span>
-                                        <input type="text" name="form-first-name" placeholder="Ime..." class="form-control" id="form-first-name">
+                                        <input type="text" ng-model="signingVm.registrationUser.firstName" name="form-first-name" placeholder="Ime..." class="form-control" id="form-first-name">
                                     </div>
                                 </div>
 
                                 <div class="form-group">
                                     <div class="input-group">
                                         <span class="input-group-addon" id="basic-addon1"> <i class="glyphicon glyphicon-user"></i></span>
-                                        <input type="text" name="form-last-name" placeholder="Prezime..." class="form-control" id="form-last-name">
+                                        <input type="text" ng-model="signingVm.registrationUser.lastName" name="form-last-name" placeholder="Prezime..." class="form-control" id="form-last-name">
                                     </div>
                                 </div>
 
                                 <div class="form-group">
                                     <div class="selectContainer input-group">
                                         <span class="input-group-addon" id="basic-addon1"> <i class="glyphicon glyphicon-list-alt"></i></span>
-                                        <select class="form-control" name="role">
+                                        <select class="form-control" name="role" ng-model="signingVm.registrationUser.type">
 									                          <option value="oglašavač">Oglašavač</option>
 									                          <option value="verifikator">Verifikator</option>
 									                          <option value="kompanija">Kompanija</option>
@@ -129,14 +129,14 @@
                                 <div class="form-group">
                                     <div class="input-group">
                                         <span class="input-group-addon" id="basic-addon1"> <i class="glyphicon glyphicon-envelope"></i></span>
-                                        <input type="text" name="form-email" placeholder="Email..." class="form-control" id="form-email">
+                                        <input type="text" ng-model="signingVm.registrationUser.email" name="form-email" placeholder="Email..." class="form-control" id="form-email">
                                     </div>
                                 </div>
 
                                 <div class="form-group">
                                     <div class="input-group">
                                         <span class="input-group-addon" id="basic-addon1"> <i class="glyphicon glyphicon-earphone"></i></span>
-                                        <input type="text" name="form-phone" placeholder="Kontakt telefon..." class="form-control" id="form-phone">
+                                        <input type="text" ng-model="signingVm.registrationUser.telephoneNo" name="form-phone" placeholder="Kontakt telefon..." class="form-control" id="form-phone">
                                     </div>
                                 </div>
 

@@ -20,9 +20,9 @@ angular
         })
         .state('login', {
           url: "/login",
-          templateUrl: "app/components/login/login.html",
-          controller: "LoginController",
-          controllerAs: "loginVm"
+          templateUrl: "app/components/signing/signing.html",
+          controller: "SigningController",
+          controllerAs: "signingVm"
         });
 
         $httpProvider.interceptors.push(['$q', '$window', '$location', function($q, $window, $location) {
