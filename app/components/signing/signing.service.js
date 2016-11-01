@@ -2,9 +2,9 @@ angular
     .module('awt-cts-client')
     .service('signingService', signingService);
 
-signingService.$inject = ['$http'];
+signingService.$inject = ['$http', 'CONFIG'];
 
-function signingService($http) {
+function signingService($http, CONFIG) {
     var service = {
       auth: auth,
       register: register
@@ -13,7 +13,7 @@ function signingService($http) {
     return service;
 
     function auth(email, password) {
-        return $http.post('http://localhost:8091/api/users/auth?email=' + email + '&password=' + password)
+        return $http.post(CONFIG.SERVICE_URL + '/users/auth?email=' + email + '&password=' + password)
           .success(function (data) {
               return data.token;
           })
@@ -23,7 +23,7 @@ function signingService($http) {
     };
 
     function register(user) {
-        return $http.post('http://localhost:8091/api/users/', user)
+        return $http.post(CONFIG.SERVICE_URL + '/users/', user)
           .success(function (data) {
               return data.data;
           })

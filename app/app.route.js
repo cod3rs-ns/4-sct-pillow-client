@@ -1,5 +1,11 @@
 angular
     .module('awt-cts-client', ['ui.router'])
+    .constant(
+        'CONFIG', {
+            'SERVICE_URL': 'http://localhost:8091/api',
+            'AUTH_TOKEN': 'X-Auth-Token'
+        }
+    )
     .config(function($stateProvider, $urlRouterProvider, $httpProvider) {
       // For any unmatched url, redirect to /home
       $urlRouterProvider.otherwise("/home");
@@ -38,6 +44,7 @@ angular
               // When try to get Unauthorized page
               'responseError': function(response) {
                   if(response.status === 401 || response.status === 403) {
+                    console.log('a');
                     $location.path('/');
                   }
                   return $q.reject(response);

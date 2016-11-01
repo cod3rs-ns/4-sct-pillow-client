@@ -2,9 +2,9 @@ angular
     .module('awt-cts-client')
     .controller('SigningController', SigningController);
 
-SigningController.$inject = ['$http', '$window', 'signingService'];
+SigningController.$inject = ['$http', '$window', 'signingService', 'CONFIG'];
 
-function SigningController($http, $window, signingService) {
+function SigningController($http, $window, signingService, CONFIG) {
     var signingVm = this;
 
     // Setting background image for signing page
@@ -24,7 +24,7 @@ function SigningController($http, $window, signingService) {
                 var token = response.data.token;
 
                 if (token !== undefined) {
-                    $http.defaults.headers.common['X-Auth-Token'] = token;
+                    $http.defaults.headers.common[CONFIG.AUTH_TOKEN] = token;
                     $window.localStorage.setItem('AUTH_TOKEN', token);
                     console.log("Successfully logged in.")
                 } else {
