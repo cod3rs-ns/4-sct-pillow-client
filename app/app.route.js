@@ -1,6 +1,6 @@
 angular
     .module('awt-cts-client', ['ui.router'])
-    .config(function($stateProvider, $urlRouterProvider) {
+    .config(function($stateProvider, $urlRouterProvider, $httpProvider) {
       // For any unmatched url, redirect to /home
       $urlRouterProvider.otherwise("/home");
 
@@ -17,5 +17,31 @@ angular
           templateUrl: "app/components/about/about.html",
           controller: "AboutController",
           controllerAs: "aboutVm"
+        })
+        .state('login', {
+          url: "/login",
+          templateUrl: "app/components/login/login.html",
+          controller: "LoginController",
+          controllerAs: "loginVm"
         });
+
+        $httpProvider.interceptors.push(['$q', '$window', '$location', function($q, $window, $location) {
+          return {
+              // Set Header to Request if user is logged
+              'request': function (config) {
+                  var token = $window.localStorage.getItem('AUTH_TOKEN');
+                  if (token != "null") {
+                    config.headers['X-Auth-Token'] = token;
+                  }
+                  return config;
+              },
+              // When try to get Unauthorized page
+              'responseError': function(response) {
+                  if(response.status === 401 || response.status === 403) {
+                    $location.path('/');
+                  }
+                  return $q.reject(response);
+                }
+            };
+          }]);
     });

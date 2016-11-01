@@ -1,0 +1,12 @@
+<div class="container">
+  <form ng-submit="loginVm.login();">
+    <input type="text" name="email"
+      ng-model="loginVm.credentials.email"/>
+    <input type="password" name="password"
+      ng-model="loginVm.credentials.password"/>
+    <input type="submit" value="Prijavi se"/>
+  </form>
+
+  <button ng-click="loginVm.test1();">Simple Method</button>
+  <button ng-click="loginVm.test2();">Role Auth Method</button>
+</div>
