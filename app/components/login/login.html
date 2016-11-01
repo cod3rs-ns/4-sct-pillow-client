@@ -1,12 +1,151 @@
-<div class="container">
-  <form ng-submit="loginVm.login();">
-    <input type="text" name="email"
-      ng-model="loginVm.credentials.email"/>
-    <input type="password" name="password"
-      ng-model="loginVm.credentials.password"/>
-    <input type="submit" value="Prijavi se"/>
-  </form>
+<div class="top-content login-page">
+    <div class="inner-bg">
+        <div class="container">
+            <div class="row">
+                <div class="col-sm-8 col-sm-offset-2 text">
+                    <h1><strong>Nekretnine</strong></h1>
+                    <div class="description">
+                        <p>
+                            Dobrodošli na naš sajt za prodaju nekretnina. Molimo vas da se <strong>ulogujete</strong> ili napravite
+                            <strong>novi nalog</strong>.
+                        </p>
+                    </div>
+                </div>
+            </div>
 
-  <button ng-click="loginVm.test1();">Simple Method</button>
-  <button ng-click="loginVm.test2();">Role Auth Method</button>
+            <div class="row">
+                <div class="col-sm-5">
+                    <div class="form-box">
+                        <div class="form-top">
+                            <div class="form-top-left">
+                                <h3>Ulogujte se na naš sajt!</h3>
+                                <p>Unesite korisničko ime i šifru:</p>
+                            </div>
+                            <div class="form-top-right">
+                                <i class="glyphicon glyphicon-lock"></i>
+                            </div>
+                        </div>
+
+                        <div class="form-bottom">
+                            <form role="form" class="login-form" ng-submit="loginVm.login();">
+                                <div class="form-group">
+                                    <div class="input-group">
+                                        <span class="input-group-addon" id="basic-addon1"> <i class="glyphicon glyphicon-user"></i></span>
+                                        <input type="text" name="form-username" ng-model="loginVm.credentials.email" placeholder="Korisničko ime..." class="form-control" id="form-username">
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <div class="input-group">
+                                        <span class="input-group-addon" id="basic-addon1"> <i class="glyphicon glyphicon-lock"></i></span>
+                                        <input type="password" name="form-password" ng-model="loginVm.credentials.password" placeholder="Šifra..." class="form-control" id="form-password">
+                                    </div>
+                                </div>
+
+                                <button type="submit" class="btn">Ulogujte se!</button>
+                            </form>
+                        </div>
+                    </div>
+
+                    <div class="social-login">
+                        <h3>...ili se ulogujte preko:</h3>
+                        <div class="social-login-buttons">
+                            <a class="btn btn-link-1 btn-link-1-facebook" href="#">
+                                <i class="fa fa-facebook"></i> Facebook
+                            </a>
+                            <a class="btn btn-link-1 btn-link-1-twitter" href="#">
+                                <i class="fa fa-twitter"></i> Twitter
+                            </a>
+                            <a class="btn btn-link-1 btn-link-1-google-plus" href="#">
+                                <i class="fa fa-google-plus"></i> Google Plus
+                            </a>
+                        </div>
+                    </div>
+
+                </div>
+
+                <div class="col-sm-1 middle-border"></div>
+                <div class="col-sm-1"></div>
+
+                <div class="col-sm-5">
+
+                    <div class="form-box">
+                        <div class="form-top">
+                            <div class="form-top-left">
+                                <h3>Registrujte se!</h3>
+                                <p>Za pristup sajtu popunite formu:</p>
+                            </div>
+                            <div class="form-top-right">
+                                <i class="glyphicon glyphicon-edit"></i>
+                            </div>
+                        </div>
+                        <div class="form-bottom">
+                            <form role="form" action="" method="post" class="registration-form">
+                                <div class="form-group">
+                                    <div class="input-group">
+                                        <span class="input-group-addon" id="basic-addon1"> <i class="glyphicon glyphicon-user"></i></span>
+                                        <input type="text" placeholder="Korisničko ime..." class="form-control" id="sign-up-username">
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <div class="input-group">
+                                        <span class="input-group-addon" id="basic-addon1"> <i class="glyphicon glyphicon-lock"></i></span>
+                                        <input type="text" placeholder="Šifra..." class="form-control" id="sign-up-password">
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <div class="input-group">
+                                        <span class="input-group-addon" id="basic-addon1"> <i class="glyphicon glyphicon-lock"></i></span>
+                                        <input type="text" placeholder="Ponovite šifru..." class="form-control" id="sign-up-re-password">
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <div class="input-group">
+                                        <span class="input-group-addon" id="basic-addon1"> <i class="glyphicon glyphicon-user"></i></span>
+                                        <input type="text" name="form-first-name" placeholder="Ime..." class="form-control" id="form-first-name">
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <div class="input-group">
+                                        <span class="input-group-addon" id="basic-addon1"> <i class="glyphicon glyphicon-user"></i></span>
+                                        <input type="text" name="form-last-name" placeholder="Prezime..." class="form-control" id="form-last-name">
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <div class="selectContainer input-group">
+                                        <span class="input-group-addon" id="basic-addon1"> <i class="glyphicon glyphicon-list-alt"></i></span>
+                                        <select class="form-control" name="role">
+									                          <option value="oglašavač">Oglašavač</option>
+									                          <option value="verifikator">Verifikator</option>
+									                          <option value="kompanija">Kompanija</option>
+								                        </select>
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <div class="input-group">
+                                        <span class="input-group-addon" id="basic-addon1"> <i class="glyphicon glyphicon-envelope"></i></span>
+                                        <input type="text" name="form-email" placeholder="Email..." class="form-control" id="form-email">
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <div class="input-group">
+                                        <span class="input-group-addon" id="basic-addon1"> <i class="glyphicon glyphicon-earphone"></i></span>
+                                        <input type="text" name="form-phone" placeholder="Kontakt telefon..." class="form-control" id="form-phone">
+                                    </div>
+                                </div>
+
+                                <button type="submit" class="btn">Registruj se!</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>

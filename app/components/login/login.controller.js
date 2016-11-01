@@ -7,6 +7,9 @@ LoginController.$inject = ['$http', '$window', 'loginService'];
 function LoginController($http, $window, loginService) {
     var loginVm = this;
 
+    // Setting background image
+    $(".login-page").backstretch("assets/img/login_background.jpg");
+
     // Variable binders
     loginVm.credentials = {};
 
