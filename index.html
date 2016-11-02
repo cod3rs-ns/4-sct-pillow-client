@@ -24,7 +24,13 @@
     <!-- Angular dependencies -->
     <script src="assets/libs/angular/angular.min.js"></script>
     <script src="assets/libs/angular-ui-router/release/angular-ui-router.min.js"></script>
-
+    <script src="assets/libs/angular-aria/angular-aria.min.js"></script>
+    <script src="assets/libs/angular-bootstrap/ui-bootstrap-tpls.js"></script>
+    <script src="assets/libs/angular-resource/angular-resource.min.js"></script>
+    <script src="assets/libs/angular-sanitize/angular-sanitize.min.js"></script>
+    <script src="assets/libs/angular-animate/angular-animate.min.js"></script>
+    
+    
     <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
     <!--[if lt IE 9]>
       <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
@@ -38,7 +44,7 @@
             ng-controller="HeaderController as headerVm">
     </header>
 
-    <section id="main" ui-view></section>
+    <section id="main" ui-view="content"></section>
 
     <footer id="footer"
             ng-include="'app/shared/footer/footer.html'"
@@ -53,7 +59,13 @@
     <script src="app/components/signing/signing.service.js"></script>
     <script src="app/shared/header/header.controller.js"></script>
     <script src="app/shared/footer/footer.controller.js"></script>
-
+    <script src="app/utils/link-parser.service.js"></script>
+    <script src="app/utils/pagination.constants.js"></script>
+    <script src="app/utils/pagination.service.js"></script>
+    <script src="app/components/real-estate/real-estate.controller.js"></script>
+    <script src="app/components/real-estate/real-estate.service.js"></script>
+    <script src="app/components/real-estate/real-estate.state.js"></script>
+    <script src="app/config/uib-pagination.config.js"></script>
 
     <!-- Placed at the end of the document so the pages load faster -->
     <script src="assets/libs/jquery/jquery.min.js"></script>

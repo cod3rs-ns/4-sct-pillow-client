@@ -1,5 +1,5 @@
 angular
-    .module('awt-cts-client', ['ui.router'])
+    .module('awt-cts-client', ['ui.router', 'ngResource', 'ngAnimate','ngSanitize', 'ui.bootstrap'])
     .constant(
         'CONFIG', {
             'SERVICE_URL': 'http://localhost:8091/api',
@@ -14,21 +14,42 @@ angular
       $stateProvider
         .state('home', {
           url: "/home",
-          templateUrl: "app/components/home/home.html",
-          controller: "HomeController",
-          controllerAs: "homeVm"
+          data: {
+                pageTitle: 'Početna'
+            },
+            views: {
+                'content@': {
+                    templateUrl: "app/components/home/home.html",
+                    controller: "HomeController",
+                    controllerAs: "homeVm"
+                }
+            }
         })
         .state('about', {
           url: "/about",
-          templateUrl: "app/components/about/about.html",
-          controller: "AboutController",
-          controllerAs: "aboutVm"
+          data: {
+                pageTitle: 'Početna'
+            },
+            views: {
+                'content@': {
+                    templateUrl: "app/components/about/about.html",
+                    controller: "AboutController",
+                    controllerAs: "aboutVm"
+                }
+            }
         })
         .state('login', {
           url: "/login",
-          templateUrl: "app/components/signing/signing.html",
-          controller: "SigningController",
-          controllerAs: "signingVm"
+          data: {
+                pageTitle: 'Početna'
+            },
+            views: {
+                'content@': {                              
+                    templateUrl: "app/components/signing/signing.html",
+                    controller: "SigningController",
+                    controllerAs: "signingVm"
+                }
+            }
         });
 
         $httpProvider.interceptors.push(['$q', '$window', '$location', function($q, $window, $location) {
