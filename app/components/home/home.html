@@ -1,7 +1,17 @@
 <div class="container">
-  <div class="starter-template">
-    <h1>{{homeVm.title}}</h1>
-    <img src="{{homeVm.image}}"width="600px" height="300px"/>
-    <p class="lead">{{homeVm.content}}</p>
-  </div>
+      <div class="col-xs-12 col-md-6 announcement-home-outside" ng-repeat="announcement in homeVm.announcements">
+          <div class="row announcement-home-inside">
+              <div class="col-xs-4">
+                  <img src="http://www.genaw.com/linda/translucent_supplies/translucent_mask3.png" width="100%" class="thumbnail"/>
+              </div>
+              <div class="col-xs-8">
+                  <h4>{{announcement.realEstate.name}}</h4>
+                  <p>{{announcement.author.firstName + ' ' + announcement.author.lastName}}</p>
+                  <p>{{announcement.telephoneNo}}</p>
+                  <button type="button" class="btn btn-primary pull-right">Primary</button>
+              </div>
+          </div>
+      </div>
+
+      <ul uib-pagination class="pagination-sm" total-items="homeVm.totalItems" items-per-page="homeVm.itemsPerPage" ng-model="homeVm.page" ng-change="homeVm.transition()"></ul>
 </div>

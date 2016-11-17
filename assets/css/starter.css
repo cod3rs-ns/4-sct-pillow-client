@@ -6,3 +6,12 @@ body {
   padding: 40px 15px;
   text-align: center;
 }
+
+.announcement-home-outside {
+  background-color: #eee;
+  margin-top: 10px;
+}
+
+.announcement-home-inside {
+  margin-top: 4px;
+}
