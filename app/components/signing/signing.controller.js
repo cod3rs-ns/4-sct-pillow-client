@@ -13,12 +13,14 @@ function SigningController($http, $window, signingService, CONFIG) {
     // Variable binders
     signingVm.credentials = {};
     signingVm.registrationUser = {};
+    signingVm.dataLoading = false;
 
     // Methods
     signingVm.login = login;
     signingVm.register = register;
 
     function login() {
+        signingVm.dataLoading = true;
         signingService.auth(signingVm.credentials.email, signingVm.credentials.password)
             .then(function(response) {
                 var token = response.data.token;
@@ -30,6 +32,7 @@ function SigningController($http, $window, signingService, CONFIG) {
                 } else {
                     signingVm.credentials.password = '';
                 }
+                signingVm.dataLoading = false;
             });
     };
 

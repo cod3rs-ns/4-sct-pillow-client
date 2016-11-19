@@ -2,12 +2,31 @@ angular
     .module('awt-cts-client')
     .controller('HomeController', HomeController);
 
-function HomeController($http) {
+HomeController.$inject = ['$state', 'announcementService'];
+
+function HomeController($state, announcementService) {
     var homeVm = this;
 
-    console.log("Home Controller init!");
+    // Pagination init params
+    homeVm.page = 0;
+    homeVm.itemsPerPage = 10;
+    homeVm.sortBy = 'id,desc';
 
-    homeVm.image = "assets/img/example.png";
-    homeVm.title = "AWT CTS homepage";
-    homeVm.content = "This is HOME page template for our project (with app structure). Hope you'll like it! :)"
+    homeVm.getAllAnnouncements = getAllAnnouncements;
+    homeVm.announcements = {};
+
+    activate();
+
+    function activate () {
+      homeVm.getAllAnnouncements();
+    }
+
+    function getAllAnnouncements() {
+        announcementService.getAnnouncements(homeVm.page, homeVm.itemsPerPage, homeVm.sortBy)
+            .then(function(response) {
+                console.log(response);
+                homeVm.announcements = response.data;
+                homeVm.totalItems = response.headers('X-Total-Count');
+            });
+    }
 }
