@@ -20,6 +20,14 @@ body {
   color: #5cb85c;
 }
 
+.color-warning {
+  color: #f0ad4e;
+}
+
+.color-danger {
+  color: #d9534f;
+}
+
 .color-white {
   color: #ffffff;
 }
@@ -39,4 +47,19 @@ body {
   width: 70% !important;
   font-size: 10pt;
   margin-top: 16px;
+}
+
+p.company-request {
+  padding: 8px 24px;
+  font-size: 12pt;
+}
+
+p.company-request > span {
+  margin-top: 2px;
+  font-size: 16pt;
+  padding-left: 8px;
+}
+
+.profile-heading {
+  padding: 20px 0px;
 }
