@@ -22,7 +22,7 @@ function HomeController($state, announcementService) {
     }
 
     function getAllAnnouncements() {
-        announcementService.getAll(homeVm.page, homeVm.itemsPerPage, homeVm.sortBy)
+        announcementService.getAnnouncements(homeVm.page, homeVm.itemsPerPage, homeVm.sortBy)
             .then(function(response) {
                 console.log(response);
                 homeVm.announcements = response.data;

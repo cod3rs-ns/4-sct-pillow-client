@@ -6,13 +6,24 @@ announcementService.$inject = ['$http', 'CONFIG'];
 
 function announcementService($http, CONFIG) {
     var service = {
-      getAll: getAll
+      getAnnouncements: getAnnouncements,
+      getAnnouncementById: getAnnouncementById
     };
 
     return service;
 
-    function getAll(page, size, sort) {
+    function getAnnouncements(page, size, sort) {
         return $http.get(CONFIG.SERVICE_URL + '/announcements?page=' + page + '&size=' + size + '&sort=' + sort)
+          .success(function (data) {
+              return data;
+          })
+          .error(function (data) {
+              return data;
+          });
+    };
+
+    function getAnnouncementById(id) {
+        return $http.get(CONFIG.SERVICE_URL + '/announcements/' + id)
           .success(function (data) {
               return data;
           })

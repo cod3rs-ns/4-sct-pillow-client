@@ -8,7 +8,7 @@
                   <h4>{{announcement.realEstate.name}}</h4>
                   <p>{{announcement.author.firstName + ' ' + announcement.author.lastName}}</p>
                   <p>{{announcement.telephoneNo}}</p>
-                  <button type="button" class="btn btn-primary pull-right">Primary</button>
+                  <a ui-sref="announcement({announcementId: announcement.id})" type="button" class="btn btn-primary pull-right">Prikaži detalje</a>
               </div>
           </div>
       </div>

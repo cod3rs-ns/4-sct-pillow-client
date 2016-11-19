@@ -38,13 +38,26 @@ angular
                 }
             }
         })
+        .state('announcement', {
+          url: "/announcement/:announcementId",
+          data: {
+                pageTitle: 'Podaci o oglasu'
+            },
+            views: {
+                'content@': {
+                    templateUrl: "app/components/announcement/announcement.html",
+                    controller: "AnnouncementController",
+                    controllerAs: "announcementVm"
+                }
+            }
+        })
         .state('login', {
           url: "/login",
           data: {
                 pageTitle: 'Početna'
             },
             views: {
-                'content@': {                              
+                'content@': {
                     templateUrl: "app/components/signing/signing.html",
                     controller: "SigningController",
                     controllerAs: "signingVm"
