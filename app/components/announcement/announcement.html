@@ -34,12 +34,21 @@
                 </div>
             </div>
             <hr/>
-            <p style="text-align: justify;">
-                Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
-                Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
-                Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
-                Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
-            </p>
+            <div>
+              <uib-tabset type="pills">
+                  <uib-tab heading="Galerija slika">
+                    <div uib-carousel active="active" interval="5000" no-wrap="false" style="margin-top: 10px;">
+                      <div uib-slide ng-repeat="slide in announcementVm.images track by slide.id" index="slide.id">
+                        <img ng-src="{{slide.image}}" style="margin:auto; width:100%;">
+                      </div>
+                    </div>
+                  </uib-tab>
+
+                  <uib-tab heading="Prikaži na mapi" select="announcementVm.initMap()">
+                      <div id="map" style="height:400px; width:100%; margin-top: 10px;"></div>
+                  </uib-tab>
+              </uib-tabset>
+            </div>
         </div>
         <div class="col-md-3" style="text-align: center;">
             <div class="advertiser-info">
