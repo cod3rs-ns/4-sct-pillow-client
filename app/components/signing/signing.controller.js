@@ -37,6 +37,7 @@ function SigningController($http, $window, signingService, CONFIG) {
     };
 
     function register() {
+        console.log(signingVm.registrationUser);
         signingService.register(signingVm.registrationUser)
             .then(function(registeredUser) {
                 console.log(registeredUser);

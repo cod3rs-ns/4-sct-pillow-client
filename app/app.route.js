@@ -51,6 +51,19 @@ angular
                 }
             }
         })
+        .state('company', {
+          url: "/company/:companyId",
+          data: {
+                pageTitle: 'Podaci o oglasu'
+            },
+            views: {
+                'content@': {
+                    templateUrl: "app/components/company/company.html",
+                    controller: "CompanyController",
+                    controllerAs: "companyVm"
+                }
+            }
+        })
         .state('login', {
           url: "/login",
           data: {
