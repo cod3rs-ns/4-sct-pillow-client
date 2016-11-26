@@ -1,0 +1,144 @@
+<div class="container">
+    <div class="row" id="company-cover">
+        <div class="col-md-3 col-md-offset-1 col-xs-6 col-xs-offset-3">
+            <img src="https://images.designtrends.com/wp-content/uploads/2016/03/25063640/Real-Estate-Company-Logo.png" alt="..." class="img-thumbnail img-company-profile">
+
+            <div class="company-contact-container" style="margin-top:7px; width:100%">
+                <div class="company-info">
+                    <h3 style="padding-top:4px;margin-top:10px;">
+                        <div style="text-align:center;" class="top-bid-title"> {{companyVm.company.name}} </div>
+                    </h3>
+                    <div class="row company-info-text">
+                        <div class="col-md-1"><span class="glyphicon glyphicon-earphone" style="float:left; color:#5bc0de;"></span></div>
+                        <div class="col-md-10 col-mf-offset-1">
+                            <p>{{companyVm.company.phoneNumber}}</p>
+                        </div>
+                    </div>
+                    <div class="row company-info-text">
+                        <div class="col-md-1"><span class="glyphicon glyphicon-map-marker" style="float:left; color:#5bc0de;"></span></div>
+                        <div class="col-md-10 col-mf-offset-1">
+                            <p>{{companyVm.company.address}}</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6 col-md-offset-1 col-xs-10 col-xs-offset-1"  ng-hide="companyVm.topThree.length===0">
+            <div class="carousel slide thumbnail" data-ride="carousel" style="color:black; margin-top:50px;" id="quote-carousel">
+                <!-- Bottom Carousel Indicators -->
+                <ol class="carousel-indicators">
+                    <li data-target="#quote-carousel" data-slide-to="0" class="active"></li>
+                    <li data-target="#quote-carousel" data-slide-to="1"></li>
+                    <li data-target="#quote-carousel" data-slide-to="2"></li>
+                </ol>
+
+                <!-- Carousel Slides / Top three announcements -->
+                <div class="carousel-inner">
+                    <!-- Item 1 -->
+                    <div class="active item">
+                        <div style="margin-top:10px;">
+                            <div class="row">
+                                <div class="col-sm-3 text-center">
+                                    <img class="img-circle" src="https://smallhousebliss.files.wordpress.com/2016/02/smallworks-cypress-laneway-house-exterior-via-smallhousebliss.jpg"
+                                        style="width: 100px;height:100px;">
+                                </div>
+                                <div class="col-sm-9">
+                                    <h2 style="margin-top: 5px; height:70px;">
+                                        <div class="top-bid-title">
+                                            {{companyVm.topThree[0].realEstate.name}}
+                                        </div>
+                                    </h2>
+                                    <div style="text-align:left;">
+                                        <span class="glyphicon glyphicon-map-marker" style="float:left; color:#5bc0de;">&nbsp;</span>
+                                        <p>{{companyVm.topThree[0].realEstate.location.cityRegion}},&nbsp;{{companyVm.topThree[0].realEstate.location.city}}</p>
+                                        <span class="glyphicon glyphicon-eur" style="float:left; color:#5bc0de;">&nbsp;</span>
+                                        <p>{{companyVm.topThree[0].price}}</p>
+                                        <div style="text-align: right">
+                                            <span class="glyphicon glyphicon-user" style="margin-top:7px; margin-right:0px; color:#5bc0de;">&nbsp;</span>
+                                            <small>{{companyVm.topThree[0].author.firstName}}&nbsp;{{companyVm.topThree[0].author.lastName}}</small>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Item 2 -->
+                    <div class="item">
+                        <div style="margin-top:10px;">
+                            <div class="row">
+                                <div class="col-sm-3 text-center">
+                                    <img class="img-circle" src="https://smallhousebliss.files.wordpress.com/2016/02/smallworks-cypress-laneway-house-exterior-via-smallhousebliss.jpg"
+                                        style="width: 100px;height:100px;">
+                                </div>
+                                <div class="col-sm-9">
+                                    <h2 style="margin-top: 5px; height:70px;">
+                                        <div class="top-bid-title">
+                                            {{companyVm.topThree[1].realEstate.name}}
+                                        </div>
+                                    </h2>
+                                    <div style="text-align:left;">
+                                        <span class="glyphicon glyphicon-map-marker" style="float:left; color:#5bc0de;">&nbsp;</span>
+                                        <p>{{companyVm.topThree[1].realEstate.location.cityRegion}},&nbsp;{{companyVm.topThree[1].realEstate.location.city}}</p>
+                                        <span class="glyphicon glyphicon-eur" style="float:left; color:#5bc0de;">&nbsp;</span>
+                                        <p>{{companyVm.topThree[1].price}}</p>
+                                        <div style="text-align: right">
+                                            <span class="glyphicon glyphicon-user" style="margin-top:7px; margin-right:0px; color:#5bc0de;">&nbsp;</span>
+                                            <small>{{companyVm.topThree[1].author.firstName}}&nbsp;{{companyVm.topThree[1].author.lastName}}</small>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Item 3 -->
+                    <div class="item">
+                        <div style="margin-top:10px;">
+                            <div class="row">
+                                <div class="col-sm-3 text-center">
+                                    <img class="img-circle" src="https://smallhousebliss.files.wordpress.com/2016/02/smallworks-cypress-laneway-house-exterior-via-smallhousebliss.jpg"
+                                        style="width: 100px;height:100px;">
+                                </div>
+                                <div class="col-sm-9">
+                                    <h2 style="margin-top: 5px; height:70px;">
+                                        <div class="top-bid-title">
+                                            {{companyVm.topThree[2].realEstate.name}}
+                                        </div>
+                                    </h2>
+                                    <div style="text-align:left;">
+                                        <span class="glyphicon glyphicon-map-marker" style="float:left; color:#5bc0de;">&nbsp;</span>
+                                        <p>{{companyVm.topThree[2].realEstate.location.cityRegion}},&nbsp;{{companyVm.topThree[2].realEstate.location.city}}</p>
+                                        <span class="glyphicon glyphicon-eur" style="float:left; color:#5bc0de;">&nbsp;</span>
+                                        <p>{{companyVm.topThree[2].price}}</p>
+                                        <div style="text-align: right">
+                                            <span class="glyphicon glyphicon-user" style="margin-top:7px; margin-right:0px; color:#5bc0de;">&nbsp;</span>
+                                            <small>{{companyVm.topThree[2].author.firstName}}&nbsp;{{companyVm.topThree[2].author.lastName}}</small>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Carousel Buttons Next/Prev -->
+                <a data-slide="prev" data-target="#quote-carousel" class="left carousel-control"><i class="fa fa-chevron-left"></i></a>
+                <a data-slide="next" data-target="#quote-carousel" class="right carousel-control"><i class="fa fa-chevron-right"></i></a>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <uib-tabset type="pills">
+            <uib-tab heading="Članovi agencije" select="companyVm.selectedTab('members');" active="companyVm.activeTabIndex">
+                <div ui-view="companyMembers">
+                </div>
+            </uib-tab>
+
+            <uib-tab heading="Oglasi" select="companyVm.selectedTab('announcements');">
+                <div ui-view="companyAnnouncements">
+                </div>
+            </uib-tab>
+        </uib-tabset>
+    </div>
+</div>
