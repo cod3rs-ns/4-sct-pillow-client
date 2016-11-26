@@ -1,4 +1,4 @@
-(function() {
+(function () {
     'use strict';
 
     angular
@@ -33,7 +33,7 @@
                     search: null
                 },
                 resolve: {
-                    pagingParams: ['$stateParams', 'Pagination', function($stateParams, Pagination) {
+                    pagingParams: ['$stateParams', 'Pagination', function ($stateParams, Pagination) {
                         return {
                             page: Pagination.parsePage($stateParams.page),
                             sort: $stateParams.sort,
@@ -68,7 +68,42 @@
                     search: null
                 },
                 resolve: {
-                    pagingParams: ['$stateParams', 'Pagination', function($stateParams, Pagination) {
+                    pagingParams: ['$stateParams', 'Pagination', function ($stateParams, Pagination) {
+                        return {
+                            page: Pagination.parsePage($stateParams.page),
+                            sort: $stateParams.sort,
+                            predicate: Pagination.parsePredicate($stateParams.sort),
+                            ascending: Pagination.parseAscending($stateParams.sort),
+                            search: $stateParams.search
+                        };
+                    }],
+                }
+            })
+            .state('companies', {
+                url: "/companies",
+                data: {
+                    pageTitle: 'Agencije'
+                },
+                views: {
+                    'content@': {
+                        templateUrl: "app/components/company/companies.html",
+                        controller: "CompaniesController",
+                        controllerAs: "vm"
+                    }
+                },
+                params: {
+                    page: {
+                        value: '1',
+                        squash: true
+                    },
+                    sort: {
+                        value: 'id,asc',
+                        squash: true
+                    },
+                    search: null
+                },
+                resolve: {
+                    pagingParams: ['$stateParams', 'Pagination', function ($stateParams, Pagination) {
                         return {
                             page: Pagination.parsePage($stateParams.page),
                             sort: $stateParams.sort,

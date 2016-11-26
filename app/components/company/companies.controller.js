@@ -3,25 +3,25 @@
 
     angular
         .module('awt-cts-client')
-        .controller('CompanyMembersController', CompanyMembersController);
+        .controller('CompaniesController', CompaniesController);
 
-    CompanyMembersController.$inject = ['$scope', '$state', '$stateParams', '$http', 'companyService', 'LinkParser', 'pagingParams', 'paginationConstants'];
+    CompaniesController.$inject = ['$scope', '$state', '$http', 'companyService', 'LinkParser', 'pagingParams', 'paginationConstants'];
 
-    function CompanyMembersController ($scope, $state, $stateParams, $http, companyService, LinkParser, pagingParams, paginationConstants) {
+    function CompaniesController($scope, $state, $http, companyService, LinkParser, pagingParams, paginationConstants) {
         var vm = this;
-        
+
         vm.loadPage = loadPage;
         vm.predicate = pagingParams.predicate;
         vm.reverse = pagingParams.ascending;
         vm.transition = transition;
-        vm.itemsPerPage = paginationConstants.usersPerPage;
+        vm.itemsPerPage = paginationConstants.itemsPerPage;
         vm.clear = clear;
         vm.activate = activate;
 
         activate();
 
-        function activate () {
-            companyService.getUsersByCompanyId($stateParams.companyId, pagingParams.page - 1, vm.itemsPerPage, sort(),
+        function activate() {
+            companyService.getCompanies(pagingParams.page - 1, vm.itemsPerPage, sort(),
                 onSuccess, onError);
 
             function sort() {
@@ -35,32 +35,28 @@
                 vm.links = LinkParser.parse(headers('Link'));
                 vm.totalItems = headers('X-Total-Count');
                 vm.queryCount = vm.totalItems;
-                vm.users = data;
+                vm.companies = data;
                 vm.page = pagingParams.page;
-                companyService.setUserPage(vm.page);
             }
             function onError(error) {
-                console.log('Error in activating company members!');
+                console.log('Error in activating CompaniesController!');
             }
         }
 
-        function loadPage (page) {
-            companyService.setUserPage(page);
+        function loadPage(page) {
             vm.page = page;
             vm.transition();
         }
 
-        function transition () {
+        function transition() {
             $state.transitionTo($state.$current, {
-                companyId: $stateParams.companyId,
                 page: vm.page,
                 sort: vm.predicate + ',' + (vm.reverse ? 'asc' : 'desc'),
             });
         }
 
-        function clear () {
+        function clear() {
             vm.links = null;
-            companyService.setUserPage(1);
             vm.page = 1;
             vm.predicate = 'id';
             vm.reverse = true;

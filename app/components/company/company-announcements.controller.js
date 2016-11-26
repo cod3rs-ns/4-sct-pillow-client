@@ -40,7 +40,7 @@
                 companyService.setAnnouncementPage(vm.page);
             }
             function onError(error) {
-                console.log('Error in activating comppany members!');
+                console.log('Error in activating company announcements!');
             }
         }
 

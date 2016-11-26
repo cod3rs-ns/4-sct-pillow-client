@@ -24,13 +24,13 @@ function companyService($http, CONFIG) {
 
     return service;
 
-    function getCompanies(page, size, sort) {
+    function getCompanies(page, size, sort, successCallback, errorCallback) {
         return $http.get(CONFIG.SERVICE_URL + '/companies?page=' + page + '&size=' + size + '&sort=' + sort)
-          .success(function (data) {
-              return data;
+          .success(function (data, status, headers) {
+              successCallback(data, headers);
           })
           .error(function (data) {
-              return data;
+              errorCallback(data);
           });
     };
 
