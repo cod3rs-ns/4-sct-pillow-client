@@ -64,6 +64,19 @@ angular
                 }
             }
         })
+        .state('profile', {
+          url: "/profile",
+          data: {
+              pageTitle: 'Profil korisnika'
+            },
+            views: {
+                'content@': {
+                    templateUrl: "app/components/user-profile/user-profile.html",
+                    controller: "UserProfileController",
+                    controllerAs: "userVm"
+                }
+            }
+        })
         .state('login', {
           url: "/login",
           data: {
