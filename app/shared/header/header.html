@@ -1,7 +1,8 @@
 <nav class="navbar navbar-inverse navbar-fixed-top">
   <div class="container">
     <div class="navbar-header">
-      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false"
+        aria-controls="navbar">
         <span class="sr-only">Toggle navigation</span>
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
@@ -15,13 +16,21 @@
         <li><a ui-sref="about">About</a></li>
         <li><a ui-sref="real-estates">Nekretnine</a></li>
         <li><a ui-sref="announcement">Oglas</a></li>
-        <li><a ui-sref="companies">Kompanije</a></li>
+        <li class="dropdown">
+          <a ui-sref="companies" class="dropdown-toggle" data-toggle="dropdown"> Agencije <b class="caret"></b></a>
+          <ul class="dropdown-menu">
+            <li><a ui-sref="companies">Sve agencije</a></li>
+            <li><a ui-sref="addCompany">Dodaj novu</a></li>
+          </ul>
+        </li>
         <li><a ui-sref="profile">Profil</a></li>
+        <li><a ui-sref="addAnnouncement">Dodaj oglas</a></li>
       </ul>
       <ul class="nav navbar-nav navbar-right">
         <li><a ui-sref="login">Log In</a></li>
         <li><a ui-sref="register">Sign Up</a></li>
       </ul>
-    </div><!--/.nav-collapse -->
+    </div>
+    <!--/.nav-collapse -->
   </div>
 </nav>
