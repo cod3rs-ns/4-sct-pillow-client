@@ -40,8 +40,7 @@
                             <span class="input-group-addon" id="basic-addon1"> Važi do: </span>
                             <input type="text" class="form-control" uib-datepicker-popup="{{announcementFormVm.dateFormat}}" ng-model="announcementFormVm.announcement.expirationDate"
                                 is-open="announcementFormVm.popup.opened" datepicker-options="announcementFormVm.dateOptions"
-                                ng-required="true" close-text="Zatvori" clear-text="Obriši" alt-input-formats="announcementFormVm.altInputFormats"
-                            />
+                                ng-required="true" close-text="Zatvori" clear-text="Obriši" alt-input-formats="announcementFormVm.altInputFormats"/>
                             <span class="input-group-btn">
                             <button type="button" class="btn btn-default" ng-click="announcementFormVm.open()"><i class="glyphicon glyphicon-calendar"></i></button>
                         </span>
@@ -82,7 +81,12 @@
                     <div class="row">
 
                         <div class="col-md-10" style="margin-bottom: 40px">
-                            <h3>Odabrane slike</h3>
+                            <div>
+                                Status slanja:
+                                <div class="progress" style="">
+                                    <div class="progress-bar" role="progressbar" ng-style="{ 'width': announcementFormVm.uploader.progress + '%' }"></div>
+                                </div>
+                            </div>
                             <p>Ukupan broj: {{ announcementFormVm.uploader.queue.length }}</p>
 
                             <table class="table">
@@ -91,8 +95,8 @@
                                         <th width="50%">Naziv</th>
                                         <th ng-show="announcementFormVm.uploader.isHTML5">Veličina</th>
                                         <th ng-show="announcementFormVm.uploader.isHTML5">Progres</th>
-                                        <th>Status</th>
-                                        <th>Akcija</th>
+                                        <th style="text-align:center">Status</th>
+                                        <th>&nbsp;</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -101,25 +105,26 @@
                                             <strong>{{ item.file.name }}</strong>
                                             <div ng-show="announcementFormVm.uploader.isHTML5" ng-thumb="{ file: item._file, height: 100 }"></div>
                                         </td>
-                                        <td ng-show="announcementFormVm.uploader.isHTML5" nowrap>{{ item.file.size/1024/1024|number:2 }} MB</td>
-                                        <td ng-show="announcementFormVm.uploader.isHTML5">
+                                        <td style="text-align:left;" ng-show="announcementFormVm.uploader.isHTML5" nowrap>{{ item.file.size/1024/1024|number:2 }} MB</td>
+                                        <td style="text-align:left;" ng-show="announcementFormVm.uploader.isHTML5">
                                             <div class="progress" style="margin-bottom: 0;">
                                                 <div class="progress-bar" role="progressbar" ng-style="{ 'width': item.progress + '%' }"></div>
                                             </div>
                                         </td>
-                                        <td class="text-center">
+                                        <td style="text-align:center" >
                                             <span ng-show="item.isSuccess"><i class="glyphicon glyphicon-ok"></i></span>
                                             <span ng-show="item.isCancel"><i class="glyphicon glyphicon-ban-circle"></i></span>
                                             <span ng-show="item.isError"><i class="glyphicon glyphicon-remove"></i></span>
                                         </td>
                                         <td nowrap>
-                                            <button type="button" class="btn btn-success btn-xs" ng-click="item.upload()" ng-disabled="item.isReady || item.isUploading || item.isSuccess">
+                                            <span width="50px;"> &nbsp; </span>
+                                            <!--button type="button" class="btn btn-success btn-xs" ng-click="item.upload()" ng-disabled="item.isReady || item.isUploading || item.isSuccess">
                                                 <span class="glyphicon glyphicon-upload"></span> Postavi
-                                            </button>
-                                            <button type="button" class="btn btn-warning btn-xs" ng-click="item.cancel()" ng-disabled="!item.isUploading">
+                                            </button-->
+                                            <!--button type="button" class="btn btn-warning btn-xs" ng-click="item.cancel()" ng-disabled="!item.isUploading">
                                                 <span class="glyphicon glyphicon-ban-circle"></span> Prekini
-                                            </button>
-                                            <button type="button" class="btn btn-danger btn-xs" ng-click="item.remove()">
+                                            </button-->
+                                            <button type="button" class="btn btn-danger btn-xs" ng-click="item.remove()" ng-disabled="announcementFormVm.uploaded">
                                                 <span class="glyphicon glyphicon-trash"></span> Obriši
                                             </button>
                                         </td>
@@ -128,19 +133,13 @@
                             </table>
 
                             <div>
-                                <div>
-                                    Status slanja:
-                                    <div class="progress" style="">
-                                        <div class="progress-bar" role="progressbar" ng-style="{ 'width': announcementFormVm.uploader.progress + '%' }"></div>
-                                    </div>
-                                </div>
-                                <button type="button" class="btn btn-success btn-s" ng-click="announcementFormVm.uploader.uploadAll()" ng-disabled="!announcementFormVm.uploader.getNotUploadedItems().length">
+                                <!--button type="button" class="btn btn-success btn-s" ng-click="announcementFormVm.uploader.uploadAll()" ng-disabled="!announcementFormVm.uploader.getNotUploadedItems().length">
                                     <span class="glyphicon glyphicon-upload"></span> Postavi sve
                                 </button>
                                 <button type="button" class="btn btn-warning btn-s" ng-click="announcementFormVm.uploader.cancelAll()" ng-disabled="!announcementFormVm.uploader.isUploading">
                                     <span class="glyphicon glyphicon-ban-circle"></span> Prekini sve
-                                </button>
-                                <button type="button" class="btn btn-danger btn-s" ng-click="announcementFormVm.uploader.clearQueue()" ng-disabled="!announcementFormVm.uploader.queue.length">
+                                </button-->
+                                <button type="button" class="btn btn-danger btn-s" ng-click="announcementFormVm.uploader.clearQueue()" ng-disabled="!announcementFormVm.uploader.queue.length || announcementFormVm.uploaded">
                                     <span class="glyphicon glyphicon-trash"></span> Obriši sve
                                 </button>
                             </div>

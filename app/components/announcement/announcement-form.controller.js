@@ -15,13 +15,29 @@ function AnnouncementFormController($scope, $window, FileUploader, announcementS
         expirationDate: new Date(),
         images: [],
         type: 'buy',
-        realEstateId: 1 //TODO: change 
+        realEstate: {
+            id: null,
+            name: "",
+            type: "",
+            area: 120.3,
+            heatingType: "",
+            equipment: "",
+            deleted: false,
+            location: {
+                id: null,
+                country: "",
+                city: "",
+                cityRegion: "",
+                street: "",
+                streetNumber: ""
+            },
+            announcements : []
+        } //TODO: change real estate object 
     };
 
     // Date picker functions
     announcementFormVm.today = today
     announcementFormVm.clear = clear;
-    announcementFormVm.toggleMin = toggleMin;
     announcementFormVm.open = open;
     announcementFormVm.datePickerConfig = datePickerConfig;
     announcementFormVm.getDayClass = getDayClass;
@@ -31,14 +47,12 @@ function AnnouncementFormController($scope, $window, FileUploader, announcementS
 
     function activate() {
         announcementFormVm.datePickerConfig();
+        announcementFormVm.uploaded = false;
     }
 
     function addAnnouncement() {
         console.log(announcementFormVm.announcement);
-        announcementService.addAnnouncement(announcementFormVm.announcement)
-            .then(function (response) {
-                console.log("AAAAAAA");
-            });
+        announcementFormVm.uploader.uploadAll();
     }
 
     function today() {
@@ -47,11 +61,6 @@ function AnnouncementFormController($scope, $window, FileUploader, announcementS
 
     function clear() {
         announcementFormVm.announcement.expirationDate = null;
-    };
-
-    function toggleMin() {
-        announcementFormVm.inlineOptions.minDate = announcementFormVm.inlineOptions.minDate ? null : new Date();
-        announcementFormVm.dateOptions.minDate = announcementFormVm.inlineOptions.minDate;
     };
 
     function open() {
@@ -91,8 +100,6 @@ function AnnouncementFormController($scope, $window, FileUploader, announcementS
             startingDay: 1
         };
 
-        announcementFormVm.toggleMin();
-
         announcementFormVm.formats = ['dd-MMMM-yyyy', 'yyyy/MM/dd', 'dd.MM.yyyy', 'shortDate'];
         announcementFormVm.format = announcementFormVm.formats[0];
         announcementFormVm.altInputFormats = ['M!/d!/yyyy'];
@@ -129,45 +136,25 @@ function AnnouncementFormController($scope, $window, FileUploader, announcementS
     // FILTERS
     uploader.filters.push({
         name: 'imageFilter',
-        fn: function (item /*{File|FileLikeObject}*/, options) {
+        fn: function(item /*{File|FileLikeObject}*/, options) {
             var type = '|' + item.type.slice(item.type.lastIndexOf('/') + 1) + '|';
             return '|jpg|png|jpeg|bmp|gif|'.indexOf(type) !== -1;
         }
     });
 
-    // CALLBACKS
-    uploader.onWhenAddingFileFailed = function (item /*{File|FileLikeObject}*/, filter, options) {
-        console.info('onWhenAddingFileFailed', item, filter, options);
-    };
-    uploader.onAfterAddingFile = function (fileItem) {
-        console.info('onAfterAddingFile', fileItem);
-    };
-    uploader.onAfterAddingAll = function (addedFileItems) {
-        console.info('onAfterAddingAll', addedFileItems);
-    };
-    uploader.onBeforeUploadItem = function (item) {
-        console.info('onBeforeUploadItem', item);
-    };
-    uploader.onProgressItem = function (fileItem, progress) {
-        console.info('onProgressItem', fileItem, progress);
-    };
-    uploader.onProgressAll = function (progress) {
-        console.info('onProgressAll', progress);
-    };
-    uploader.onSuccessItem = function (fileItem, response, status, headers) {
-        announcementFormVm.announcement.images.push({id: null, imagePath: response});
+    // Callbacks for image upload
+    uploader.onSuccessItem = function(fileItem, response, status, headers) {
+        announcementFormVm.announcement.images.push({ id: null, imagePath: response });
         console.info('onSuccessItem', fileItem, response, status, headers);
     };
-    uploader.onErrorItem = function (fileItem, response, status, headers) {
-        console.info('onErrorItem', fileItem, response, status, headers);
-    };
-    uploader.onCancelItem = function (fileItem, response, status, headers) {
-        console.info('onCancelItem', fileItem, response, status, headers);
-    };
-    uploader.onCompleteItem = function (fileItem, response, status, headers) {
-        console.info('onCompleteItem', fileItem, response, status, headers);
-    };
-    uploader.onCompleteAll = function () {
+
+    uploader.onCompleteAll = function() {
+        announcementFormVm.uploaded = true;
+
+        announcementService.addAnnouncement(announcementFormVm.announcement)
+            .then(function(response) {
+                console.log(response);
+            });
         console.info('onCompleteAll');
     };
 }
