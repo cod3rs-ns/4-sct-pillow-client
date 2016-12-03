@@ -1,5 +1,5 @@
 angular
-    .module('awt-cts-client', ['ui.router', 'ngResource', 'ngAnimate','ngSanitize', 'ui.bootstrap'])
+    .module('awt-cts-client', ['ui.router', 'ngResource', 'ngAnimate','ngSanitize', 'ui.bootstrap', 'angularFileUpload'])
     .constant(
         'CONFIG', {
             'SERVICE_URL': 'http://localhost:8091/api',
@@ -51,6 +51,19 @@ angular
                 }
             }
         })
+        .state('addAnnouncement', {
+          url: "/addAnnouncement",
+          data: {
+                pageTitle: 'Dodavanje oglasa'
+            },
+            views: {
+                'content@': {
+                    templateUrl: "app/components/announcement/announcement-form.html",
+                    controller: "AnnouncementFormController",
+                    controllerAs: "announcementFormVm"
+                }
+            }
+        })
         .state('company', {
           url: "/company/:companyId",
           data: {
@@ -61,6 +74,19 @@ angular
                     templateUrl: "app/components/company/company.html",
                     controller: "CompanyController",
                     controllerAs: "companyVm"
+                }
+            }
+        })
+        .state('addCompany', {
+          url: "/addCompany",
+          data: {
+                pageTitle: 'Dodavanje agencije'
+            },
+            views: {
+                'content@': {
+                    templateUrl: "app/components/company/company-form.html",
+                    controller: "CompanyFormController",
+                    controllerAs: "companyFormVm"
                 }
             }
         })

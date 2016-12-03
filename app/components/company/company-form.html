@@ -1,0 +1,51 @@
+<div class="container" style="margin-top:25px; margin-bottom:20px;">
+    <div class="row" style="text-align: center;">
+        <div class="col-md-3 col-md-offset-2 col-xs-5" style="text-align: center;">
+            <img class="thumbnail" ng-src="{{companyFormVm.image_source}}" height="250px" width="250px"/>
+        </div>
+        <div class="col-md-5 col-xs-7" style="text-align: center;" style="margin-top:20px; padding-top:15px;">
+            <form role="form" ng-submit="companyFormVm.addCompany();" class="registration-form">
+                <div class="form-group">
+                    <div class="input-group">
+                        <span class="input-group-addon" id="basic-addon1"> <i class="glyphicon glyphicon-home"></i></span>
+                        <input type="text" ng-model="companyFormVm.company.name" placeholder="Naziv..." class="form-control" id="company-name">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <div class="input-group">
+                        <span class="input-group-addon" id="basic-addon1"> <i class="glyphicon glyphicon-map-marker"></i></span>
+                        <input type="text" ng-model="companyFormVm.company.address" placeholder="Lokacija..." class="form-control" id="company-address">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <div class="input-group">
+                        <span class="input-group-addon" id="basic-addon1"> <i class="glyphicon glyphicon-earphone"></i></span>
+                        <input type="text" ng-model="companyFormVm.company.phoneNumber" placeholder="Broj telefona..." class="form-control" id="company-phone">
+                    </div>
+                </div>
+
+                <div class="input-group image-preview">
+                    <input type="text" ng-model="companyFormVm.fileName" class="form-control image-preview-filename" disabled="disabled">
+                    <!-- don't give a name === doesn't send on POST/GET -->
+                    <span class="input-group-btn">
+                    <!-- image-preview-clear button -->
+                    <button type="button" ng-click="companyFormVm.clearFile();" ng-show="companyFormVm.clearHide" class="btn btn-default image-preview-clear">
+                        <span class="glyphicon glyphicon-remove"></span> Obriši
+                    </button>
+                    <!-- image-preview-input -->
+                    <div class="btn btn-default image-preview-input">
+                        <span class="glyphicon glyphicon-folder-open"></span>
+                        <span class="image-preview-input-title">{{companyFormVm.btnName}}</span>
+                        <input type="file" accept="image/png, image/jpeg, image/gif" name="input-file-preview" custom-on-change="companyFormVm.uploadFile;"/>
+                        <!-- rename it -->
+                    </div>
+                    </span>
+                </div>
+
+                <button type="submit" class="btn btn-success" style="margin-top:18px;">Kreiraj agenciju</button>
+            </form>
+        </div>
+    </div>
+</div>

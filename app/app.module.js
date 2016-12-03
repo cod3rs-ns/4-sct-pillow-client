@@ -4,5 +4,6 @@ angular
         'ngResource',
         'ngAnimate',
         'ngSanitize',
-        'ui.bootstrap'
+        'ui.bootstrap',
+        'angularFileUpload'
     ]);
