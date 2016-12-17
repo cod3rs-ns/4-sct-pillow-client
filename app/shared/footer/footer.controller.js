@@ -1,13 +1,19 @@
-angular
-    .module('awt-cts-client')
-    .controller('FooterController', FooterController);
+(function() {
+    'use strict';
 
-function FooterController($http) {
-    var footerVm = this;
+    angular
+        .module('awt-cts-client')
+        .controller('FooterController', FooterController);
 
-    console.log("Footer Controller init!");
+    FooterController.$inject = ['$log'];
 
-    footerVm.copyright = "2016 SW3/SW9/SWF/SW20 team";
-    footerVm.faculty = "Faculty of Technical Sciences, Novi Sad";
-    footerVm.course = "AWT & CTS";
-}
+    function FooterController($log) {
+        var footerVm = this;
+
+        $log.info("Footer Controller init!");
+
+        footerVm.copyright = "2016 SW3/SW9/SWF/SW20 team";
+        footerVm.faculty = "Faculty of Technical Sciences, Novi Sad";
+        footerVm.course = "AWT & CTS";
+    }
+})();

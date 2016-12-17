@@ -5,11 +5,11 @@
         .module('awt-cts-client')
         .controller('RealEstateController', RealEstateController);
 
-    RealEstateController.$inject = ['$scope', '$state', '$http', 'RealEstateService', 'LinkParser', 'pagingParams', 'paginationConstants'];
+    RealEstateController.$inject = ['$scope', '$state', '$http', '$log', 'RealEstateService', 'LinkParser', 'pagingParams', 'paginationConstants'];
 
-    function RealEstateController ($scope, $state, $http, RealEstateService, LinkParser, pagingParams, paginationConstants) {
+    function RealEstateController ($scope, $state, $http, $log, RealEstateService, LinkParser, pagingParams, paginationConstants) {
         var vm = this;
-        
+
         vm.loadPage = loadPage;
         vm.predicate = pagingParams.predicate;
         vm.reverse = pagingParams.ascending;
@@ -26,7 +26,7 @@
                 size: vm.itemsPerPage,
                 sort: sort()
             }, onSuccess, onError);
-            
+
             function sort() {
                 var result = [vm.predicate + ',' + (vm.reverse ? 'asc' : 'desc')];
                 if (vm.predicate !== 'id') {
@@ -42,7 +42,7 @@
                 vm.page = pagingParams.page;
             }
             function onError(error) {
-                console.log('Error in activating RealEstateController!');
+                $log.log('Error in activating RealEstateController!');
             }
         }
 

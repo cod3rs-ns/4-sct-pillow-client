@@ -1,32 +1,36 @@
-angular
-    .module('awt-cts-client')
-    .controller('HomeController', HomeController);
+(function() {
+    'use strict';
 
-HomeController.$inject = ['$state', 'announcementService'];
+    angular
+        .module('awt-cts-client')
+        .controller('HomeController', HomeController);
 
-function HomeController($state, announcementService) {
-    var homeVm = this;
+    HomeController.$inject = ['$state', '$log', 'announcementService'];
 
-    // Pagination init params
-    homeVm.page = 0;
-    homeVm.itemsPerPage = 10;
-    homeVm.sortBy = 'id,desc';
+    function HomeController($state, $log, announcementService) {
+        var homeVm = this;
 
-    homeVm.getAllAnnouncements = getAllAnnouncements;
-    homeVm.announcements = {};
+        // Pagination init params
+        homeVm.page = 0;
+        homeVm.itemsPerPage = 10;
+        homeVm.sortBy = 'id,desc';
 
-    activate();
+        homeVm.getAllAnnouncements = getAllAnnouncements;
+        homeVm.announcements = {};
 
-    function activate () {
-      homeVm.getAllAnnouncements();
+        activate();
+
+        function activate () {
+          homeVm.getAllAnnouncements();
+        }
+
+        function getAllAnnouncements() {
+            announcementService.getAnnouncements(homeVm.page, homeVm.itemsPerPage, homeVm.sortBy)
+                .then(function(response) {
+                    $log.log(response);
+                    homeVm.announcements = response.data;
+                    homeVm.totalItems = response.headers('X-Total-Count');
+                });
+        }
     }
-
-    function getAllAnnouncements() {
-        announcementService.getAnnouncements(homeVm.page, homeVm.itemsPerPage, homeVm.sortBy)
-            .then(function(response) {
-                console.log(response);
-                homeVm.announcements = response.data;
-                homeVm.totalItems = response.headers('X-Total-Count');
-            });
-    }
-}
+})();

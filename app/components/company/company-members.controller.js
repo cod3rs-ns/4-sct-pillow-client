@@ -5,11 +5,11 @@
         .module('awt-cts-client')
         .controller('CompanyMembersController', CompanyMembersController);
 
-    CompanyMembersController.$inject = ['$scope', '$state', '$stateParams', '$http', 'companyService', 'LinkParser', 'pagingParams', 'paginationConstants'];
+    CompanyMembersController.$inject = ['$scope', '$state', '$stateParams', '$http', '$log', 'companyService', 'LinkParser', 'pagingParams', 'paginationConstants'];
 
-    function CompanyMembersController ($scope, $state, $stateParams, $http, companyService, LinkParser, pagingParams, paginationConstants) {
+    function CompanyMembersController ($scope, $state, $stateParams, $http, $log, companyService, LinkParser, pagingParams, paginationConstants) {
         var vm = this;
-        
+
         vm.loadPage = loadPage;
         vm.predicate = pagingParams.predicate;
         vm.reverse = pagingParams.ascending;
@@ -40,7 +40,7 @@
                 companyService.setUserPage(vm.page);
             }
             function onError(error) {
-                console.log('Error in activating company members!');
+                $log.error('Error in activating company members!');
             }
         }
 

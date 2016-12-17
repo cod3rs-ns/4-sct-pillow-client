@@ -1,57 +1,61 @@
-angular
-    .module('awt-cts-client')
-    .controller('CompanyController', CompanyController);
+(function() {
+    'use strict';
 
-CompanyController.$inject = ['$scope', '$state', '$stateParams', 'companyService', 'announcementService'];
+    angular
+        .module('awt-cts-client')
+        .controller('CompanyController', CompanyController);
 
-function CompanyController($scope, $state, $stateParams, companyService, announcementService) {
+    CompanyController.$inject = ['$scope', '$state', '$stateParams', 'companyService', 'announcementService'];
 
-    var companyVm = this;
+    function CompanyController($scope, $state, $stateParams, companyService, announcementService) {
 
-    companyVm.company = {};
-    companyVm.topThree = [];
-    companyVm.getCompany = getCompany;
-    companyVm.getTopThree = getTopThree;
-    companyVm.selectedTab = selectedTab;
+        var companyVm = this;
 
-    activate();
+        companyVm.company = {};
+        companyVm.topThree = [];
+        companyVm.getCompany = getCompany;
+        companyVm.getTopThree = getTopThree;
+        companyVm.selectedTab = selectedTab;
 
-    function activate() {
-        // Setting interval for carousel
-        $('#quote-carousel').carousel({
-            pause: true,
-            interval: 4000,
-        });
+        activate();
 
-        companyVm.getTopThree($stateParams.companyId);
-        companyVm.getCompany($stateParams.companyId);
-
-        // Set company members as active tab
-        companyVm.activeTabIndex = 0;
-    }
-
-    function selectedTab(state) {
-        var page = ((state === 'members') ? companyService.getUserPage() : companyService.getAnnouncementPage());
-        $state.transitionTo("company." + state, {
-            companyId: $stateParams.companyId,
-            page: page
-        });
-    }
-
-    function getCompany(companyId) {
-        companyService.getCompanyById(companyId)
-            .then(function (response) {
-                companyVm.company = response.data;
-
-                // Setting background image for comapny header page
-                $("#company-cover").backstretch("assets/img/companyCover.jpg");
+        function activate() {
+            // Setting interval for carousel
+            $('#quote-carousel').carousel({
+                pause: true,
+                interval: 4000,
             });
-    }
 
-    function getTopThree(companyId) {
-        companyService.getTopThreeByCompanyId(companyId)
-            .then(function (response) {
-                companyVm.topThree = response.data;
+            companyVm.getTopThree($stateParams.companyId);
+            companyVm.getCompany($stateParams.companyId);
+
+            // Set company members as active tab
+            companyVm.activeTabIndex = 0;
+        }
+
+        function selectedTab(state) {
+            var page = ((state === 'members') ? companyService.getUserPage() : companyService.getAnnouncementPage());
+            $state.transitionTo("company." + state, {
+                companyId: $stateParams.companyId,
+                page: page
             });
+        }
+
+        function getCompany(companyId) {
+            companyService.getCompanyById(companyId)
+                .then(function (response) {
+                    companyVm.company = response.data;
+
+                    // Setting background image for comapny header page
+                    $("#company-cover").backstretch("assets/img/companyCover.jpg");
+                });
+        }
+
+        function getTopThree(companyId) {
+            companyService.getTopThreeByCompanyId(companyId)
+                .then(function (response) {
+                    companyVm.topThree = response.data;
+                });
+        }
     }
-}
+})();

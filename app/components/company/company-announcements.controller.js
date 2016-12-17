@@ -5,11 +5,11 @@
         .module('awt-cts-client')
         .controller('CompanyAnnouncementsController', CompanyAnnouncementsController);
 
-    CompanyAnnouncementsController.$inject = ['$scope', '$state', '$stateParams', '$http', 'companyService', 'LinkParser', 'pagingParams', 'paginationConstants'];
+    CompanyAnnouncementsController.$inject = ['$scope', '$state', '$stateParams', '$http', '$log', 'companyService', 'LinkParser', 'pagingParams', 'paginationConstants'];
 
-    function CompanyAnnouncementsController ($scope, $state, $stateParams, $http, companyService, LinkParser, pagingParams, paginationConstants) {
+    function CompanyAnnouncementsController ($scope, $state, $stateParams, $http, $log, companyService, LinkParser, pagingParams, paginationConstants) {
         var vm = this;
-        
+
         vm.loadPage = loadPage;
         vm.predicate = pagingParams.predicate;
         vm.reverse = pagingParams.ascending;
@@ -40,7 +40,7 @@
                 companyService.setAnnouncementPage(vm.page);
             }
             function onError(error) {
-                console.log('Error in activating company announcements!');
+                $log.error('Error in activating company announcements!');
             }
         }
 

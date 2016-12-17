@@ -8,12 +8,21 @@ body {
 }
 
 .announcement-home-outside {
-  background-color: #eee;
-  margin-top: 10px;
+  background-color: #fff;
+  padding: 4px !important;
 }
 
 .announcement-home-inside {
-  margin-top: 4px;
+  background-color: #eee;
+  margin: 4px;
+}
+
+.announcement-home-inside > .col-xs-4 {
+  margin-top: 16px;
+}
+
+.announcement-home-inside > .col-xs-8 {
+  margin-top: 16px;
 }
 
 .color-success {
