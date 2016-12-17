@@ -14,33 +14,24 @@ function announcementService($http, CONFIG) {
     return service;
 
     function getAnnouncements(page, size, sort) {
-        return $http.get(CONFIG.SERVICE_URL + '/announcements?page=' + page + '&size=' + size + '&sort=' + sort)
-          .success(function (data) {
-              return data;
-          })
-          .error(function (data) {
-              return data;
+        return $http.get(CONFIG.SERVICE_URL + '/announcements/deleted/false?page=' + page + '&size=' + size + '&sort=' + sort)
+          .then(function (response) {
+              return response;
           });
     };
 
     function getAnnouncementById(id) {
         return $http.get(CONFIG.SERVICE_URL + '/announcements/' + id)
-          .success(function (data) {
-              return data;
-          })
-          .error(function (data) {
-              return data;
+          .then(function (response) {
+              return response;
           });
     };
 
-    
+
     function addAnnouncement(announcement) {
         return $http.post(CONFIG.SERVICE_URL + '/announcements', announcement)
-          .success(function (data) {
-              return data;
-          })
-          .error(function (data) {
-              return data;
+          .then(function (response) {
+              return response;
           });
     };
 }

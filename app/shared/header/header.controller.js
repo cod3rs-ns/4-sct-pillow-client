@@ -1,11 +1,17 @@
-angular
-    .module('awt-cts-client')
-    .controller('HeaderController', HeaderController);
+(function() {
+    'use strict';
 
-function HeaderController($http) {
-    var headerVm = this;
+    angular
+        .module('awt-cts-client')
+        .controller('HeaderController', HeaderController);
 
-    console.log("Header Controller init!");
+    HeaderController.$inject = ['$log'];
 
-    headerVm.projectName = "AWT CTS project";
-}
+    function HeaderController($log) {
+        var headerVm = this;
+
+        $log.info("Header Controller init!");
+
+        headerVm.projectName = "AWT CTS project";
+    }
+})();

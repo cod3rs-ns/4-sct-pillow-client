@@ -5,9 +5,9 @@
         .module('awt-cts-client')
         .controller('CompaniesController', CompaniesController);
 
-    CompaniesController.$inject = ['$scope', '$state', '$http', 'companyService', 'LinkParser', 'pagingParams', 'paginationConstants'];
+    CompaniesController.$inject = ['$scope', '$state', '$http', '$log', 'companyService', 'LinkParser', 'pagingParams', 'paginationConstants'];
 
-    function CompaniesController($scope, $state, $http, companyService, LinkParser, pagingParams, paginationConstants) {
+    function CompaniesController($scope, $state, $http, $log, companyService, LinkParser, pagingParams, paginationConstants) {
         var vm = this;
 
         vm.loadPage = loadPage;
@@ -39,7 +39,7 @@
                 vm.page = pagingParams.page;
             }
             function onError(error) {
-                console.log('Error in activating CompaniesController!');
+                $log.error('Error in activating CompaniesController!');
             }
         }
 

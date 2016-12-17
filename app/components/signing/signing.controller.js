@@ -1,48 +1,52 @@
-angular
-    .module('awt-cts-client')
-    .controller('SigningController', SigningController);
+(function() {
+    'use strict';
 
-SigningController.$inject = ['$http', '$window', 'signingService', 'CONFIG'];
+    angular
+        .module('awt-cts-client')
+        .controller('SigningController', SigningController);
 
-function SigningController($http, $window, signingService, CONFIG) {
-    var signingVm = this;
+    SigningController.$inject = ['$http', '$window', '$log', 'signingService', 'CONFIG'];
 
-    // Setting background image for signing page
-    $(".login-page").backstretch("assets/img/login_background.jpg");
+    function SigningController($http, $window, $log, signingService, CONFIG) {
+        var signingVm = this;
 
-    // Variable binders
-    signingVm.credentials = {};
-    signingVm.registrationUser = {};
-    signingVm.dataLoading = false;
+        // Setting background image for signing page
+        $(".login-page").backstretch("assets/img/login_background.jpg");
 
-    // Methods
-    signingVm.login = login;
-    signingVm.register = register;
+        // Variable binders
+        signingVm.credentials = {};
+        signingVm.registrationUser = {};
+        signingVm.dataLoading = false;
 
-    function login() {
-        signingVm.dataLoading = true;
-        signingService.auth(signingVm.credentials.email, signingVm.credentials.password)
-            .then(function(response) {
-                var token = response.data.token;
+        // Methods
+        signingVm.login = login;
+        signingVm.register = register;
 
-                if (token !== undefined) {
-                    $http.defaults.headers.common[CONFIG.AUTH_TOKEN] = token;
-                    $window.localStorage.setItem('AUTH_TOKEN', token);
-                    console.log("Successfully logged in.")
-                } else {
-                    signingVm.credentials.password = '';
-                }
-                signingVm.dataLoading = false;
-            });
-    };
+        function login() {
+            signingVm.dataLoading = true;
+            signingService.auth(signingVm.credentials.username, signingVm.credentials.password)
+                .then(function(response) {
+                    var token = response.data.token;
 
-    function register() {
-        console.log(signingVm.registrationUser);
-        signingService.register(signingVm.registrationUser)
-            .then(function(registeredUser) {
-                console.log(registeredUser);
-                signingVm.registrationUser = {};
-            });
-    };
+                    if (token !== undefined) {
+                        $http.defaults.headers.common[CONFIG.AUTH_TOKEN] = token;
+                        $window.localStorage.setItem('AUTH_TOKEN', token);
+                        $log.info("Successfully logged in.")
+                    } else {
+                        signingVm.credentials.password = '';
+                    }
+                    signingVm.dataLoading = false;
+                });
+        };
 
-}
+        function register() {
+            $log.log(signingVm.registrationUser);
+            signingService.register(signingVm.registrationUser)
+                .then(function(registeredUser) {
+                    $log.info(registeredUser);
+                    signingVm.registrationUser = {};
+                });
+        };
+
+    }
+})();
