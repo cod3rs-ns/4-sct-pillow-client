@@ -140,13 +140,19 @@ angular
                   }
                   return config;
               },
-              // When try to get Unauthorized page
+              // When try to get Unauthorized or Forbidden page
               'responseError': function(response) {
-                  if(response.status === 401 || response.status === 403) {
-                    console.log('a');
-                    $location.path('/');
+                  // If you get Unauthorized on login page you should just write message
+                  if ("/login" !== $location.path()) {
+                      if(response.status === 401 || response.status === 403) {
+                        $location.path('/');
+                      }
+
+                      return $q.reject(response);
                   }
-                  return $q.reject(response);
+                  else {
+                      return $q.resolve("Wrong credentials");
+                  }
                 }
             };
           }]);

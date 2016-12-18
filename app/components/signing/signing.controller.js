@@ -5,9 +5,9 @@
         .module('awt-cts-client')
         .controller('SigningController', SigningController);
 
-    SigningController.$inject = ['$http', '$window', '$localStorage', '$log', 'jwtHelper', 'signingService', 'CONFIG'];
+    SigningController.$inject = ['$http', '$window', '$location', '$localStorage', '$log', 'jwtHelper', 'signingService', 'CONFIG'];
 
-    function SigningController($http, $window, $localStorage, $log, jwtHelper, signingService, CONFIG) {
+    function SigningController($http, $window, $location, $localStorage, $log, jwtHelper, signingService, CONFIG) {
         var signingVm = this;
 
         // Setting background image for signing page
@@ -17,6 +17,7 @@
         signingVm.credentials = {};
         signingVm.registrationUser = {};
         signingVm.dataLoading = false;
+        signingVm.loginError = false;
 
         // Methods
         signingVm.login = login;
@@ -24,23 +25,32 @@
 
         function login() {
             signingVm.dataLoading = true;
-            $log.info("Clicked login button...");
+            signingVm.loginError = false;
+            
             signingService.auth(signingVm.credentials.username, signingVm.credentials.password)
                 .then(function (response) {
-                    var token = response.data.token;
-
-                    var tokenPayload = jwtHelper.decodeToken(token);
-
-                    $log.log(tokenPayload);
-
-                    if (token !== undefined) {
-                        $http.defaults.headers.common[CONFIG.AUTH_TOKEN] = token;
-                        $window.localStorage.setItem('AUTH_TOKEN', token);
-                        $localStorage.user = tokenPayload.user;
-                        $localStorage.role = tokenPayload.role.authority;
-                        $log.info("Successfully logged in.")
-                    } else {
+                    // Wrong credentials
+                    if (response === "Wrong credentials") {
                         signingVm.credentials.password = '';
+                        signingVm.loginError = true;
+                    }
+                    else {
+                        var token = response.data.token;
+                        $log.log(token);
+
+                        var tokenPayload = jwtHelper.decodeToken(token);
+
+                        $log.log(tokenPayload);
+
+                        $log.log(token);
+                        if (token !== undefined) {
+                            $http.defaults.headers.common[CONFIG.AUTH_TOKEN] = token;
+                            $window.localStorage.setItem('AUTH_TOKEN', token);
+                            $localStorage.user = tokenPayload.user;
+                            $localStorage.role = tokenPayload.role.authority;
+                            $log.info("Successfully logged in.")
+                            $location.path('/');
+                        }
                     }
                     signingVm.dataLoading = false;
                 });
