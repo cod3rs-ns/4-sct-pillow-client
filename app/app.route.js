@@ -1,12 +1,25 @@
 angular
-    .module('awt-cts-client', ['ui.router', 'ngResource', 'ngAnimate','ngSanitize', 'ui.bootstrap', 'angularFileUpload'])
+    .module('awt-cts-client', [
+      'ui.router',
+      'ngResource',
+      'ngAnimate',
+      'ngStorage',
+      'ngSanitize',
+      'ui.bootstrap',
+      'angularFileUpload',
+      'angular-jwt'
+    ])
     .constant(
         'CONFIG', {
             'SERVICE_URL': 'http://localhost:8091/api',
             'AUTH_TOKEN': 'X-Auth-Token'
         }
     )
-    .config(function($stateProvider, $urlRouterProvider, $httpProvider) {
+    .config(function($stateProvider, $urlRouterProvider, $httpProvider, $qProvider) {
+
+      // http://stackoverflow.com/questions/39931983/angularjs-possible-unhandled-rejection-when-using-ui-router
+      $qProvider.errorOnUnhandledRejections(false);
+
       // For any unmatched url, redirect to /home
       $urlRouterProvider.otherwise("/home");
 

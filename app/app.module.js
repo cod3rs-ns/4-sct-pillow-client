@@ -3,7 +3,9 @@ angular
         'ui.router',
         'ngResource',
         'ngAnimate',
+        'ngStorage',
         'ngSanitize',
         'ui.bootstrap',
-        'angularFileUpload'
+        'angularFileUpload',
+        'angular-jwt'
     ]);

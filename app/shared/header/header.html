@@ -12,25 +12,33 @@
     </div>
     <div id="navbar" class="collapse navbar-collapse">
       <ul class="nav navbar-nav">
-        <li><a ui-sref="home">Home</a></li>
-        <li><a ui-sref="about">About</a></li>
-        <li><a ui-sref="real-estates">Nekretnine</a></li>
-        <li><a ui-sref="announcement">Oglas</a></li>
-        <li class="dropdown">
-          <a ui-sref="companies" class="dropdown-toggle" data-toggle="dropdown"> Agencije <b class="caret"></b></a>
-          <ul class="dropdown-menu">
+        <li><a ui-sref="home">Početna</a></li>
+        <li ng-if="headerVm.$storage.role === 'admin'"><a ui-sref="announcements">Svi oglasi</a></li>
+        <li ng-if="headerVm.$storage.role === 'advertiser'"><a ui-sref="addAnnouncement">Dodaj oglas</a></li>
+        <li ng-if="headerVm.$storage.role === 'advertiser'"><a ui-sref="announcement">Moji oglasi</a></li>
+        <li ng-if="headerVm.$storage.role === 'advertiser' || headerVm.$storage.role === 'verifier'"><a ui-sref="dashboard">Zahtjevi za pristup kompaniji</a></li>
+        <li ng-if="headerVm.$storage.role === 'admin' || headerVm.$storage.role === 'verifier'"><a ui-sref="reports">Izvještaji</a></li>
+        <li class="dropdown" ng-if="!(headerVm.$storage.role === 'guest')">
+          <a ui-sref="companies" class="dropdown-toggle" data-toggle="dropdown">Agencije<b class="caret" ng-if="headerVm.$storage.role === 'admin'"></b></a>
+          <ul class="dropdown-menu" ng-if="headerVm.$storage.role === 'admin'">
             <li><a ui-sref="companies">Sve agencije</a></li>
             <li><a ui-sref="addCompany">Dodaj novu</a></li>
           </ul>
         </li>
-        <li><a ui-sref="profile">Profil</a></li>
-        <li><a ui-sref="addAnnouncement">Dodaj oglas</a></li>
       </ul>
-      <ul class="nav navbar-nav navbar-right">
-        <li><a ui-sref="login">Log In</a></li>
-        <li><a ui-sref="register">Sign Up</a></li>
+      <ul class="nav navbar-nav navbar-right" ng-if="headerVm.$storage.role === 'guest'">
+        <li><a ui-sref="login">Prijavi se</a></li>
+        <li><a ui-sref="register">Registruj se</a></li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right" ng-if="!(headerVm.$storage.role === 'guest')">
+        <li class="dropdown">
+          <a ui-sref="companies" class="dropdown-toggle" data-toggle="dropdown">Ulogovan kao <b>{{headerVm.$storage.user}}</b> ({{headerVm.$storage.role}})<b class="caret"></b></a>
+          <ul class="dropdown-menu">
+            <li><a ui-sref="profile">Pogledaj profil</a></li>
+            <li><a>Odjavi se</a></li>
+          </ul>
+        </li>
       </ul>
     </div>
-    <!--/.nav-collapse -->
   </div>
 </nav>

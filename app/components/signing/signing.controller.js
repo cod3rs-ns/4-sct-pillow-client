@@ -5,9 +5,9 @@
         .module('awt-cts-client')
         .controller('SigningController', SigningController);
 
-    SigningController.$inject = ['$http', '$window', '$log', 'signingService', 'CONFIG'];
+    SigningController.$inject = ['$http', '$window', '$localStorage', '$log', 'jwtHelper', 'signingService', 'CONFIG'];
 
-    function SigningController($http, $window, $log, signingService, CONFIG) {
+    function SigningController($http, $window, $localStorage, $log, jwtHelper, signingService, CONFIG) {
         var signingVm = this;
 
         // Setting background image for signing page
@@ -24,13 +24,20 @@
 
         function login() {
             signingVm.dataLoading = true;
+            $log.info("Clicked login button...");
             signingService.auth(signingVm.credentials.username, signingVm.credentials.password)
-                .then(function(response) {
+                .then(function (response) {
                     var token = response.data.token;
+
+                    var tokenPayload = jwtHelper.decodeToken(token);
+
+                    $log.log(tokenPayload);
 
                     if (token !== undefined) {
                         $http.defaults.headers.common[CONFIG.AUTH_TOKEN] = token;
                         $window.localStorage.setItem('AUTH_TOKEN', token);
+                        $localStorage.user = tokenPayload.user;
+                        $localStorage.role = tokenPayload.role.authority;
                         $log.info("Successfully logged in.")
                     } else {
                         signingVm.credentials.password = '';

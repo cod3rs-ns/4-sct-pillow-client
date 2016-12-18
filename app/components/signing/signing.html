@@ -42,7 +42,7 @@
                                 </div>
 
                                 <img ng-if="signingVm.dataLoading" src="assets/img/spinner.gif" width="32px"/>
-                                <button type="submit" class="btn">Ulogujte se!</button>
+                                <button id="login-button" type="submit" class="btn">Ulogujte se!</button>
                             </form>
                         </div>
                     </div>
@@ -91,14 +91,14 @@
                                 <div class="form-group">
                                     <div class="input-group">
                                         <span class="input-group-addon" id="basic-addon1"> <i class="glyphicon glyphicon-lock"></i></span>
-                                        <input type="text" ng-model="signingVm.registrationUser.password" placeholder="Šifra..." class="form-control" id="sign-up-password">
+                                        <input type="password" ng-model="signingVm.registrationUser.password" placeholder="Šifra..." class="form-control" id="sign-up-password">
                                     </div>
                                 </div>
 
                                 <div class="form-group">
                                     <div class="input-group">
                                         <span class="input-group-addon" id="basic-addon1"> <i class="glyphicon glyphicon-lock"></i></span>
-                                        <input type="text" placeholder="Ponovite šifru..." class="form-control" id="sign-up-re-password">
+                                        <input type="password" placeholder="Ponovite šifru..." class="form-control" id="sign-up-re-password">
                                     </div>
                                 </div>
 
@@ -141,7 +141,7 @@
                                     </div>
                                 </div>
 
-                                <button type="submit" class="btn">Registruj se!</button>
+                                <button id="register-button" type="submit" class="btn">Registruj se!</button>
                             </form>
                         </div>
                     </div>
