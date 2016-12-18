@@ -1,12 +1,25 @@
 angular
-    .module('awt-cts-client', ['ui.router', 'ngResource', 'ngAnimate','ngSanitize', 'ui.bootstrap', 'angularFileUpload'])
+    .module('awt-cts-client', [
+      'ui.router',
+      'ngResource',
+      'ngAnimate',
+      'ngStorage',
+      'ngSanitize',
+      'ui.bootstrap',
+      'angularFileUpload',
+      'angular-jwt'
+    ])
     .constant(
         'CONFIG', {
             'SERVICE_URL': 'http://localhost:8091/api',
             'AUTH_TOKEN': 'X-Auth-Token'
         }
     )
-    .config(function($stateProvider, $urlRouterProvider, $httpProvider) {
+    .config(function($stateProvider, $urlRouterProvider, $httpProvider, $qProvider) {
+
+      // http://stackoverflow.com/questions/39931983/angularjs-possible-unhandled-rejection-when-using-ui-router
+      $qProvider.errorOnUnhandledRejections(false);
+
       // For any unmatched url, redirect to /home
       $urlRouterProvider.otherwise("/home");
 
@@ -127,13 +140,19 @@ angular
                   }
                   return config;
               },
-              // When try to get Unauthorized page
+              // When try to get Unauthorized or Forbidden page
               'responseError': function(response) {
-                  if(response.status === 401 || response.status === 403) {
-                    console.log('a');
-                    $location.path('/');
+                  // If you get Unauthorized on login page you should just write message
+                  if ("/login" !== $location.path()) {
+                      if(response.status === 401 || response.status === 403) {
+                        $location.path('/');
+                      }
+
+                      return $q.reject(response);
                   }
-                  return $q.reject(response);
+                  else {
+                      return $q.resolve("Wrong credentials");
+                  }
                 }
             };
           }]);

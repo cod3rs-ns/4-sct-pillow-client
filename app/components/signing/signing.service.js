@@ -15,7 +15,7 @@ function signingService($http, CONFIG) {
     function auth(username, password) {
         return $http.post(CONFIG.SERVICE_URL + '/users/auth?username=' + username + '&password=' + password)
           .then(function (response) {
-              return response.token;
+              return response;
           });
     };
 
