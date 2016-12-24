@@ -5,14 +5,14 @@
         .module('awt-cts-client')
         .controller('AnnouncementController', AnnouncementController);
 
-    AnnouncementController.$inject = ['$stateParams', '$log', 'announcementService'];
+    AnnouncementController.$inject = ['$stateParams', '$log', 'announcementService', '_'];
 
-    function AnnouncementController($stateParams, $log, announcementService) {
+    function AnnouncementController($stateParams, $log, announcementService, _) {
         var announcementVm = this;
 
         announcementVm.announcement = {};
         announcementVm.images = [];
-        announcementVm.address = "90 Bedford Street, Greenwich Village";
+        announcementVm.address = null;
 
         announcementVm.getAnnouncement = getAnnouncement;
         announcementVm.initMap = initMap;
@@ -21,24 +21,23 @@
 
         function activate () {
             announcementVm.getAnnouncement($stateParams.announcementId);
-
-            announcementVm.images.push({'id': 0, 'image': 'http://i.telegraph.co.uk/multimedia/archive/01727/penthouse6_1727874i.jpg'});
-            announcementVm.images.push({'id': 1, 'image': 'http://i.telegraph.co.uk/multimedia/archive/01727/penthouse2_2_1727857i.jpg'});
-            announcementVm.images.push({'id': 2, 'image': 'http://i.telegraph.co.uk/multimedia/archive/01727/penthouse8_2_1727884i.jpg'});
-            announcementVm.images.push({'id': 3, 'image': 'http://i.telegraph.co.uk/multimedia/archive/01727/penthouse2_1727854i.jpg'});
         }
 
         function getAnnouncement(announcementId) {
             announcementService.getAnnouncementById(announcementId)
                 .then(function(response) {
                     announcementVm.announcement = response.data;
+                    announcementVm.address = response.data.realEstate.location;
+
+                    _.forEach(response.data.images, function(image, index) {
+                        announcementVm.images.push({'id': index, 'image': image.imagePath});
+                    });
                 });
         }
 
         function initMap() {
             var map = new google.maps.Map(document.getElementById('map'), {
-                zoom: 16,
-                center: {lat: -34.397, lng: 150.644}
+                zoom: 16
             });
 
             var geocoder = new google.maps.Geocoder();
@@ -46,7 +45,8 @@
         }
 
         function geocodeAddress(geocoder, resultsMap) {
-            var address = announcementVm.address;
+            var address = announcementVm.address.city + ' ' + announcementVm.address.street + ' ' +
+              + announcementVm.address.streetNumber + ' ' + announcementVm.address.country;
 
             geocoder.geocode({'address': address}, function(results, status) {
             if (status === google.maps.GeocoderStatus.OK) {
