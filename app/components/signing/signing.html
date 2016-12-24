@@ -1,4 +1,4 @@
-<div class="top-content login-page">
+<div class="top-content login-page" style="background-color: #3C8FB9">
     <div class="inner-bg">
         <div class="container">
             <div class="row">
@@ -86,68 +86,89 @@
                             </div>
                         </div>
                         <div class="form-bottom">
-                            <form role="form" ng-submit="signingVm.register();" class="registration-form">
-                                <div class="form-group">
-                                    <div class="input-group">
+                            <form role="form" ng-submit="signingVm.register();" class="registration-form" name="registrationForm" novalidate>
+                                <div class="form-group" ng-class="{ 'has-error' : registrationForm.username.$invalid && registrationForm.username.$touched }">
+                                    <div class="input-group" >
                                         <span class="input-group-addon" id="basic-addon1"> <i class="glyphicon glyphicon-user"></i></span>
-                                        <input type="text" ng-model="signingVm.registrationUser.username" placeholder="Korisničko ime..." class="form-control" id="sign-up-username">
+                                        <input type="text" ng-model="signingVm.registrationUser.username" placeholder="Korisničko ime..." 
+                                                class="form-control" id="sign-up-username"
+                                               name="username" field-unique required >
+                                        <span ng-show="registrationForm.username.$invalid && registrationForm.username.$touched" class="glyphicon glyphicon-remove form-control-feedback"></span>
                                     </div>
+                                    <span ng-show="registrationForm.username.$invalid && registrationForm.username.$touched && !registrationForm.username.$error.unique" class="help-block" style="color: white; font-size: 10pt; margin:0px;">Korisničko ime je obavezno.</span>
+                                    <span ng-show="registrationForm.username.$error.unique" class="help-block" style="color: white; font-size: 10pt; margin:0px;">Korisničko ime je već zauzeto.</span>
                                 </div>
 
-                                <div class="form-group">
+                                <div class="form-group" ng-class="{ 'has-error' : registrationForm.password.$invalid && registrationForm.password.$touched }">
                                     <div class="input-group">
                                         <span class="input-group-addon" id="basic-addon1"> <i class="glyphicon glyphicon-lock"></i></span>
-                                        <input type="password" ng-model="signingVm.registrationUser.password" placeholder="Šifra..." class="form-control" id="sign-up-password">
+                                        <input type="password" ng-model="signingVm.registrationUser.password" name="password" placeholder="Šifra..." class="form-control" id="sign-up-password" required ng-minlength="6">
+                                        <span ng-show="registrationForm.password.$invalid && registrationForm.password.$touched" class="glyphicon glyphicon-remove form-control-feedback"></span>
                                     </div>
+                                    <p ng-show="registrationForm.password.$error.required && registrationForm.password.$touched" class="help-block" style="color: white; font-size: 10pt; margin:0px;">Šifra je obavezna.</p>
+                                    <p ng-show="registrationForm.password.$error.minlength && registrationForm.password.$touched && !registrationForm.password.$error.required" class="help-block" style="color: white; font-size: 10pt; margin:0px;">Šifra mora sadržati bar 6 karaktera.</p>
                                 </div>
 
-                                <div class="form-group">
+                                <div class="form-group" ng-class="{ 'has-error' : (registrationForm.passwordRetyped.$invalid && registrationForm.passwordRetyped.$touched) || signingVm.passwordRetyped != signingVm.registrationUser.password }">
                                     <div class="input-group">
                                         <span class="input-group-addon" id="basic-addon1"> <i class="glyphicon glyphicon-lock"></i></span>
-                                        <input type="password" placeholder="Ponovite šifru..." class="form-control" id="sign-up-re-password">
+                                        <input type="password" ng-model="signingVm.passwordRetyped" name="passwordRetyped"
+                                         placeholder="Ponovite šifru..." class="form-control" id="sign-up-re-password" required>
+                                        <span ng-show="(registrationForm.passwordRetyped.$invalid && registrationForm.passwordRetyped.$touched) || signingVm.passwordRetyped != signingVm.registrationUser.password" class="glyphicon glyphicon-remove form-control-feedback"></span>
                                     </div>
+                                    <p ng-show="(registrationForm.passwordRetyped.$invalid && registrationForm.passwordRetyped.$touched) || signingVm.passwordRetyped != signingVm.registrationUser.password" class="help-block" style="color: white; font-size: 10pt; margin:0px;">Šifra se ne poklapa.</p>
                                 </div>
 
-                                <div class="form-group">
+                                <div class="form-group" ng-class="{ 'has-error' : registrationForm.firstName.$invalid && registrationForm.firstName.$touched }">
                                     <div class="input-group">
                                         <span class="input-group-addon" id="basic-addon1"> <i class="glyphicon glyphicon-user"></i></span>
-                                        <input type="text" ng-model="signingVm.registrationUser.firstName" name="form-first-name" placeholder="Ime..." class="form-control" id="form-first-name">
+                                        <input type="text" ng-model="signingVm.registrationUser.firstName" name="firstName" placeholder="Ime..." class="form-control" id="form-first-name" required>
+                                        <span ng-show="registrationForm.firstName.$invalid && registrationForm.firstName.$touched" class="glyphicon glyphicon-remove form-control-feedback"></span>
                                     </div>
+                                    <p ng-show="registrationForm.firstName.$invalid && registrationForm.firstName.$touched" class="help-block" style="color: white; font-size: 10pt; margin:0px;">Ime je obavezno.</p>
                                 </div>
 
-                                <div class="form-group">
+                                <div class="form-group" ng-class="{ 'has-error' : registrationForm.lastName.$invalid && registrationForm.lastName.$touched }">
                                     <div class="input-group">
                                         <span class="input-group-addon" id="basic-addon1"> <i class="glyphicon glyphicon-user"></i></span>
-                                        <input type="text" ng-model="signingVm.registrationUser.lastName" name="form-last-name" placeholder="Prezime..." class="form-control" id="form-last-name">
+                                        <input type="text" ng-model="signingVm.registrationUser.lastName" name="lastName" placeholder="Prezime..." class="form-control" id="form-last-name" required>
+                                        <span ng-show="registrationForm.lastName.$invalid && registrationForm.lastName.$touched" class="glyphicon glyphicon-remove form-control-feedback"></span>
                                     </div>
+                                    <p ng-show="registrationForm.lastName.$invalid && registrationForm.lastName.$touched" class="help-block" style="color: white; font-size: 10pt; margin:0px;">Prezime je obavezno.</p>
                                 </div>
 
                                 <div class="form-group">
                                     <div class="selectContainer input-group">
                                         <span class="input-group-addon" id="basic-addon1"> <i class="glyphicon glyphicon-list-alt"></i></span>
                                         <select class="form-control" name="role" ng-model="signingVm.registrationUser.type">
-									                          <option value="oglašavač">Oglašavač</option>
-									                          <option value="verifikator">Verifikator</option>
-									                          <option value="kompanija">Kompanija</option>
-								                        </select>
+									                          <option value="advertiser">Oglašavač</option>
+									                          <option value="verifier">Verifikator</option>
+                                        </select>
                                     </div>
                                 </div>
 
                                 <div class="form-group">
-                                    <div class="input-group">
+                                    <div class="input-group"  ng-class="{'has-error': registrationForm.email.$invalid && registrationForm.email.$touched}">
                                         <span class="input-group-addon" id="basic-addon1"> <i class="glyphicon glyphicon-envelope"></i></span>
-                                        <input type="text" ng-model="signingVm.registrationUser.email" name="form-email" placeholder="Email..." class="form-control" id="form-email">
+                                        <input type="email" ng-model="signingVm.registrationUser.email" 
+                                        name="email" placeholder="Email..." class="form-control" id="email" 
+                                            field-unique required>
+                                        <span ng-show="registrationForm.email.$invalid && registrationForm.email.$touched" class="glyphicon glyphicon-remove form-control-feedback"></span>
                                     </div>
+                                    <span ng-show="registrationForm.email.$invalid && registrationForm.email.$touched && !registrationForm.email.$error.unique" class="help-block" style="color: white; font-size: 10pt; margin:0px;">Nepravilno formirana email adresa.</span>
+                                    <span ng-show="registrationForm.email.$error.unique" class="help-block" style="color: white; font-size: 10pt; margin:0px;">Navedena email adresa već postoji.</span>
                                 </div>
 
                                 <div class="form-group">
-                                    <div class="input-group">
+                                    <div class="input-group" ng-class="{'has-error': registrationForm.phone.$invalid && registrationForm.phone.$touched}">
                                         <span class="input-group-addon" id="basic-addon1"> <i class="glyphicon glyphicon-earphone"></i></span>
-                                        <input type="text" ng-model="signingVm.registrationUser.phoneNumber" name="form-phone" placeholder="Kontakt telefon..." class="form-control" id="form-phone">
+                                        <input type="text" ng-model="signingVm.registrationUser.phoneNumber" name="phone" placeholder="Kontakt telefon..." class="form-control" id="form-phone" required>
+                                        <span ng-show="registrationForm.phone.$invalid && registrationForm.phone.$touched" class="glyphicon glyphicon-remove form-control-feedback"></span>
                                     </div>
+                                    <span ng-show="registrationForm.phone.$invalid && registrationForm.phone.$touched" class="help-block" style="color: white; font-size: 10pt; margin:0px;">Telefon je obavezan.</span>
                                 </div>
 
-                                <button id="register-button" type="submit" class="btn">Registruj se!</button>
+                                <button id="register-button" type="submit" ng-disabled="registrationForm.$invalid && registrationForm.$error" class="btn">Registruj se!</button>
                             </form>
                         </div>
                     </div>
