@@ -32,6 +32,7 @@
     "angular-file-upload": "^2.4.0",
     "es5-shim": "^4.5.9",
     "angular-jwt": "^0.1.8",
-    "ngstorage": "^0.3.11"
+    "ngstorage": "^0.3.11",
+    "lodash": "^4.17.3"
   }
 }

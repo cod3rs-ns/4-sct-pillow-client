@@ -9,6 +9,12 @@ angular
       'angularFileUpload',
       'angular-jwt'
     ])
+    .factory('_', ['$window',
+       function($window) {
+         // place lodash include before angular
+         return $window._;
+       }
+    ])
     .constant(
         'CONFIG', {
             'SERVICE_URL': 'http://localhost:8091/api',
