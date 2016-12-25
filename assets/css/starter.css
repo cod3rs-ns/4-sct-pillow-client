@@ -72,3 +72,27 @@ p.company-request > span {
 .profile-heading {
   padding: 20px 0px;
 }
+
+.rating {
+  color: #a9a9a9;
+  margin: 0;
+  padding: 0;
+}
+
+ul.rating {
+  /* display: inline-block; */
+}
+
+.rating li {
+  list-style-type: none;
+  display: inline-block;
+  padding: 1px;
+  text-align: center;
+  font-weight: bold;
+  cursor: pointer;
+  width: 24px !important;
+}
+
+.rating .filled {
+  color: #C2185B;
+}
