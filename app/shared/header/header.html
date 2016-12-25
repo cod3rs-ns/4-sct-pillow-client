@@ -35,7 +35,7 @@
           <a ui-sref="companies" class="dropdown-toggle" data-toggle="dropdown">Ulogovan kao <b>{{headerVm.$storage.user}}</b> ({{headerVm.$storage.role}})<b class="caret"></b></a>
           <ul class="dropdown-menu">
             <li><a ui-sref="profile">Pogledaj profil</a></li>
-            <li><a>Odjavi se</a></li>
+            <li><a id="logout-link" ng-click="headerVm.logout()">Odjavi se</a></li>
           </ul>
         </li>
       </ul>

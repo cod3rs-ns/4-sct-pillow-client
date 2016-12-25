@@ -5,23 +5,29 @@
         .module('awt-cts-client')
         .controller('HeaderController', HeaderController);
 
-    HeaderController.$inject = ['$log', '$localStorage'];
+    HeaderController.$inject = ['$log', '$localStorage', '$location'];
 
-    function HeaderController($log, $localStorage) {
+    function HeaderController($log, $localStorage, $location) {
         var headerVm = this;
 
+        headerVm.projectName = "AWT CTS project";
         headerVm.$storage = $localStorage.$default({
-          role: 'guest',
-          user: null
+          role: 'guest'
         });
+
+        headerVm.logout = logout;
 
         activate();
 
-        function activate () {
+        function activate() {
             $log.info("Header Controller init!");
             $log.info("Role " + headerVm.$storage.role);
         }
 
-        headerVm.projectName = "AWT CTS project";
+        function logout() {
+            $localStorage.$reset();
+            $localStorage.role = 'guest';
+            $location.path('/');
+        }
     }
 })();
