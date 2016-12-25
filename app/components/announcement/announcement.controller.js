@@ -5,40 +5,59 @@
         .module('awt-cts-client')
         .controller('AnnouncementController', AnnouncementController);
 
-    AnnouncementController.$inject = ['$stateParams', '$log', 'announcementService'];
+    AnnouncementController.$inject = ['$stateParams', '$log', '_', 'announcementService', 'commentService'];
 
-    function AnnouncementController($stateParams, $log, announcementService) {
+    function AnnouncementController($stateParams, $log, _, announcementService, commentService) {
         var announcementVm = this;
 
         announcementVm.announcement = {};
         announcementVm.images = [];
-        announcementVm.address = "90 Bedford Street, Greenwich Village";
+        announcementVm.address = null;
+        announcementVm.comments = [];
+        announcementVm.comment = null;
 
         announcementVm.getAnnouncement = getAnnouncement;
         announcementVm.initMap = initMap;
+        announcementVm.addComment = addComment;
 
         activate();
 
         function activate () {
             announcementVm.getAnnouncement($stateParams.announcementId);
-
-            announcementVm.images.push({'id': 0, 'image': 'http://i.telegraph.co.uk/multimedia/archive/01727/penthouse6_1727874i.jpg'});
-            announcementVm.images.push({'id': 1, 'image': 'http://i.telegraph.co.uk/multimedia/archive/01727/penthouse2_2_1727857i.jpg'});
-            announcementVm.images.push({'id': 2, 'image': 'http://i.telegraph.co.uk/multimedia/archive/01727/penthouse8_2_1727884i.jpg'});
-            announcementVm.images.push({'id': 3, 'image': 'http://i.telegraph.co.uk/multimedia/archive/01727/penthouse2_1727854i.jpg'});
         }
 
         function getAnnouncement(announcementId) {
             announcementService.getAnnouncementById(announcementId)
                 .then(function(response) {
                     announcementVm.announcement = response.data;
+                    announcementVm.address = response.data.realEstate.location;
+
+                    _.forEach(response.data.images, function(image, index) {
+                        announcementVm.images.push({'id': index, 'image': image.imagePath});
+                    });
+
+                    commentService.getCommentsForAnnouncement($stateParams.announcementId)
+                        .then(function(response) {
+                             _.forEach(response.data, function(comment) {
+                                announcementVm.comments.push(
+                                  {
+                                    'content': comment.content,
+                                    'date': comment.date,
+                                    'author':
+                                        {
+                                            'name': comment.author.firstName + ' ' + comment.author.lastName,
+                                            'image': "http://img.uefa.com/imgml/TP/players/3/2016/324x324/250063984.jpg"
+                                        }
+                                  }
+                                );
+                             });
+                        });
                 });
         }
 
         function initMap() {
             var map = new google.maps.Map(document.getElementById('map'), {
-                zoom: 16,
-                center: {lat: -34.397, lng: 150.644}
+                zoom: 16
             });
 
             var geocoder = new google.maps.Geocoder();
@@ -46,7 +65,8 @@
         }
 
         function geocodeAddress(geocoder, resultsMap) {
-            var address = announcementVm.address;
+            var address = announcementVm.address.city + ' ' + announcementVm.address.street + ' ' +
+              + announcementVm.address.streetNumber + ' ' + announcementVm.address.country;
 
             geocoder.geocode({'address': address}, function(results, status) {
             if (status === google.maps.GeocoderStatus.OK) {
@@ -59,6 +79,31 @@
                     $log.error('Geocode was not successful for the following reason: ' + status);
                 }
             });
+        }
+
+        function addComment() {
+            var comment = {};
+
+            // comment.author = { 'id': 1 };
+            comment.announcement = { 'id': _.toInteger($stateParams.announcementId) };
+            comment.content = announcementVm.comment;
+            comment.date = _.now();
+
+            commentService.addComment(comment)
+                .then(function(response) {
+                    var comment = response.data;
+
+                    announcementVm.comments.push(
+                      {
+                        'content': comment.content,
+                        'date': comment.date,
+                        'author':
+                            {
+                                'name': comment.author.firstName + ' ' + comment.author.lastName,
+                                'image': "http://img.uefa.com/imgml/TP/players/3/2016/324x324/250063984.jpg"
+                            }
+                      });
+                });
         }
 
     }

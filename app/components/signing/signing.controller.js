@@ -26,7 +26,7 @@
         function login() {
             signingVm.dataLoading = true;
             signingVm.loginError = false;
-            
+
             signingService.auth(signingVm.credentials.username, signingVm.credentials.password)
                 .then(function (response) {
                     // Wrong credentials
@@ -46,7 +46,7 @@
                         if (token !== undefined) {
                             $http.defaults.headers.common[CONFIG.AUTH_TOKEN] = token;
                             $window.localStorage.setItem('AUTH_TOKEN', token);
-                            $localStorage.user = tokenPayload.user;
+                            $localStorage.user = tokenPayload.sub;
                             $localStorage.role = tokenPayload.role.authority;
                             $log.info("Successfully logged in.")
                             $location.path('/');

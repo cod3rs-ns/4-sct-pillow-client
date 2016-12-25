@@ -9,6 +9,12 @@ angular
       'angularFileUpload',
       'angular-jwt'
     ])
+    .factory('_', ['$window',
+       function($window) {
+         // place lodash include before angular
+         return $window._;
+       }
+    ])
     .constant(
         'CONFIG', {
             'SERVICE_URL': 'http://localhost:8091/api',
@@ -137,6 +143,7 @@ angular
                   var token = $window.localStorage.getItem('AUTH_TOKEN');
                   if (token != "null") {
                     config.headers['X-Auth-Token'] = token;
+                    console.log(token);
                   }
                   return config;
               },
