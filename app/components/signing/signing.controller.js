@@ -11,7 +11,7 @@
         var signingVm = this;
 
         // Setting background image for signing page
-        $(".login-page").backstretch("assets/img/login_background.jpg");
+        // $(".login-page").backstretch("assets/img/login_background.jpg");
 
         // Variable binders
         signingVm.credentials = {};
