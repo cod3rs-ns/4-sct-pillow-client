@@ -143,6 +143,7 @@ angular
                   var token = $window.localStorage.getItem('AUTH_TOKEN');
                   if (token != "null") {
                     config.headers['X-Auth-Token'] = token;
+                    console.log(token);
                   }
                   return config;
               },

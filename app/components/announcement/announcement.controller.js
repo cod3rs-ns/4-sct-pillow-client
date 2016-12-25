@@ -5,17 +5,20 @@
         .module('awt-cts-client')
         .controller('AnnouncementController', AnnouncementController);
 
-    AnnouncementController.$inject = ['$stateParams', '$log', 'announcementService', '_'];
+    AnnouncementController.$inject = ['$stateParams', '$log', '_', 'announcementService', 'commentService'];
 
-    function AnnouncementController($stateParams, $log, announcementService, _) {
+    function AnnouncementController($stateParams, $log, _, announcementService, commentService) {
         var announcementVm = this;
 
         announcementVm.announcement = {};
         announcementVm.images = [];
         announcementVm.address = null;
+        announcementVm.comments = [];
+        announcementVm.comment = null;
 
         announcementVm.getAnnouncement = getAnnouncement;
         announcementVm.initMap = initMap;
+        announcementVm.addComment = addComment;
 
         activate();
 
@@ -32,6 +35,23 @@
                     _.forEach(response.data.images, function(image, index) {
                         announcementVm.images.push({'id': index, 'image': image.imagePath});
                     });
+
+                    commentService.getCommentsForAnnouncement($stateParams.announcementId)
+                        .then(function(response) {
+                             _.forEach(response.data, function(comment) {
+                                announcementVm.comments.push(
+                                  {
+                                    'content': comment.content,
+                                    'date': comment.date,
+                                    'author':
+                                        {
+                                            'name': comment.author.firstName + ' ' + comment.author.lastName,
+                                            'image': "http://img.uefa.com/imgml/TP/players/3/2016/324x324/250063984.jpg"
+                                        }
+                                  }
+                                );
+                             });
+                        });
                 });
         }
 
@@ -59,6 +79,31 @@
                     $log.error('Geocode was not successful for the following reason: ' + status);
                 }
             });
+        }
+
+        function addComment() {
+            var comment = {};
+
+            // comment.author = { 'id': 1 };
+            comment.announcement = { 'id': _.toInteger($stateParams.announcementId) };
+            comment.content = announcementVm.comment;
+            comment.date = _.now();
+
+            commentService.addComment(comment)
+                .then(function(response) {
+                    var comment = response.data;
+
+                    announcementVm.comments.push(
+                      {
+                        'content': comment.content,
+                        'date': comment.date,
+                        'author':
+                            {
+                                'name': comment.author.firstName + ' ' + comment.author.lastName,
+                                'image': "http://img.uefa.com/imgml/TP/players/3/2016/324x324/250063984.jpg"
+                            }
+                      });
+                });
         }
 
     }
