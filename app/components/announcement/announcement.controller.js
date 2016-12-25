@@ -5,9 +5,9 @@
         .module('awt-cts-client')
         .controller('AnnouncementController', AnnouncementController);
 
-    AnnouncementController.$inject = ['$stateParams', '$log', '_', 'announcementService', 'commentService'];
+    AnnouncementController.$inject = ['$stateParams', '$log', '_', 'announcementService', 'commentService', 'markService'];
 
-    function AnnouncementController($stateParams, $log, _, announcementService, commentService) {
+    function AnnouncementController($stateParams, $log, _, announcementService, commentService, markService) {
         var announcementVm = this;
 
         announcementVm.announcement = {};
@@ -19,6 +19,8 @@
         announcementVm.getAnnouncement = getAnnouncement;
         announcementVm.initMap = initMap;
         announcementVm.addComment = addComment;
+        announcementVm.voteAnnouncer = voteAnnouncer;
+        announcementVm.voteAnnouncement = voteAnnouncement;
 
         activate();
 
@@ -36,7 +38,7 @@
                         announcementVm.images.push({'id': index, 'image': image.imagePath});
                     });
 
-                    commentService.getCommentsForAnnouncement($stateParams.announcementId)
+                    commentService.getCommentsForAnnouncement(announcementId)
                         .then(function(response) {
                              _.forEach(response.data, function(comment) {
                                 announcementVm.comments.push(
@@ -51,6 +53,36 @@
                                   }
                                 );
                              });
+                        });
+
+                    markService.getMarksForAnnouncement(announcementId)
+                        .then(function (response) {
+                            $log.log(response.data);
+                            announcementVm.announcementAvg = _.meanBy(
+                                _.filter(response.data,
+                                  function(mark) {
+                                    return mark.gradedAnnouncer == null;
+                                  }),
+
+                                function(mark) {
+                                  return mark.value;
+                                });
+                        });
+
+                    markService.getMarksForAnnouncer(announcementVm.announcement.author.id)
+                        .then(function (response) {
+                            $log.log(response.data);
+                            announcementVm.announcerAvg = _.meanBy(
+                                _.filter(response.data,
+                                  function(mark) {
+                                    return mark.announcement == null;
+                                  }),
+
+                                function(mark) {
+                                  return mark.value;
+                                });
+
+                            $log.log(announcementVm.announcerAvg);
                         });
                 });
         }
@@ -84,7 +116,6 @@
         function addComment() {
             var comment = {};
 
-            // comment.author = { 'id': 1 };
             comment.announcement = { 'id': _.toInteger($stateParams.announcementId) };
             comment.content = announcementVm.comment;
             comment.date = _.now();
@@ -103,6 +134,30 @@
                                 'image': "http://img.uefa.com/imgml/TP/players/3/2016/324x324/250063984.jpg"
                             }
                       });
+                });
+        }
+
+        function voteAnnouncement(value) {
+            var mark = {};
+
+            mark.announcement = { 'id': _.toInteger($stateParams.announcementId) };
+            mark.value = _.toInteger(value);
+
+            markService.vote(mark)
+                .then(function(response) {
+                    $log.log(response.data);
+                });
+        }
+
+        function voteAnnouncer(value) {
+            var mark = {};
+
+            mark.gradedAnnouncer = { 'id': _.toInteger(announcementVm.announcement.author.id) };
+            mark.value = _.toInteger(value);
+
+            markService.vote(mark)
+                .then(function(response) {
+                    $log.log(response.data);
                 });
         }
 

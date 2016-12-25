@@ -10,6 +10,7 @@
             </div>
             <h1><span class="label label-primary">{{announcementVm.announcement.type}}</span> {{announcementVm.announcement.realEstate.name}} <span class="glyphicon glyphicon-ok-circle pull-right color-success"></span></h1>
             <h3>{{announcementVm.announcement.address}}</h3>
+            <div class="star-rating" star-rating rating-value="3" data-max="5" on-rating-selected="announcementVm.voteAnnouncement(value)"></div>
             <hr/>
             <div class="row">
                 <div class="col-md-3 col-sm-6">
@@ -55,6 +56,7 @@
                 <img src="http://img.uefa.com/imgml/TP/players/9/2016/324x324/93649.jpg" alt="..." width="96px" height="96px" class="img-circle" style="margin-top: 5px;">
                 <h4>{{announcementVm.announcement.author.firstName + ' ' + announcementVm.announcement.author.lastName}}</h4>
                 <p>{{announcementVm.announcement.author.email}}</p>
+                <div class="star-rating" star-rating rating-value="3" data-max="5" on-rating-selected="announcementVm.voteAnnouncer(value)"></div>
                 <span ng-if="announcementVm.announcement.author.companyVerified" class="label label-success">Verifikovan</span>
                 <p><i class="glyphicon glyphicon-earphone"></i>{{announcementVm.announcement.author.telephoneNo}}</p>
             </div>
