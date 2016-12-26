@@ -37,32 +37,26 @@
               <span class="pull-right color-success">Ističe 31. decembra 2016.</span>
           </p>
         </uib-tab>
+
+        <!-- Users membership requests logic -->
         <uib-tab index="1">
             <uib-tab-heading>
-                Zahtjevi za pristupanje u kompaniju <span class="badge">42</span>
+                Zahtevi &nbsp;<span class="badge"> {{userVm.usersRequests.length}}</span>
             </uib-tab-heading>
-            <div class="row">
-                <p class="company-request">
-                    <img src="http://successfulhabitsguide.com/wp-content/uploads/2015/12/michael-jordan.jpg" alt="..." width="36px" height="36px" class="img-rounded">
-                    Michael Jordan (michael.jordan23@chicago.com)
-                    <span class="glyphicon glyphicon-ok pull-right"></span>
-                    <span class="glyphicon glyphicon-remove pull-right"></span>
-                </p>
+            <div class="row" ng-show="userVm.usersRequests.length === 0">
+                <p style="margin-left: 100px; margin-top: 20px;"><em>Trenutno nema aktivnih zahteva.</em></p>    
             </div>
-            <div class="row">
+            <div class="row" ng-repeat="user in userVm.usersRequests">
                 <p class="company-request">
-                    <img src="http://successfulhabitsguide.com/wp-content/uploads/2015/12/michael-jordan.jpg" alt="..." width="36px" height="36px" class="img-rounded">
-                    Michael Jordan (michael.jordan23@chicago.com)
-                    <span class="glyphicon glyphicon-ok pull-right"></span>
-                    <span class="glyphicon glyphicon-remove pull-right"></span>
-                </p>
-            </div>
-            <div class="row">
-                <p class="company-request">
-                    <img src="http://successfulhabitsguide.com/wp-content/uploads/2015/12/michael-jordan.jpg" alt="..." width="36px" height="36px" class="img-rounded">
-                    Michael Jordan (michael.jordan23@chicago.com)
-                    <span class="glyphicon glyphicon-ok pull-right"></span>
-                    <span class="glyphicon glyphicon-remove pull-right"></span>
+                    <img ng-src="{{user.imagePath}}" alt="{{user.firstName + user.lastName}}" width="36px" height="36px" class="img-rounded">
+                    <!-- TODO provide link to user profile -->
+                    <a href="#">{{user.firstName + ' ' + user.lastName}}</a> {{ ' (' + user.email + ')'}}
+                    <span   class="glyphicon glyphicon-ok pull-right"
+                            style="color:seagreen;cursor:pointer;"
+                            ng-click="userVm.acceptRequest(user.id);"></span>
+                    <span   class="glyphicon glyphicon-remove pull-right" 
+                            style="color:darkred;cursor:pointer;"
+                            ng-click="userVm.rejectRequest(user.id);"></span>
                 </p>
             </div>
         </uib-tab>

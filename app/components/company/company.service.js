@@ -19,7 +19,9 @@ function companyService($http, CONFIG) {
       setUserPage: setUserPage,
       getAnnouncementPage: getAnnouncementPage,
       setAnnouncementPage: setAnnouncementPage,
-      getTopThreeByCompanyId: getTopThreeByCompanyId
+      getTopThreeByCompanyId: getTopThreeByCompanyId,
+      getUserRequestsByStatusPending: getUserRequestsByStatusPending,
+      resolveMembershipRequest: resolveMembershipRequest
     };
 
     return service;
@@ -74,6 +76,35 @@ function companyService($http, CONFIG) {
               return data;
           });
     };
+
+    /**
+     * Gets {User} objects whose company request status have value 'pending'
+     * TODO - should this kind of get request have PAGEABLE parameter??
+     */
+    function getUserRequestsByStatusPending() {
+        return $http.get(CONFIG.SERVICE_URL + '/companies/users-requests/' + '?status=pending' + '&page=0')
+            .success(function(data, status, headers){
+                return data;
+            })
+            .error(function (data) {
+                return data;
+            });
+    }
+
+    /**
+     * Resolves {User} request to join company.
+     * @param {integer} userId      ID of the user which status will be resolved
+     * @param {boolean} accepted    Flag - true if request will be accepted, false otherwise
+     */
+    function resolveMembershipRequest(userId, accepted) {
+        return $http.put(CONFIG.SERVICE_URL + '/companies/resolve-request/user/' + userId + '?accepted=' + accepted)
+            .success(function (data){
+                return data;
+            })
+            .error(function (data){
+                return data;
+            })
+    }
 
     function getUserPage(){
         return pageStatuses.userPage;
