@@ -20,8 +20,8 @@
 
         function activate() {
             companyService.getUserRequestsByStatusPending()
-                .success(function (data) {
-                    userVm.usersRequests = data;
+                .then(function (response) {
+                    userVm.usersRequests = response.data;
                 });
         };
 
@@ -32,11 +32,11 @@
          */
         function acceptRequest(userId) {
             companyService.resolveMembershipRequest(userId, true)
-                .success(function (data){
+                .then(function (response){
                     activate();
                     ngToast.create({
                         className: 'success',
-                        content: '<a href="#" class="">Korisnikov zahtev uspešno prihvaćen.</a>'
+                        content: '<strong>Korisnikov zahtev prihvaćen.</strong>'
                     });
                 });
         };
@@ -47,11 +47,11 @@
          */
         function rejectRequest(userId) {
             companyService.resolveMembershipRequest(userId, false)
-                .success(function (data){
+                .then(function (response){
                     activate();
                     ngToast.create({
                         className: 'danger',
-                        content: '<a href="#" class="">Korisnikov zahtev odbijen.</a>'
+                        content: '<strong>Korisnikov zahtev odbijen.</strong>'
                     });
                 });
         };
