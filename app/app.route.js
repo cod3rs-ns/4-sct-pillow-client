@@ -7,7 +7,8 @@ angular
       'ngSanitize',
       'ui.bootstrap',
       'angularFileUpload',
-      'angular-jwt'
+      'angular-jwt',
+      'mgo-angular-wizard'
     ])
     .factory('_', ['$window',
        function($window) {
