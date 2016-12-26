@@ -7,5 +7,6 @@ angular
         'ngSanitize',
         'ui.bootstrap',
         'angularFileUpload',
-        'angular-jwt'
+        'angular-jwt',
+        'ngToast'
     ]);

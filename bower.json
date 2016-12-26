@@ -33,6 +33,7 @@
     "es5-shim": "^4.5.9",
     "angular-jwt": "^0.1.8",
     "ngstorage": "^0.3.11",
-    "lodash": "^4.17.3"
+    "lodash": "^4.17.3",
+    "ngToast": "ngtoast#^2.0.0"
   }
 }

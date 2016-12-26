@@ -17,11 +17,13 @@
     <!-- Font awesome library-->
     <link href="/assets/libs/components-font-awesome/css/font-awesome.min.css" rel="stylesheet">
 
+    <!-- ngToast CSS -->
+    <link rel="stylesheet" href="assets/libs/ngToast/dist/ngToast.min.css">
+
     <!-- Custom styles for this template -->
     <link href="assets/css/starter.css" rel="stylesheet">
     <link href="assets/css/login.css" rel="stylesheet">
     <link href="assets/css/company.css" rel="stylesheet">
-
 
     <!-- Angular dependencies -->
     <script src="assets/libs/angular/angular.min.js"></script>
@@ -48,6 +50,9 @@
     <!-- Lodash library dependency -->
     <script src="assets/libs/lodash/dist/lodash.min.js"></script>
 
+    <!-- ngToast library for displaying notifications -->
+    <script src="assets/libs/ngToast/dist/ngToast.min.js"></script>
+
     <!-- Google maps -->
     <script async defer
         src="https://maps.googleapis.com/maps/api/js">
@@ -64,7 +69,7 @@
             ng-include="'app/shared/header/header.html'"
             ng-controller="HeaderController as headerVm">
     </header>
-
+    <toast style="margin-top: 54px;"></toast>
     <section id="main" ui-view="content"></section>
 
     <footer id="footer"
