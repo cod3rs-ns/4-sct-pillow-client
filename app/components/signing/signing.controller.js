@@ -36,16 +36,11 @@
                     }
                     else {
                         var token = response.data.token;
-                        $log.log(token);
-
                         var tokenPayload = jwtHelper.decodeToken(token);
-
-                        $log.log(tokenPayload);
-
-                        $log.log(token);
+                        
                         if (token !== undefined) {
                             $http.defaults.headers.common[CONFIG.AUTH_TOKEN] = token;
-                            $window.localStorage.setItem('AUTH_TOKEN', token);
+                            $localStorage.token = token;
                             $localStorage.user = tokenPayload.sub;
                             $localStorage.role = tokenPayload.role.authority;
                             $log.info("Successfully logged in.")

@@ -22,10 +22,10 @@ angular
             'AUTH_TOKEN': 'X-Auth-Token'
         }
     )
-    .config(function($stateProvider, $urlRouterProvider, $httpProvider) {
+    .config(function($stateProvider, $urlRouterProvider, $httpProvider, $qProvider) {
 
       // http://stackoverflow.com/questions/39931983/angularjs-possible-unhandled-rejection-when-using-ui-router
-      // $qProvider.errorOnUnhandledRejections(false);
+      $qProvider.errorOnUnhandledRejections(false);
 
       // For any unmatched url, redirect to /home
       $urlRouterProvider.otherwise("/home");
@@ -137,14 +137,14 @@ angular
             }
         });
 
-        $httpProvider.interceptors.push(['$q', '$window', '$location', function($q, $window, $location) {
+        $httpProvider.interceptors.push(['$q', '$location', '$localStorage', function($q, $location, $localStorage) {
           return {
               // Set Header to Request if user is logged
               'request': function (config) {
-                  var token = $window.localStorage.getItem('AUTH_TOKEN');
+                  var token = $localStorage.token;
+                  
                   if (token != "null") {
                     config.headers['X-Auth-Token'] = token;
-                    console.log(token);
                   }
                   return config;
               },
