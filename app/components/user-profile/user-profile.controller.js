@@ -5,13 +5,16 @@
         .module('awt-cts-client')
         .controller('UserProfileController', UserProfileController);
 
-    UserProfileController.$inject = ['companyService', 'ngToast'];
+    UserProfileController.$inject = ['companyService', 'announcementService', 'ngToast'];
 
-    function UserProfileController(companyService, ngToast) {
+    function UserProfileController(companyService, announcementService, ngToast) {
         var userVm = this;
 
         /** List containing all active users requests to join company */
         userVm.usersRequests = [];
+
+        /** List containing all announcemnts created by this user */
+        userVm.announcements = [];
 
         userVm.acceptRequest = acceptRequest;
         userVm.rejectRequest = rejectRequest;
@@ -19,6 +22,10 @@
         activate();
 
         function activate() {
+            announcementService.getAnnouncementsByAuthor(1)
+                .then(function (response){
+                    userVm.announcements = response.data;
+                });
             companyService.getUserRequestsByStatusPending()
                 .then(function (response) {
                     userVm.usersRequests = response.data;

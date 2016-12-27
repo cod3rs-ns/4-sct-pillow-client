@@ -15,49 +15,67 @@
     </div>
 
     <uib-tabset active="active">
-        <uib-tab index="0" heading="Vaši oglasi">
-          <p>
-              Oglas neki nekako...
-              <span class="pull-right color-danger">Ističe danas</span>
-          </p>
-          <p>
-              Oglas neki nekako...
-              <span class="pull-right color-danger">Ističe za 2 dana</span>
-          </p>
-          <p>
-              Oglas neki nekako...
-              <span class="pull-right color-warning">Ističe za 7 dana</span>
-          </p>
-          <p>
-              Oglas neki nekako...
-              <span class="pull-right color-success">Ističe 4. decembra 2016.</span>
-          </p>
-          <p>
-              Oglas neki nekako...
-              <span class="pull-right color-success">Ističe 31. decembra 2016.</span>
-          </p>
+        <uib-tab index="0" >
+            <uib-tab-heading>
+                Vaši oglasi &nbsp;<span class="badge alert-info"> {{userVm.announcements.length}}</span>
+            </uib-tab-heading>
+            <div class="container">
+                <div class="col-xs-12 col-md-6 announcement-home-outside" ng-repeat="announcement in userVm.announcements">
+                    <div class="row announcement-home-inside">
+                        <div class="col-md-4 col-xs-4">
+                            <img    ng-src={{announcement.images[0].imagePath}}
+                                    ui-sref="announcement({announcementId: announcement.id})"
+                                    width="150px" height="150px"
+                                    class="thumbnail"
+                                    style="cursor: hover"/>
+                        </div>
+                        <div class="col-md-8 col-xs-8">
+                            <a style="font-size: 150%;" ui-sref="announcement({announcementId: announcement.id})">{{announcement.realEstate.name}}</a>
+                            <p> {{announcement.realEstate.location.city + ', ' + announcement.realEstate.location.country}}</p>
+                            <p> objavljen: {{announcement.dateAnnounced | date:'dd-MM-yyyy' }}</p>
+                            <p class="color-warning">istekao pre 100 godina.</p>
+                            <div class="row">
+                                <div class="form-group pull-right col-md-10 col-xs-10">
+                                    <p class="input-group">
+                                        <span class="input-group-addon" id="basic-addon1"> Produži do: </span>
+                                        <input type="text" class="form-control" uib-datepicker-popup="{{announcementFormVm.dateFormat}}" ng-model="announcement.expirationDate"
+                                            is-open="announcementFormVm.popup.opened" datepicker-options="announcementFormVm.dateOptions"
+                                            ng-required="true" close-text="Zatvori" clear-text="Obriši" alt-input-formats="announcementFormVm.altInputFormats"/>
+                                        <span class="input-group-btn">
+                                        <button type="button" class="btn btn-default" ng-click="announcementFormVm.open()"><i class="glyphicon glyphicon-calendar"></i></button>
+                                    </span>
+                                    </p>
+                                </div>
+                            </div>
+                            
+                        </div>
+                    </div>
+                </div>
+            </div>
         </uib-tab>
 
         <!-- Users membership requests logic -->
         <uib-tab index="1">
             <uib-tab-heading>
-                Zahtevi &nbsp;<span class="badge"> {{userVm.usersRequests.length}}</span>
+                Zahtevi &nbsp;<span class="badge alert-info"> {{userVm.usersRequests.length}}</span>
             </uib-tab-heading>
-            <div class="row" ng-show="userVm.usersRequests.length === 0">
-                <p style="margin-left: 100px; margin-top: 20px;"><em>Trenutno nema aktivnih zahteva.</em></p>    
-            </div>
-            <div class="row" ng-repeat="user in userVm.usersRequests">
-                <p class="company-request">
-                    <img ng-src="{{user.imagePath}}" alt="{{user.firstName + user.lastName}}" width="36px" height="36px" class="img-rounded">
-                    <!-- TODO provide link to user profile -->
-                    <a href="#">{{user.firstName + ' ' + user.lastName}}</a> {{ ' (' + user.email + ')'}}
-                    <span   class="glyphicon glyphicon-ok pull-right"
-                            style="color:seagreen;cursor:pointer;"
-                            ng-click="userVm.acceptRequest(user.id);"></span>
-                    <span   class="glyphicon glyphicon-remove pull-right" 
-                            style="color:darkred;cursor:pointer;"
-                            ng-click="userVm.rejectRequest(user.id);"></span>
-                </p>
+            <div class="container">
+                <div class="row" ng-show="userVm.usersRequests.length === 0">
+                    <p style="margin-left: 100px; margin-top: 20px;"><em>Trenutno nema aktivnih zahteva.</em></p>    
+                </div>
+                <div class="row" ng-repeat="user in userVm.usersRequests">
+                    <p class="company-request">
+                        <img ng-src="{{user.imagePath}}" alt="{{user.firstName + user.lastName}}" width="36px" height="36px" class="img-rounded">
+                        <!-- TODO provide link to user profile -->
+                        <a href="#">{{user.firstName + ' ' + user.lastName}}</a> {{ ' (' + user.email + ')'}}
+                        <span   class="glyphicon glyphicon-ok pull-right"
+                                style="color:seagreen;cursor:pointer;"
+                                ng-click="userVm.acceptRequest(user.id);"></span>
+                        <span   class="glyphicon glyphicon-remove pull-right" 
+                                style="color:darkred;cursor:pointer;"
+                                ng-click="userVm.rejectRequest(user.id);"></span>
+                    </p>
+                </div>
             </div>
         </uib-tab>
     </uib-tabset>

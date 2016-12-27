@@ -101,10 +101,10 @@ function companyService($http, CONFIG, $log) {
     function resolveMembershipRequest(userId, accepted) {
         return $http.put(CONFIG.SERVICE_URL + '/companies/resolve-request/user/' + userId + '?accepted=' + accepted)
             .then(function successCallback(response){
-                return response.data;
+                return response;
             }, function errorCallback(response) {
                 $log.error("Unable to resolve membership request.")
-                return response.data;
+                return response;
             });
     };
 
