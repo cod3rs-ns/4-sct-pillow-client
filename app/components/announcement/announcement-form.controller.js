@@ -1,18 +1,19 @@
-(function() {
+(function () {
     'use strict';
 
     angular
         .module('awt-cts-client')
         .controller('AnnouncementFormController', AnnouncementFormController);
 
-    AnnouncementFormController.$inject = ['$scope', '$window', '$log', '_', 'FileUploader', 'announcementService', 'CONFIG'];
+    AnnouncementFormController.$inject = ['$scope', '$state', '$window', '$log', '_', 'FileUploader', 'announcementService', 'WizardHandler', 'CONFIG'];
 
-    function AnnouncementFormController($scope, $window, $log, _, FileUploader, announcementService, CONFIG) {
+    function AnnouncementFormController($scope, $state, $window, $log, _, FileUploader, announcementService, WizardHandler, CONFIG) {
 
         var announcementFormVm = this;
 
         announcementFormVm.chosenSimilarRealEstateId = -1;
-        announcementFormVm.similars = []
+        announcementFormVm.similars = [];
+        announcementFormVm.similarsDisabled = true;
         announcementFormVm.announcement = {
             id: null,
             name: "",
@@ -144,36 +145,46 @@
         // FILTERS
         uploader.filters.push({
             name: 'imageFilter',
-            fn: function(item /*{File|FileLikeObject}*/, options) {
+            fn: function (item /*{File|FileLikeObject}*/, options) {
                 var type = '|' + item.type.slice(item.type.lastIndexOf('/') + 1) + '|';
                 return '|jpg|png|jpeg|bmp|gif|'.indexOf(type) !== -1;
             }
         });
 
         // Callbacks for image upload
-        uploader.onSuccessItem = function(fileItem, response, status, headers) {
+        uploader.onSuccessItem = function (fileItem, response, status, headers) {
             announcementFormVm.announcement.images.push({ id: null, imagePath: response });
             $log.info('onSuccessItem', fileItem, response, status, headers);
         };
 
-        uploader.onCompleteAll = function() {
+        uploader.onCompleteAll = function () {
             announcementFormVm.uploaded = true;
 
             announcementService.addAnnouncement(announcementFormVm.announcement)
-                .then(function(response) {
-                    $log.info(response);
+                .then(function (response) {
+                    $state.transitionTo("announcement", {
+                        announcementId: response.data.id
+                    });
                 });
             $log.info('onCompleteAll');
         };
 
         function chooseSimilarRealEstate(id) {
             announcementFormVm.chosenSimilarRealEstateId = id;
+            announcementFormVm.announcement.realEstate.id = id;
         };
 
         function getSimilarRealEstates() {
             announcementService.getSimilarRealEstates(announcementFormVm.announcement.realEstate)
-                .then(function(response) {
+                .then(function (response) {
                     announcementFormVm.similars = response.data;
+                    if (response.data.length > 0) {
+                        announcementFormVm.similarsDisabled = false;
+                        WizardHandler.wizard().goTo("Slične nekretnine");
+                    } else {                        
+                        announcementFormVm.similarsDisabled = true;
+                        WizardHandler.wizard().goTo("Slike");
+                    }
                 });
         };
     }
