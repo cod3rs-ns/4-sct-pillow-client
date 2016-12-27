@@ -5,11 +5,14 @@
         .module('awt-cts-client')
         .controller('AnnouncementFormController', AnnouncementFormController);
 
-    AnnouncementFormController.$inject = ['$scope', '$window', '$log', 'FileUploader', 'announcementService', 'CONFIG'];
+    AnnouncementFormController.$inject = ['$scope', '$window', '$log', '_', 'FileUploader', 'announcementService', 'CONFIG'];
 
-    function AnnouncementFormController($scope, $window, $log, FileUploader, announcementService, CONFIG) {
+    function AnnouncementFormController($scope, $window, $log, _, FileUploader, announcementService, CONFIG) {
 
         var announcementFormVm = this;
+
+        announcementFormVm.chosenSimilarRealEstateId = -1;
+        announcementFormVm.similars = []
         announcementFormVm.announcement = {
             id: null,
             name: "",
@@ -22,7 +25,7 @@
                 id: null,
                 name: "",
                 type: "",
-                area: 120.3,
+                area: 0,
                 heatingType: "",
                 equipment: "",
                 deleted: false,
@@ -34,7 +37,7 @@
                     street: "",
                     streetNumber: ""
                 },
-                announcements : []
+                announcements: []
             } //TODO: change real estate object
         };
 
@@ -45,6 +48,8 @@
         announcementFormVm.datePickerConfig = datePickerConfig;
         announcementFormVm.getDayClass = getDayClass;
         announcementFormVm.addAnnouncement = addAnnouncement;
+        announcementFormVm.chooseSimilarRealEstate = chooseSimilarRealEstate;
+        announcementFormVm.getSimilarRealEstates = getSimilarRealEstates;
 
         activate();
 
@@ -130,7 +135,7 @@
         // Upload images
         var token = $window.localStorage.getItem('AUTH_TOKEN');
         var uploader = announcementFormVm.uploader = new FileUploader({
-            url: CONFIG.SERVICE_URL + '/announcements/upload',
+            url: CONFIG.SERVICE_URL + '/images/announcements/',
             headers: {
                 "X-Auth-Token": token
             }
@@ -159,6 +164,17 @@
                     $log.info(response);
                 });
             $log.info('onCompleteAll');
+        };
+
+        function chooseSimilarRealEstate(id) {
+            announcementFormVm.chosenSimilarRealEstateId = id;
+        };
+
+        function getSimilarRealEstates() {
+            announcementService.getSimilarRealEstates(announcementFormVm.announcement.realEstate)
+                .then(function(response) {
+                    announcementFormVm.similars = response.data;
+                });
         };
     }
 })();

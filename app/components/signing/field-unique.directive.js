@@ -25,7 +25,6 @@ function fieldUnique($http, CONFIG) {
                         });
                 }
                 else if (attrName == 'email') {
-                    console.log('emaillll');
                     $http.get(CONFIG.SERVICE_URL + "/users/email-available",
                         { params: { email: element.val() } })
                         .success(function (data) {
