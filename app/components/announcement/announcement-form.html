@@ -1,152 +1,303 @@
-<div nv-file-drop="" uploader="announcementFormVm.uploader" class="container" style="margin-top:25px; margin-bottom:20px;">
-    <div class="row" style="margin-bottom:10px;">
-        <div class="col-md-6 col-md-offset-1">
-            <h3 style="margin-top:0px; margin-bottom:17px;"> Novi oglas </h3>
+<div class="container" style="margin-top:25px; margin-bottom:20px;">
+   <wizard on-finish="announcementFormVm.addAnnouncement();"> 
+        <wz-step wz-title="Osnovni podaci">
+            <div class="row" style="margin-bottom:10px;">
+                <div class="col-md-6">
+                    <h4 style="margin-top:0px; margin-bottom:17px;"> Novi oglas </h4>
 
-            <div style="text-align: center;" style="margin-top:20px; padding-top:15px;">
-                <form role="form" ng-submit="announcementFormVm.addAnnouncement();">
-                    <div class="form-group">
-                        <div class="input-group">
-                            <span class="input-group-addon" id="basic-addon1"> <i class="glyphicon glyphicon-home"></i></span>
-                            <input type="text" ng-model="announcementFormVm.announcement.name" placeholder="Naziv..." class="form-control" id="ann-name">
-                        </div>
-                    </div>
-
-                    <div class="form-group">
-                        <div class="btn-group">
-                            <label class="btn btn-primary" ng-model="announcementFormVm.announcement.type" uib-btn-radio="'buy'" uib-uncheckable="uncheckable">Kupovina</label>
-                            <label class="btn btn-primary" ng-model="announcementFormVm.announcement.type" uib-btn-radio="'sell'" uncheckable>Prodaja</label>
-                            <label class="btn btn-primary" ng-model="announcementFormVm.announcement.type" uib-btn-radio="'rent'" uncheckable>Iznajmljivanje</label>
-                        </div>
-                    </div>
-
-                    <div class="form-group">
-                        <div class="input-group">
-                            <span class="input-group-addon" id="basic-addon1"> <i class="glyphicon glyphicon-earphone"></i></span>
-                            <input type="text" ng-model="announcementFormVm.announcement.phoneNumber" placeholder="Broj telefona..." class="form-control"
-                                id="ann-phone">
-                        </div>
-                    </div>
-
-                    <div class="form-group">
-                        <div class="input-group">
-                            <span class="input-group-addon" id="basic-addon1"> <i class="glyphicon glyphicon-eur"></i></span>
-                            <input type="number" ng-model="announcementFormVm.announcement.price" placeholder="Cena..." class="form-control" id="ann-phone">
-                        </div>
-                    </div>
-
-                    <div class="form-group">
-                        <p class="input-group">
-                            <span class="input-group-addon" id="basic-addon1"> Važi do: </span>
-                            <input type="text" class="form-control" uib-datepicker-popup="{{announcementFormVm.dateFormat}}" ng-model="announcementFormVm.announcement.expirationDate"
-                                is-open="announcementFormVm.popup.opened" datepicker-options="announcementFormVm.dateOptions"
-                                ng-required="true" close-text="Zatvori" clear-text="Obriši" alt-input-formats="announcementFormVm.altInputFormats"/>
-                            <span class="input-group-btn">
-                            <button type="button" class="btn btn-default" ng-click="announcementFormVm.open()"><i class="glyphicon glyphicon-calendar"></i></button>
-                        </span>
-                        </p>
-                    </div>
-
-                    <button type="submit" class="btn btn-success" style="margin-top:18px;">Dodaj oglas!</button>
-                </form>
-            </div>
-        </div>
-        <div class="col-md-3 col-md-offset-1">
-            <h3 style="margin-top:0px; margin-bottom:17px;"> Odaberite slike </h3>
-            <div ng-show="announcementFormVm.uploader.isHTML5" style="background: #EEEEEE;">
-                <div class="well my-drop-zone" nv-file-over="" style="height:125px; vertical-align:center; border-style: dashed; border-width:4px; position:relative"
-                    uploader="announcementFormVm.uploader">
-                    <p style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);">Zona prevlačenja.</p>
-                </div>
-            </div>
-
-            <div class="input-group image-preview">
-                <div class="btn btn-default image-preview-input">
-                    <span class="glyphicon glyphicon-folder-open"></span>
-                    <span class="image-preview-input-title">Pretraži</span>
-                    <input type="file" nv-file-select="" uploader="announcementFormVm.uploader" multiple name="input-file-preview" />
-                </div>
-                </span>
-            </div>
-
-            <br/>
-        </div>
-    </div>
-
-
-    <div class="row" style="text-align: center;">
-        <div class="col-md-10 col-md-offset-1" style="text-align: center;" style="margin-top:20px; padding-top:15px;">
-            <div>
-                <div class="container">
-                    <div class="row">
-
-                        <div class="col-md-10" style="margin-bottom: 40px">
-                            <div>
-                                Status slanja:
-                                <div class="progress" style="">
-                                    <div class="progress-bar" role="progressbar" ng-style="{ 'width': announcementFormVm.uploader.progress + '%' }"></div>
+                    <div style="text-align: center;" style="margin-top:20px; padding-top:15px;">
+                        <form role="form" ng-submit="announcementFormVm.addAnnouncement();">
+                            <div class="form-group">
+                                <div class="input-group">
+                                    <span class="input-group-addon" id="basic-addon1"> <i class="glyphicon glyphicon-home"></i></span>
+                                    <input type="text" ng-model="announcementFormVm.announcement.realEstate.name" placeholder="Naziv..." class="form-control" id="ann-name">
                                 </div>
                             </div>
-                            <p>Ukupan broj: {{ announcementFormVm.uploader.queue.length }}</p>
 
-                            <table class="table">
-                                <thead>
-                                    <tr>
-                                        <th width="50%">Naziv</th>
-                                        <th ng-show="announcementFormVm.uploader.isHTML5">Veličina</th>
-                                        <th ng-show="announcementFormVm.uploader.isHTML5">Progres</th>
-                                        <th style="text-align:center">Status</th>
-                                        <th>&nbsp;</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr ng-repeat="item in announcementFormVm.uploader.queue">
-                                        <td>
-                                            <strong>{{ item.file.name }}</strong>
-                                            <div ng-show="announcementFormVm.uploader.isHTML5" ng-thumb="{ file: item._file, height: 100 }"></div>
-                                        </td>
-                                        <td style="text-align:left;" ng-show="announcementFormVm.uploader.isHTML5" nowrap>{{ item.file.size/1024/1024|number:2 }} MB</td>
-                                        <td style="text-align:left;" ng-show="announcementFormVm.uploader.isHTML5">
-                                            <div class="progress" style="margin-bottom: 0;">
-                                                <div class="progress-bar" role="progressbar" ng-style="{ 'width': item.progress + '%' }"></div>
-                                            </div>
-                                        </td>
-                                        <td style="text-align:center" >
-                                            <span ng-show="item.isSuccess"><i class="glyphicon glyphicon-ok"></i></span>
-                                            <span ng-show="item.isCancel"><i class="glyphicon glyphicon-ban-circle"></i></span>
-                                            <span ng-show="item.isError"><i class="glyphicon glyphicon-remove"></i></span>
-                                        </td>
-                                        <td nowrap>
-                                            <span width="50px;"> &nbsp; </span>
-                                            <!--button type="button" class="btn btn-success btn-xs" ng-click="item.upload()" ng-disabled="item.isReady || item.isUploading || item.isSuccess">
-                                                <span class="glyphicon glyphicon-upload"></span> Postavi
-                                            </button-->
-                                            <!--button type="button" class="btn btn-warning btn-xs" ng-click="item.cancel()" ng-disabled="!item.isUploading">
-                                                <span class="glyphicon glyphicon-ban-circle"></span> Prekini
-                                            </button-->
-                                            <button type="button" class="btn btn-danger btn-xs" ng-click="item.remove()" ng-disabled="announcementFormVm.uploaded">
-                                                <span class="glyphicon glyphicon-trash"></span> Obriši
-                                            </button>
-                                        </td>
-                                    </tr>
-                                </tbody>
-                            </table>
+                            <div class="form-group">
+                                <div class="btn-group">
+                                    <label class="btn btn-primary" ng-model="announcementFormVm.announcement.type" uib-btn-radio="'buy'" uib-uncheckable="uncheckable">Kupovina</label>
+                                    <label class="btn btn-primary" ng-model="announcementFormVm.announcement.type" uib-btn-radio="'sell'" uncheckable>Prodaja</label>
+                                    <label class="btn btn-primary" ng-model="announcementFormVm.announcement.type" uib-btn-radio="'rent'" uncheckable>Iznajmljivanje</label>
+                                </div>
+                            </div>
 
-                            <div>
-                                <!--button type="button" class="btn btn-success btn-s" ng-click="announcementFormVm.uploader.uploadAll()" ng-disabled="!announcementFormVm.uploader.getNotUploadedItems().length">
-                                    <span class="glyphicon glyphicon-upload"></span> Postavi sve
-                                </button>
-                                <button type="button" class="btn btn-warning btn-s" ng-click="announcementFormVm.uploader.cancelAll()" ng-disabled="!announcementFormVm.uploader.isUploading">
-                                    <span class="glyphicon glyphicon-ban-circle"></span> Prekini sve
-                                </button-->
-                                <button type="button" class="btn btn-danger btn-s" ng-click="announcementFormVm.uploader.clearQueue()" ng-disabled="!announcementFormVm.uploader.queue.length || announcementFormVm.uploaded">
-                                    <span class="glyphicon glyphicon-trash"></span> Obriši sve
-                                </button>
+                            <div class="form-group">
+                                <div class="input-group">
+                                    <span class="input-group-addon" id="basic-addon1"> <i class="glyphicon glyphicon-earphone"></i></span>
+                                    <input type="text" ng-model="announcementFormVm.announcement.phoneNumber" placeholder="Broj telefona..." class="form-control"
+                                        id="ann-phone">
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <div class="input-group">
+                                    <span class="input-group-addon" id="basic-addon1"> <i class="glyphicon glyphicon-eur"></i></span>
+                                    <input type="number" ng-model="announcementFormVm.announcement.price" placeholder="Cena..." class="form-control" id="ann-phone">
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <p class="input-group">
+                                    <span class="input-group-addon" id="basic-addon1"> Važi do: </span>
+                                    <input type="text" class="form-control" uib-datepicker-popup="{{announcementFormVm.dateFormat}}" ng-model="announcementFormVm.announcement.expirationDate"
+                                        is-open="announcementFormVm.popup.opened" datepicker-options="announcementFormVm.dateOptions"
+                                        ng-required="true" close-text="Zatvori" clear-text="Obriši" alt-input-formats="announcementFormVm.altInputFormats"/>
+                                    <span class="input-group-btn">
+                                    <button type="button" class="btn btn-default" ng-click="announcementFormVm.open()"><i class="glyphicon glyphicon-calendar"></i></button>
+                                    </span>
+                                </p>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+                <div class="col-md-5 col-md-offset-1">
+                    <h4 style="margin-top:0px; margin-bottom:17px;"> Nekretnina </h4>
+
+                    <div style="text-align: center;" style="margin-top:20px; padding-top:15px;">
+                        <form role="form" ng-submit="">
+                            <div class="row">
+                                <div class="form-group col-xs-6">
+                                    <div class="input-group">
+                                        <span class="input-group-addon" id="basic-addon1"> <i class="glyphicon glyphicon-fullscreen"></i></span>
+                                        <input type="number" min="1" ng-model="announcementFormVm.announcement.realEstate.area" placeholder="Površina..." class="form-control" id="re-area">
+                                    </div>
+                                </div>
+
+                                <div class="form-group col-xs-6">
+                                    <div class="selectContainer input-group">
+                                        <span class="input-group-addon" id="basic-addon1"> <i class="glyphicon glyphicon-fire"></i></span>
+                                        <select class="form-control" name="role" ng-model="announcementFormVm.announcement.realEstate.heatingType">
+                                            <option value="Centralno">Centralno</option>
+                                            <option value="Daljinsko">Daljinsko</option>
+                                            <option value="Etažno">Etažno</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div class="btn-group">
+                                    <label class="btn btn-primary" ng-model="announcementFormVm.announcement.realEstate.type" uib-btn-radio="'home'" uib-uncheckable="uncheckable">Kuća</label>
+                                    <label class="btn btn-primary" ng-model="announcementFormVm.announcement.realEstate.type" uib-btn-radio="'flat'" uncheckable>Stan</label>
+                                    <label class="btn btn-primary" ng-model="announcementFormVm.announcement.realEstate.type" uib-btn-radio="'bussiness'" uncheckable>Poslovni prostor</label>
+                                    <label class="btn btn-primary" ng-model="announcementFormVm.announcement.realEstate.type" uib-btn-radio="'other'" uncheckable>Ostalo</label>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <div class="input-group">
+                                    <span class="input-group-addon" id="basic-addon1"> <i class="glyphicon glyphicon-globe"></i></span>
+                                    <input type="text" ng-model="announcementFormVm.announcement.realEstate.location.country" placeholder="Država..." class="form-control">
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="form-group col-xs-6">
+                                    <div class="input-group">
+                                        <span class="input-group-addon" id="basic-addon1"> <i class="glyphicon glyphicon-stats"></i></span>
+                                        <input type="text" ng-model="announcementFormVm.announcement.realEstate.location.city" placeholder="Grad..." class="form-control">
+                                    </div>
+                                </div>
+
+                                <div class="form-group col-xs-6">
+                                    <div class="input-group">
+                                        <span class="input-group-addon" id="basic-addon1"> <i class="glyphicon glyphicon-equalizer"></i></span>
+                                        <input type="text" ng-model="announcementFormVm.announcement.realEstate.location.cityRegion" placeholder="Region..." class="form-control">
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="row">
+                                <div class="form-group col-xs-8">
+                                    <div class="input-group">
+                                        <span class="input-group-addon" id="basic-addon1"> <i class="glyphicon glyphicon-map-marker"></i></span>
+                                        <input type="text" ng-model="announcementFormVm.announcement.realEstate.location.street" placeholder="Ulica..." class="form-control">
+                                    </div>
+                                </div>     
+                                <div class="form-group col-xs-4">
+                                    <div class="input-group">
+                                        <span class="input-group-addon" id="basic-addon1"> <i class="glyphicon glyphicon-road"></i></span>
+                                        <input type="text" ng-model="announcementFormVm.announcement.realEstate.location.streetNumber" placeholder="Broj..." class="form-control">
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="form-group" style="margin-bottom:0px;">
+                                <div class="input-group">
+                                    <h5 style="margin-top:0px; margin-top:5px; float:left"> Tehnička opremljenost </h5>
+                                </div>
+                            </div>
+
+                            <div class="row">                        
+                                <div class="form-group col-xs-5 col-xs-offset-1" style="float:left !important; text-align:left;">
+                                    <div class="checkbox">
+                                        <label><input type="checkbox" value="">Interfon</label>
+                                    </div>
+                                    <div class="checkbox">
+                                        <label><input type="checkbox" value="">Telefon</label>
+                                    </div>
+                                    <div class="checkbox">
+                                        <label><input type="checkbox" value="">Kablovska</label>
+                                    </div>
+                                </div>
+
+                                <div class="form-group col-xs-5 col-xs-offset-1" style="float:left !important; text-align:left;">
+                                    <div class="checkbox">
+                                        <label><input type="checkbox" value="">Internet</label>
+                                    </div>
+                                    <div class="checkbox">
+                                        <label><input type="checkbox" value="">Klima</label>
+                                    </div>
+                                    <div class="checkbox">
+                                        <label><input type="checkbox" value="">Video nadzor</label>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="row" style="text-align:center; margin-bottom:20px;">
+                <button type="button" style="margin-right:25px;" class="btn btn-default" wz-reset >Odustani</button>
+                <button type="button" style="margin-left:25px;"class="btn btn-default" ng-click="announcementFormVm.getSimilarRealEstates()" >Nastavi
+                    <span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span>    
+                </button>
+            </div>
+        </wz-step>
+        <wz-step wz-title="Slične nekretnine" wz-disabled="{{announcementFormVm.similarsDisabled}}">
+            <div class="container">
+                <h3 style="margin-top:0px; margin-bottom:10px;">Slične nekretnine</h3>
+                <h5> Naš sistem je prepoznao slične nekretnine. Ukoliko se neka od njih podudara sa vašom, kliknite na istu da biste je selektovali. </h5>
+                <div class="row form-group product-chooser">
+                    <div class="col-xs-12 col-sm-12 col-md-4 col-lg-4" ng-repeat="realEstate in announcementFormVm.similars">
+                        <div ng-class="{ 'selected' : announcementFormVm.chosenSimilarRealEstateId == realEstate.id, 'product-chooser-item': true }"  ng-click="announcementFormVm.chooseSimilarRealEstate(realEstate.id);">
+                            <img ng-src="http://localhost:8091/api/real-estates/{{realEstate.id}}/image" class="img-rounded col-xs-4 col-sm-4 col-md-12 col-lg-12" alt="Real Estate" style="height:170pt !important;">
+                            <div class="col-xs-8 col-sm-8 col-md-12 col-lg-12"> 
+                                <span class="title">{{realEstate.name}}</span>
+                                <span class="description"> 
+                                    <table>
+                                        <tr>
+                                            <td valign="top"><span class="glyphicon glyphicon-map-marker" style="float:left;">&nbsp;</span></td>
+                                            <td valign="bottom">{{realEstate.location.street}}&nbsp;{{realEstate.location.streetNumber}},&nbsp;{{realEstate.location.cityRegion}},&nbsp;{{realEstate.location.city}},&nbsp;{{realEstate.location.country}}</td>
+                                        </tr>
+                                        <tr>
+                                            <td valign="top"><span class="glyphicon glyphicon-fullscreen" style="float:left;">&nbsp;</span></td>
+                                            <td valign="bottom">{{realEstate.area}}</td>
+                                        </tr>
+                                        <tr>
+                                            <td valign="top"><span class="glyphicon glyphicon-fire" style="float:left;">&nbsp;</span></td>
+                                            <td valign="bottom">{{realEstate.heatingType}}</td>
+                                        </tr>
+                                    </table>
+                                </span>
+                                <input type="radio" name="product" value="mobile_desktop" checked="checked">
+                            </div>
+                            <div class="clear"></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row" style="text-align:center; margin-bottom:20px;">
+                    <button type="button" style="margin-right:25px;" class="btn btn-default" wz-previous >
+                        <span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span> Prethodna    
+                    </button>
+                    <button type="button" style="margin-left:25px;"class="btn btn-default" wz-next> &nbsp;Nastavi&nbsp;
+                        <span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span>    
+                    </button>
+                </div>
+                
+            </div>
+        </wz-step>
+        <wz-step wz-title="Slike" nv-file-drop="" uploader="announcementFormVm.uploader">
+            <div class="row" style="text-align: center;">
+                <div class="col-md-10 col-md-offset-1" style="text-align: center;" style="margin-top:20px; padding-top:15px;">
+                    <div ng-show="announcementFormVm.uploader.isHTML5" style="background: #EEEEEE;">
+                        <div class="well my-drop-zone" nv-file-over="" style="height:125px; vertical-align:center; border-style: dashed; border-width:2px; border-color:#BBBBBB; position:relative"
+                            uploader="announcementFormVm.uploader">
+                            <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);">
+                                <img src="assets/img/arrow.jpg" width="30px" height="35px">
+                                <p style="font-size:12pt">Prevucite i spustite slike kako biste ih dodali.</p>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
-        </div>
-    </div>
+
+            <div class="row" style="text-align: center;">
+                <div class="col-md-10 col-md-offset-1" style="text-align: center;" style="margin-top:20px; padding-top:15px;">
+                    <div style="margin-bottom: 40px">
+                        <div>
+                            Status slanja:
+                            <div class="progress" style="">
+                                <div class="progress-bar" role="progressbar" ng-style="{ 'width': announcementFormVm.uploader.progress + '%' }"></div>
+                            </div>
+                        </div>
+                        <p>Ukupan broj: {{ announcementFormVm.uploader.queue.length }}</p>
+
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th width="50%">Naziv</th>
+                                    <th ng-show="announcementFormVm.uploader.isHTML5">Veličina</th>
+                                    <th ng-show="announcementFormVm.uploader.isHTML5">Progres</th>
+                                    <th style="text-align:center">Status</th>
+                                    <th>&nbsp;</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr ng-repeat="item in announcementFormVm.uploader.queue">
+                                    <td>
+                                        <strong>{{ item.file.name }}</strong>
+                                        <div ng-show="announcementFormVm.uploader.isHTML5" ng-thumb="{ file: item._file, height: 100 }"></div>
+                                    </td>
+                                    <td style="text-align:left;" ng-show="announcementFormVm.uploader.isHTML5" nowrap>{{ item.file.size/1024/1024|number:2 }} MB</td>
+                                    <td style="text-align:left;" ng-show="announcementFormVm.uploader.isHTML5">
+                                        <div class="progress" style="margin-bottom: 0;">
+                                            <div class="progress-bar" role="progressbar" ng-style="{ 'width': item.progress + '%' }"></div>
+                                        </div>
+                                    </td>
+                                    <td style="text-align:center" >
+                                        <span ng-show="item.isSuccess"><i class="glyphicon glyphicon-ok"></i></span>
+                                        <span ng-show="item.isCancel"><i class="glyphicon glyphicon-ban-circle"></i></span>
+                                        <span ng-show="item.isError"><i class="glyphicon glyphicon-remove"></i></span>
+                                    </td>
+                                    <td nowrap>
+                                        <span width="50px;"> &nbsp; </span>
+                                        <!--button type="button" class="btn btn-success btn-xs" ng-click="item.upload()" ng-disabled="item.isReady || item.isUploading || item.isSuccess">
+                                            <span class="glyphicon glyphicon-upload"></span> Postavi
+                                        </button-->
+                                        <!--button type="button" class="btn btn-warning btn-xs" ng-click="item.cancel()" ng-disabled="!item.isUploading">
+                                            <span class="glyphicon glyphicon-ban-circle"></span> Prekini
+                                        </button-->
+                                        <button type="button" class="btn btn-danger btn-xs" ng-click="item.remove()" ng-disabled="announcementFormVm.uploaded">
+                                            <span class="glyphicon glyphicon-trash"></span> Obriši
+                                        </button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+
+                        <div>
+                            <!--button type="button" class="btn btn-success btn-s" ng-click="announcementFormVm.uploader.uploadAll()" ng-disabled="!announcementFormVm.uploader.getNotUploadedItems().length">
+                                <span class="glyphicon glyphicon-upload"></span> Postavi sve
+                            </button>
+                            <button type="button" class="btn btn-warning btn-s" ng-click="announcementFormVm.uploader.cancelAll()" ng-disabled="!announcementFormVm.uploader.isUploading">
+                                <span class="glyphicon glyphicon-ban-circle"></span> Prekini sve
+                            </button-->
+                            <button type="button" class="btn btn-danger btn-s" ng-click="announcementFormVm.uploader.clearQueue()" ng-disabled="!announcementFormVm.uploader.queue.length || announcementFormVm.uploaded">
+                                <span class="glyphicon glyphicon-trash"></span> Obriši sve
+                            </button>
+                        </div>
+                    </div>                          
+                </div>
+            </div>
+            
+            <div class="row" style="text-align:center; margin-bottom:20px;">
+                <button type="button" style="margin-right:25px;" class="btn btn-default" wz-previous >
+                    <span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span> Prethodna    
+                </button>
+                <button type="button" style="margin-left:25px;"class="btn btn-default" wz-finish> &nbsp;&nbsp;&nbsp;&nbsp; Završi &nbsp;&nbsp;&nbsp;&nbsp;</button>
+            </div>
+        </wz-step>
+    </wizard>
 </div>
