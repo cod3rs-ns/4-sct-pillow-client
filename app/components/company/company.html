@@ -1,7 +1,7 @@
 <div class="container">
     <div class="row" id="company-cover">
         <div class="col-md-3 col-md-offset-1 col-xs-6 col-xs-offset-3">
-            <img src="https://images.designtrends.com/wp-content/uploads/2016/03/25063640/Real-Estate-Company-Logo.png" alt="..." class="img-thumbnail img-company-profile">
+            <img ng-src="{{companyVm.company.imagePath}}" alt="..." class="img-thumbnail img-company-profile">
 
             <div class="company-contact-container" style="margin-top:7px; width:100%">
                 <div class="company-info">
@@ -28,9 +28,9 @@
             <div class="carousel slide thumbnail" data-ride="carousel" style="color:black; margin-top:50px;" id="quote-carousel">
                 <!-- Bottom Carousel Indicators -->
                 <ol class="carousel-indicators">
-                    <li data-target="#quote-carousel" data-slide-to="0" class="active"></li>
-                    <li data-target="#quote-carousel" data-slide-to="1"></li>
-                    <li data-target="#quote-carousel" data-slide-to="2"></li>
+                    <li data-target="#quote-carousel" ng-if="companyVm.topThree.length > 1" data-slide-to="0" class="active"></li>
+                    <li data-target="#quote-carousel" ng-if="companyVm.topThree.length > 1" data-slide-to="1"></li>
+                    <li data-target="#quote-carousel" ng-if="companyVm.topThree.length > 2" data-slide-to="2"></li>
                 </ol>
 
                 <!-- Carousel Slides / Top three announcements -->
@@ -40,8 +40,7 @@
                         <div style="margin-top:10px;">
                             <div class="row">
                                 <div class="col-sm-3 text-center">
-                                    <img class="img-circle" src="https://smallhousebliss.files.wordpress.com/2016/02/smallworks-cypress-laneway-house-exterior-via-smallhousebliss.jpg"
-                                        style="width: 100px;height:100px;">
+                                    <img class="img-circle" ng-src="{{companyVm.topThree[0].images[0].imagePath}}" style="width: 100px;height:100px;">
                                 </div>
                                 <div class="col-sm-9">
                                     <h2 style="margin-top: 5px; height:70px;">
@@ -51,7 +50,7 @@
                                     </h2>
                                     <div style="text-align:left;">
                                         <span class="glyphicon glyphicon-map-marker" style="float:left; color:#5bc0de;">&nbsp;</span>
-                                        <p>{{companyVm.topThree[0].realEstate.location.cityRegion}},&nbsp;{{companyVm.topThree[0].realEstate.location.city}}</p>
+                                        <p>{{companyVm.topThree[0].realEstate.location.street}},&nbsp;{{companyVm.topThree[0].realEstate.location.streetNumber}},&nbsp;{{companyVm.topThree[0].realEstate.location.city}}</p>
                                         <span class="glyphicon glyphicon-eur" style="float:left; color:#5bc0de;">&nbsp;</span>
                                         <p>{{companyVm.topThree[0].price}}</p>
                                         <div style="text-align: right">
@@ -64,11 +63,11 @@
                         </div>
                     </div>
                     <!-- Item 2 -->
-                    <div class="item">
+                    <div class="item" ng-if="companyVm.topThree.length > 1">
                         <div style="margin-top:10px;">
                             <div class="row">
                                 <div class="col-sm-3 text-center">
-                                    <img class="img-circle" src="https://smallhousebliss.files.wordpress.com/2016/02/smallworks-cypress-laneway-house-exterior-via-smallhousebliss.jpg"
+                                    <img class="img-circle" ng-src="{{companyVm.topThree[1].images[0].imagePath}}"
                                         style="width: 100px;height:100px;">
                                 </div>
                                 <div class="col-sm-9">
@@ -92,12 +91,11 @@
                         </div>
                     </div>
                     <!-- Item 3 -->
-                    <div class="item">
+                    <div class="item" ng-if="companyVm.topThree.length > 2">
                         <div style="margin-top:10px;">
                             <div class="row">
                                 <div class="col-sm-3 text-center">
-                                    <img class="img-circle" src="https://smallhousebliss.files.wordpress.com/2016/02/smallworks-cypress-laneway-house-exterior-via-smallhousebliss.jpg"
-                                        style="width: 100px;height:100px;">
+                                    <img class="img-circle" ng-src="{{companyVm.topThree[2].images[0].imagePath}}" style="width: 100px;height:100px;">
                                 </div>
                                 <div class="col-sm-9">
                                     <h2 style="margin-top: 5px; height:70px;">
@@ -122,8 +120,8 @@
                 </div>
 
                 <!-- Carousel Buttons Next/Prev -->
-                <a data-slide="prev" data-target="#quote-carousel" class="left carousel-control"><i class="fa fa-chevron-left"></i></a>
-                <a data-slide="next" data-target="#quote-carousel" class="right carousel-control"><i class="fa fa-chevron-right"></i></a>
+                <a data-slide="prev" data-target="#quote-carousel" ng-show="companyVm.topThree.length > 1" class="left carousel-control"><i class="fa fa-chevron-left"></i></a>
+                <a data-slide="next" data-target="#quote-carousel" ng-show="companyVm.topThree.length > 1" class="right carousel-control"><i class="fa fa-chevron-right"></i></a>
             </div>
         </div>
     </div>

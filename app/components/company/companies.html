@@ -3,7 +3,7 @@
         <div class="col-xs-12 col-md-6 announcement-home-outside" ng-repeat="company in vm.companies">
             <div class="row announcement-home-inside">
                 <div class="col-xs-4">
-                    <img src="http://www.genaw.com/linda/translucent_supplies/translucent_mask3.png" width="100%" class="thumbnail" />
+                    <img ng-src="{{company.imagePath}}" width="100%" class="thumbnail" />
                 </div>
                 <div class="col-xs-8">
                     <div class="row">
