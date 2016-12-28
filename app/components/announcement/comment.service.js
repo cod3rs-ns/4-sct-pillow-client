@@ -10,7 +10,9 @@
     function commentService($http, CONFIG) {
         var service = {
           getCommentsForAnnouncement: getCommentsForAnnouncement,
-          addComment: addComment
+          addComment: addComment,
+          updateComment: updateComment,
+          deleteComment: deleteComment
         };
 
         return service;
@@ -24,6 +26,20 @@
 
         function addComment(comment) {
             return $http.post(CONFIG.SERVICE_URL + '/comments', comment)
+              .then(function (response) {
+                  return response;
+              });
+        };
+
+        function updateComment(comment) {
+            return $http.put(CONFIG.SERVICE_URL + '/comments', comment)
+              .then(function (response) {
+                  return response;
+              });
+        };
+
+        function deleteComment(id) {
+            return $http.delete(CONFIG.SERVICE_URL + '/comments/' + id)
               .then(function (response) {
                   return response;
               });

@@ -5,11 +5,12 @@ angular
     function starRating() {
         return {
             restrict : 'A',
-                template : '<ul class="rating"><li ng-repeat="star in stars" ng-class="star" ng-click="toggle($index)">*</li></ul>',
+                template : '<ul class="rating"><li ng-repeat="star in stars" ng-class="star" ng-click="toggle($index)"><span class="glyphicon glyphicon-star" aria-hidden="true"></span></li></ul>',
             scope : {
-                ratingValue : '=',
+                ratingValue : '=ngModel',
                 max : '=',
-                onRatingSelected : '&'
+                onRatingSelect : '&?',
+                readonly: '=?'
             },
 
             link : function(scope, elem, attrs) {
@@ -21,8 +22,10 @@ angular
                 };
 
                 scope.toggle = function(index) {
-                    scope.ratingValue = index + 1;
-                    scope.onRatingSelected( { rating : index + 1 });
+                    if (scope.readonly == undefined || scope.readonly === false) {
+                        scope.ratingValue = index + 1;
+                        scope.onRatingSelect( { rating : index + 1 });
+                    }
                 };
 
                 scope.$watch('ratingValue', function(oldVal, newVal) {

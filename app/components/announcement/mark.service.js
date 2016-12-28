@@ -11,7 +11,8 @@
         var service = {
           getMarksForAnnouncement: getMarksForAnnouncement,
           getMarksForAnnouncer: getMarksForAnnouncer,
-          vote: vote
+          vote: vote,
+          updateVote: updateVote
         };
 
         return service;
@@ -32,6 +33,13 @@
 
         function vote(mark) {
             return $http.post(CONFIG.SERVICE_URL + '/marks', mark)
+              .then(function (response) {
+                  return response;
+              });
+        };
+
+        function updateVote(mark) {
+            return $http.put(CONFIG.SERVICE_URL + '/marks', mark)
               .then(function (response) {
                   return response;
               });
