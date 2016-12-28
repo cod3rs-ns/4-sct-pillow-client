@@ -5,9 +5,9 @@
         .module('awt-cts-client')
         .controller('AnnouncementFormController', AnnouncementFormController);
 
-    AnnouncementFormController.$inject = ['$scope', '$state', '$window', '$log', '_', 'FileUploader', 'announcementService', 'WizardHandler', 'CONFIG'];
+    AnnouncementFormController.$inject = ['$scope', '$state', '$localStorage', '$log', '_', 'FileUploader', 'announcementService', 'WizardHandler', 'CONFIG'];
 
-    function AnnouncementFormController($scope, $state, $window, $log, _, FileUploader, announcementService, WizardHandler, CONFIG) {
+    function AnnouncementFormController($scope, $state, $localStorage, $log, _, FileUploader, announcementService, WizardHandler, CONFIG) {
 
         var announcementFormVm = this;
 
@@ -133,12 +133,10 @@
             ];
         }
 
-        // Upload images
-        var token = $window.localStorage.getItem('AUTH_TOKEN');
         var uploader = announcementFormVm.uploader = new FileUploader({
             url: CONFIG.SERVICE_URL + '/images/announcements/',
             headers: {
-                "X-Auth-Token": token
+                "X-Auth-Token": $localStorage.token
             }
         });
 

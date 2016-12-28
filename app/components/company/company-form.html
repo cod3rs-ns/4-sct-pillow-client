@@ -1,9 +1,18 @@
+<!-- Typeahead template-->
+<script type="text/ng-template" id="customTemplate.html">
+    <a width="100%">
+        <img ng-src="{{match.model.imagePath}}" width="25" height="25">
+        <span ng-bind-html="match.model.firstName" style="margin-left:15px;"></span>
+        <span ng-bind-html="match.model.lastName" style="margin-left:2px;"></span>
+    </a>
+</script>
+
 <div class="container" style="margin-top:25px; margin-bottom:20px;">
     <div class="row" style="text-align: center;">
-        <div class="col-md-3 col-md-offset-2 col-xs-5" style="text-align: center;">
+        <div class="col-md-3 col-md-offset-2" style="text-align: center;">
             <img class="thumbnail" ng-src="{{companyFormVm.image_source}}" height="250px" width="250px"/>
         </div>
-        <div class="col-md-5 col-xs-7" style="text-align: center;" style="margin-top:20px; padding-top:15px;">
+        <div class="col-md-5 col-md-offest-1" style="text-align: center;" style="margin-top:20px; padding-top:15px;">
             <form role="form" ng-submit="companyFormVm.addCompany();" class="registration-form">
                 <div class="form-group">
                     <div class="input-group">
@@ -26,25 +35,43 @@
                     </div>
                 </div>
 
-                <div class="input-group image-preview">
-                    <input type="text" ng-model="companyFormVm.fileName" class="form-control image-preview-filename" disabled="disabled">
-                    <!-- don't give a name === doesn't send on POST/GET -->
-                    <span class="input-group-btn">
-                    <!-- image-preview-clear button -->
-                    <button type="button" ng-click="companyFormVm.clearFile();" ng-show="companyFormVm.clearHide" class="btn btn-default image-preview-clear">
-                        <span class="glyphicon glyphicon-remove"></span> Obriši
-                    </button>
-                    <!-- image-preview-input -->
-                    <div class="btn btn-default image-preview-input">
-                        <span class="glyphicon glyphicon-folder-open"></span>
-                        <span class="image-preview-input-title">{{companyFormVm.btnName}}</span>
-                        <input type="file" accept="image/png, image/jpeg, image/gif" name="input-file-preview" custom-on-change="companyFormVm.uploadFile;"/>
-                        <!-- rename it -->
+                <div class="form-group">
+                    <div class="input-group">
+                        <input type="text" ng-model="companyFormVm.fileName" class="form-control image-preview-filename" disabled="disabled">
+                        <!-- don't give a name === doesn't send on POST/GET -->
+                        <span class="input-group-btn">
+                        <!-- image-preview-clear button -->
+                        <button type="button" ng-click="companyFormVm.clearFile();" ng-show="companyFormVm.clearHide" class="btn btn-default image-preview-clear">
+                            <span class="glyphicon glyphicon-remove"></span> Obriši
+                        </button>
+                        <!-- image-preview-input -->
+                        <div class="btn btn-default image-preview-input">
+                            <span class="glyphicon glyphicon-folder-open"></span>
+                            <span class="image-preview-input-title">{{companyFormVm.btnName}}</span>
+                            <div ng-if="companyFormVm.uploader">
+                                <input type="file" accept="image/png, image/jpeg, image/gif" nv-file-select uploader="companyFormVm.uploader" multiple/>
+                            </div>
+                        </div>
+                        </span>
                     </div>
-                    </span>
+                </div>
+                <div class="row">
+                    <div class="form-group col-xs-6">
+                        <div class="input-group">
+                            <span class="input-group-addon" id="basic-addon1"> <i class="glyphicon glyphicon-user"></i></span>
+                            <input type="text" ng-model="companyFormVm.selectedItem" placeholder="Unesite ime i prezime korisnika" uib-typeahead="user for user in companyFormVm.getUsers($viewValue)" 
+                                typeahead-loading="loadingLocations" typeahead-no-results="noResults" typeahead-template-url="customTemplate.html" typeahead-on-select="companyFormVm.onSelectedUserCallback($item, $model, $label)" class="form-control">
+                        </div>
+                    </div>
+                    <div class="form-group col-xs-6">
+                        <div class="input-group">
+                            <span class="input-group-addon" id="basic-addon1"> <i class="glyphicon glyphicon-envelope"></i></span>
+                            <input type="text" ng-model="companyFormVm.selectedUser.username" class="form-control" disabled>
+                        </div>
+                    </div>
                 </div>
 
-                <button type="submit" class="btn btn-success" style="margin-top:18px;">Kreiraj agenciju</button>
+                <button type="submit" class="btn btn-success" style="margin-top:18px; float:right">Kreiraj agenciju</button>
             </form>
         </div>
     </div>
