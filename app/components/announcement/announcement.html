@@ -8,9 +8,10 @@
                 <div class="col-md-4">
                 </div>
             </div>
-            <h1><span class="label label-primary">{{announcementVm.announcement.type}}</span> {{announcementVm.announcement.realEstate.name}} <span class="glyphicon glyphicon-ok-circle pull-right color-success"></span></h1>
+            <h1><span class="label label-primary">{{announcementVm.announcement.type}}</span> {{announcementVm.announcement.realEstate.name}} <span ng-show="announcementVm.announcement.verified == '1'" class="glyphicon glyphicon-ok-circle pull-right color-success"></span></h1>
             <h3>{{announcementVm.announcement.address}}</h3>
-            <div class="star-rating" star-rating rating-value="3" data-max="5" on-rating-selected="announcementVm.voteAnnouncement(value)"></div>
+            <div class="star-rating" ng-model="announcementVm.rating.announcement" readonly="!announcementVm.isAnnouncementMarkEnabled" data-max="5" star-rating on-rating-select="announcementVm.voteAnnouncement(rating)"></div>
+            <div>{{announcementVm.votes.announcement.average}}/5</div>
             <hr/>
             <div class="row">
                 <div class="col-md-3 col-sm-6">
@@ -31,7 +32,7 @@
                 <div class="col-md-3 col-sm-6">
                     <span class="glyphicon glyphicon-fullscreen"></span>
                     Površina
-                    <p class="announcement-info">{{announcementVm.announcement.realEstate.area}}m<sup>2</sup></p>
+                    <p class="announcement-info">{{announcementVm.announcement.realEstate.area}} m<sup>2</sup></p>
                 </div>
             </div>
             <hr/>
@@ -56,7 +57,8 @@
                 <img src="http://img.uefa.com/imgml/TP/players/9/2016/324x324/93649.jpg" alt="..." width="96px" height="96px" class="img-circle" style="margin-top: 5px;">
                 <h4>{{announcementVm.announcement.author.firstName + ' ' + announcementVm.announcement.author.lastName}}</h4>
                 <p>{{announcementVm.announcement.author.email}}</p>
-                <div class="star-rating" star-rating rating-value="3" data-max="5" on-rating-selected="announcementVm.voteAnnouncer(value)"></div>
+                <div>{{announcementVm.votes.announcer.average}}/5</div>
+                <div star-rating class="star-rating" ng-model="announcementVm.rating.announcer" readonly="!announcementVm.isAnnouncerMarkEnabled" max="5" on-rating-select="announcementVm.voteAnnouncer(rating)"></div>
                 <span ng-if="announcementVm.announcement.author.companyVerified" class="label label-success">Verifikovan</span>
                 <p><i class="glyphicon glyphicon-earphone"></i>{{announcementVm.announcement.author.telephoneNo}}</p>
             </div>
@@ -83,14 +85,26 @@
             <div class="media-body">
                 <h5 class="media-heading">{{comment.author.name}}</h5>
                 <h6>Objavljen: {{comment.date | date:'dd. MM. yyyy.'}}</h6>
-                {{comment.content}}
+                <div class="row">
+                    <div class="col-md-11">
+                        <p>{{comment.content}}</p>
+                    </div>
+                    <div class="col-md-1">
+                        <button type="button" class="btn btn-primary" ng-show="comment.isMy" ng-click="announcementVm.editComment()">
+                            <span class="glyphicon glyphicon-pencil pull-right"></span>
+                        </button>
+                        <button type="button" class="btn btn-danger" ng-show="comment.isMy" ng-click="announcementVm.deleteComment(comment.id)">
+                            <span class="glyphicon glyphicon-remove pull-right"></span>
+                        </button>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
 
     <h2>Ostavi komentar</h2>
     <textarea id="comment" class="form-control" rows="5" ng-model="announcementVm.comment"></textarea>
-    <button type="button" class="btn btn-primary" ng-click="announcementVm.addComment();">
+    <button type="button" class="btn btn-primary pull-right" style="margin-top: 10px;" ng-click="announcementVm.addComment();">
         Ostavi komentar
     </button>
 </div>

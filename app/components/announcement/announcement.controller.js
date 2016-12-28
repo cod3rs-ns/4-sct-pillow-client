@@ -5,9 +5,9 @@
         .module('awt-cts-client')
         .controller('AnnouncementController', AnnouncementController);
 
-    AnnouncementController.$inject = ['$stateParams', '$log', '_', 'announcementService', 'commentService', 'markService'];
+    AnnouncementController.$inject = ['$stateParams', '$log', '$localStorage', '_', 'announcementService', 'commentService', 'markService'];
 
-    function AnnouncementController($stateParams, $log, _, announcementService, commentService, markService) {
+    function AnnouncementController($stateParams, $log, $localStorage, _, announcementService, commentService, markService) {
         var announcementVm = this;
 
         announcementVm.announcement = {};
@@ -15,10 +15,30 @@
         announcementVm.address = null;
         announcementVm.comments = [];
         announcementVm.comment = null;
+        announcementVm.vote = {
+          'announcer': null,
+          'announcement': null
+        };
+        announcementVm.rating = {
+          'announcer': -1,
+          'announcement': -1
+        };
+        announcementVm.votes = {
+          'announcer': {
+              'average': 0,
+              'count': 0
+          },
+          'announcement': {
+              'average': 0,
+              'count': 0
+          }
+        };
 
         announcementVm.getAnnouncement = getAnnouncement;
         announcementVm.initMap = initMap;
         announcementVm.addComment = addComment;
+        announcementVm.updateComment = updateComment;
+        announcementVm.deleteComment = deleteComment;
         announcementVm.voteAnnouncer = voteAnnouncer;
         announcementVm.voteAnnouncement = voteAnnouncement;
 
@@ -41,48 +61,75 @@
                     commentService.getCommentsForAnnouncement(announcementId)
                         .then(function(response) {
                              _.forEach(response.data, function(comment) {
+
+                                var isMy = false;
+                                if (comment.author !== null) {
+                                    var author = {
+                                      'name': comment.author.firstName + ' ' + comment.author.lastName,
+                                      'image': "http://img.uefa.com/imgml/TP/players/3/2016/324x324/250063984.jpg"
+                                    }
+
+                                    isMy = $localStorage.user === comment.author.username;
+                                    $log.log(isMy);
+                                }
+                                else {
+                                    var author = {
+                                      'name': 'Gost na sajtu',
+                                      'image': "http://megaicons.net/static/img/icons_sizes/8/178/512/user-role-guest-icon.png"
+                                    }
+                                }
+
                                 announcementVm.comments.push(
                                   {
+                                    'id': comment.id,
                                     'content': comment.content,
                                     'date': comment.date,
-                                    'author':
-                                        {
-                                            'name': comment.author.firstName + ' ' + comment.author.lastName,
-                                            'image': "http://img.uefa.com/imgml/TP/players/3/2016/324x324/250063984.jpg"
-                                        }
+                                    'author': author,
+                                    'isMy': isMy
                                   }
                                 );
                              });
                         });
 
+                    var role = $localStorage.role;
+
                     markService.getMarksForAnnouncement(announcementId)
                         .then(function (response) {
-                            $log.log(response.data);
-                            announcementVm.announcementAvg = _.meanBy(
-                                _.filter(response.data,
-                                  function(mark) {
-                                    return mark.gradedAnnouncer == null;
-                                  }),
-
-                                function(mark) {
+                            announcementVm.votes.announcement.average = _.meanBy(response.data, function(mark) {
                                   return mark.value;
-                                });
+                                }) || 0;
+
+                            $log.log(announcementVm.votes.announcement.average);
+
+                            announcementVm.votes.announcement.count = _.size(response.data) || 0;
+                            $log.log(announcementVm.votes.announcement.count);
+
+                            var myVote = _.find(response.data, function(o) { return o.grader.username === $localStorage.user; });
+                            var exist = _.size(myVote) !== 0;
+
+                            announcementVm.vote.announcement = myVote;
+
+                            announcementVm.rating.announcement = (exist) ? myVote.value : -1;
+                            announcementVm.isAnnouncementMarkEnabled = (role === 'advertiser' || role === 'verifier'); // && !exist;
                         });
 
                     markService.getMarksForAnnouncer(announcementVm.announcement.author.id)
                         .then(function (response) {
-                            $log.log(response.data);
-                            announcementVm.announcerAvg = _.meanBy(
-                                _.filter(response.data,
-                                  function(mark) {
-                                    return mark.announcement == null;
-                                  }),
-
-                                function(mark) {
+                            announcementVm.votes.announcer.average = _.meanBy(response.data, function(mark) {
                                   return mark.value;
-                                });
+                                }) || 0;
+                            $log.log(announcementVm.votes.announcer.average);
 
-                            $log.log(announcementVm.announcerAvg);
+                            announcementVm.votes.announcer.count = _.size(response.data) || 0;
+                            $log.log(announcementVm.votes.announcer.count);
+
+                            var myVote = _.find(response.data, function(o) { return o.grader.username === $localStorage.user; });
+                            var exist = _.size(myVote) !== 0;
+
+                            announcementVm.vote.announcer = myVote;
+
+                            announcementVm.rating.announcer = (exist) ? myVote.value : -1;
+                            announcementVm.isAnnouncerMarkEnabled = (role === 'advertiser' || role === 'verifier'); // && !exist;
                         });
                 });
         }
@@ -122,44 +169,124 @@
 
             commentService.addComment(comment)
                 .then(function(response) {
+                    announcementVm.comment = "";
                     var comment = response.data;
+
+                    var author;
+                    var isMy = false;
+                    if (comment.author !== null) {
+                        author = {
+                            'name': comment.author.firstName + ' ' + comment.author.lastName,
+                            'image': "http://img.uefa.com/imgml/TP/players/3/2016/324x324/250063984.jpg"
+                        }
+                        isMy = $localStorage.user === comment.author.username;
+                    }
+                    else {
+                        author = {
+                            'name': 'Gost na sajtu',
+                            'image': "http://megaicons.net/static/img/icons_sizes/8/178/512/user-role-guest-icon.png"
+                        }
+                    }
 
                     announcementVm.comments.push(
                       {
+                        'id': comment.id,
                         'content': comment.content,
                         'date': comment.date,
-                        'author':
-                            {
-                                'name': comment.author.firstName + ' ' + comment.author.lastName,
-                                'image': "http://img.uefa.com/imgml/TP/players/3/2016/324x324/250063984.jpg"
-                            }
+                        'author': author,
+                        'isMy': isMy
                       });
                 });
         }
 
-        function voteAnnouncement(value) {
-            var mark = {};
+        function updateComment(comment) {
+          comment.date = _.now();
 
-            mark.announcement = { 'id': _.toInteger($stateParams.announcementId) };
-            mark.value = _.toInteger(value);
-
-            markService.vote(mark)
-                .then(function(response) {
-                    $log.log(response.data);
-                });
+          commentService.addComment(comment)
+              .then(function(response) {
+                  announcementVm.comment = "";
+              });
         }
 
-        function voteAnnouncer(value) {
+        function deleteComment(id) {
+          commentService.deleteComment(id)
+              .then(function(response) {
+                  _.remove(announcementVm.comments, function(comment) {
+                      return comment.id == id;
+                  });
+              });
+        }
+
+        function voteAnnouncement(rating) {
             var mark = {};
 
-            mark.gradedAnnouncer = { 'id': _.toInteger(announcementVm.announcement.author.id) };
-            mark.value = _.toInteger(value);
+            if (announcementVm.vote.announcement === undefined) {
+                mark.announcement = { 'id': _.toInteger($stateParams.announcementId) };
+                mark.value = _.toInteger(rating);
 
-            markService.vote(mark)
-                .then(function(response) {
-                    $log.log(response.data);
-                });
+                markService.vote(mark)
+                    .then(function(response) {
+                        announcementVm.vote.announcement = response.data;
+
+                        var val = response.data.value;
+                        var cnt = announcementVm.votes.announcement.count;
+                        var avg = announcementVm.votes.announcement.average;
+                        announcementVm.votes.announcement.average = (avg*cnt + val)/(cnt + 1);
+                        ++announcementVm.votes.announcement.count;
+                    });
+            }
+            else {
+                mark = announcementVm.vote.announcement;
+                var oldVal = mark.value;
+                mark.value = _.toInteger(rating);
+
+                markService.updateVote(mark)
+                    .then(function(response) {
+                        announcementVm.vote.announcement = response.data;
+
+                        var val = response.data.value;
+                        var cnt = announcementVm.votes.announcement.count;
+                        var avg = announcementVm.votes.announcement.average;
+                        announcementVm.votes.announcement.average = (avg*cnt + val - oldVal)/(cnt);
+                    });
+            }
+        }
+
+        function voteAnnouncer(rating) {
+            var mark = {};
+
+            if (announcementVm.vote.announcer === undefined) {
+                mark.gradedAnnouncer = { 'id': _.toInteger(announcementVm.announcement.author.id) };
+                mark.value = _.toInteger(rating);
+
+                markService.vote(mark)
+                    .then(function(response) {
+                        announcementVm.vote.announcer = response.data;
+
+                        var val = response.data.value;
+                        var cnt = announcementVm.votes.announcer.count;
+                        var avg = announcementVm.votes.announcer.average;
+                        announcementVm.votes.announcer.average = (avg*cnt + val)/(cnt + 1);
+                        ++announcementVm.votes.announcer.count;
+                    });
+            }
+            else {
+                mark = announcementVm.vote.announcer;
+                var oldVal = mark.value;
+                mark.value = _.toInteger(rating);
+
+                markService.updateVote(mark)
+                    .then(function(response) {
+                        announcementVm.vote.announcer = response.data;
+
+                        var val = response.data.value;
+                        var cnt = announcementVm.votes.announcer.count;
+                        var avg = announcementVm.votes.announcer.average;
+                        announcementVm.votes.announcer.average = (avg*cnt + val - oldVal)/(cnt);
+                    });
+            }
         }
 
     }
+
 })();
