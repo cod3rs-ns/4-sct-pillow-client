@@ -20,7 +20,7 @@
                 Vaši oglasi &nbsp;<span class="badge alert-info"> {{userVm.announcements.length}}</span>
             </uib-tab-heading>
             <div class="container">
-                <div class="col-xs-12 col-md-6 announcement-home-outside" ng-repeat="announcement in userVm.announcements">
+                <div class="col-xs-12 col-md-6 announcement-home-outside" ng-repeat="announcement in userVm.announcements track by $index">
                     <div class="row announcement-home-inside">
                         <div class="col-md-4 col-xs-4">
                             <img    ng-src={{announcement.images[0].imagePath}}
@@ -36,18 +36,33 @@
                             <p class="color-warning">istekao pre 100 godina.</p>
                             <div class="row">
                                 <div class="form-group pull-right col-md-10 col-xs-10">
-                                    <p class="input-group">
-                                        <span class="input-group-addon" id="basic-addon1"> Produži do: </span>
-                                        <input type="text" class="form-control" uib-datepicker-popup="{{announcementFormVm.dateFormat}}" ng-model="announcement.expirationDate"
-                                            is-open="announcementFormVm.popup.opened" datepicker-options="announcementFormVm.dateOptions"
-                                            ng-required="true" close-text="Zatvori" clear-text="Obriši" alt-input-formats="announcementFormVm.altInputFormats"/>
+                                    <div class="input-group">
+                                        <span class="input-group-addon"> Produži do: </span>
+                                        <input  type="text" class="form-control"
+                                                ng-model="announcement.expirationDate"
+                                                uib-datepicker-popup="{{userVm.pickerConfigurations[$index].format}}"
+                                                is-open="userVm.pickerConfigurations[$index].popup.opened" 
+                                                datepicker-options="userVm.pickerConfigurations[$index].dateOptions"
+                                                alt-input-formats="userVm.pickerConfigurations[$index].altInputFormats"
+                                                ng-required="true"
+                                                close-text="Zatvori"
+                                                clear-text="Obriši"
+                                                current-text="Danas"/>
                                         <span class="input-group-btn">
-                                        <button type="button" class="btn btn-default" ng-click="announcementFormVm.open()"><i class="glyphicon glyphicon-calendar"></i></button>
-                                    </span>
-                                    </p>
+                                            <button type="button" class="btn btn-default" 
+                                                    ng-click="userVm.pickerConfigurations[$index].open();"
+                                                    uib-tooltip="Otvori kalendar" tooltip-placement="top">
+                                                <i class="glyphicon glyphicon-calendar"></i>
+                                            </button>
+                                            <button type="button" class="btn btn-success" 
+                                                    ng-click="userVm.extendExpirationDate(announcement.id, announcement.expirationDate);"
+                                                    uib-tooltip="Produži rok" tooltip-placement="top">
+                                                <i class="glyphicon glyphicon-chevron-right"></i>
+                                            </button>
+                                        </span>
+                                    </div>
                                 </div>
                             </div>
-                            
                         </div>
                     </div>
                 </div>
