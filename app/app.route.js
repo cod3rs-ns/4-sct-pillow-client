@@ -8,11 +8,8 @@ angular
       'ui.bootstrap',
       'angularFileUpload',
       'angular-jwt',
-<<<<<<< HEAD
-      'mgo-angular-wizard'
-=======
+      'mgo-angular-wizard',
       'ngToast'
->>>>>>> company-business
     ])
     .factory('_', ['$window',
        function($window) {
@@ -29,11 +26,9 @@ angular
     .config(function($stateProvider, $urlRouterProvider, $httpProvider) {
 
       // http://stackoverflow.com/questions/39931983/angularjs-possible-unhandled-rejection-when-using-ui-router
-<<<<<<< HEAD
+
       // $qProvider.errorOnUnhandledRejections(false);
-=======
-      //$qProvider.errorOnUnhandledRejections(false);
->>>>>>> company-business
+
 
       // For any unmatched url, redirect to /home
       $urlRouterProvider.otherwise("/home");

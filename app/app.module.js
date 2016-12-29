@@ -8,9 +8,6 @@ angular
         'ui.bootstrap',
         'angularFileUpload',
         'angular-jwt',
-<<<<<<< HEAD
-        'mgo-angular-wizard'
-=======
+        'mgo-angular-wizard',
         'ngToast'
->>>>>>> company-business
     ]);
