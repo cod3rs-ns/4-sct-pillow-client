@@ -16,9 +16,10 @@
 
     <!-- Font awesome library-->
     <link href="/assets/libs/components-font-awesome/css/font-awesome.min.css" rel="stylesheet">
-
+    <!-- Angular wizard CSS -->
     <link href="assets/libs/angular-wizard/dist/angular-wizard.min.css" rel="stylesheet">
-
+    <!-- ngToast CSS -->
+    <link rel="stylesheet" href="assets/libs/ngToast/dist/ngToast.min.css">
     <!-- Custom styles for this template -->
     <link href="assets/css/starter.css" rel="stylesheet">
     <link href="assets/css/login.css" rel="stylesheet">
@@ -40,17 +41,16 @@
 
     <!-- Angular JWT Helper -->
     <script src="assets/libs/angular-jwt/dist/angular-jwt.js"></script>
-
     <!-- ngStorage -->
     <script src="assets/libs/ngstorage/ngStorage.min.js"></script>
-
+    <!-- Angular file upload library dependency - image upload feature -->
     <script src="assets/libs/angular-file-upload/dist/angular-file-upload.js"></script>
-
     <!-- Lodash library dependency -->
     <script src="assets/libs/lodash/dist/lodash.min.js"></script>
-
     <!-- Wizard library dependency -->
     <script src="assets/libs/angular-wizard/dist/angular-wizard.min.js"></script>
+    <!-- ngToast library for displaying notifications -->
+    <script src="assets/libs/ngToast/dist/ngToast.min.js"></script>
 
     <!-- Google maps -->
     <script async defer
@@ -68,12 +68,12 @@
             ng-include="'app/shared/header/header.html'"
             ng-controller="HeaderController as headerVm">
     </header>
-
+    <toast style="margin-top: 54px;"></toast>
     <section id="main" ui-view="content"></section>
-
     <footer id="footer"
             ng-include="'app/shared/footer/footer.html'"
-            ng-controller="FooterController as footerVm"></footer>
+            ng-controller="FooterController as footerVm">
+    </footer>
 
     <!-- ======================= Angular  components ======================= -->
     <script src="app/app.module.js"></script>
@@ -92,6 +92,7 @@
     <script src="app/utils/link-parser.service.js"></script>
     <script src="app/utils/pagination.constants.js"></script>
     <script src="app/utils/pagination.service.js"></script>
+    <script src="app/utils/date-picker.service.js"></script>
     <script src="app/components/real-estate/real-estate.controller.js"></script>
     <script src="app/components/real-estate/real-estate.service.js"></script>
     <script src="app/components/real-estate/real-estate.state.js"></script>

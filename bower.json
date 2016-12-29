@@ -35,6 +35,7 @@
     "ngstorage": "^0.3.11",
     "lodash": "^4.17.3",
     "angular-bootstrap-toggle": "^0.1.2",
-    "angular-wizard": "^0.10.0"
+    "angular-wizard": "^0.10.0",
+    "ngToast": "ngtoast#^2.0.0"
   }
 }

@@ -2,9 +2,9 @@ angular
     .module('awt-cts-client')
     .service('companyService', companyService);
 
-companyService.$inject = ['$http', 'CONFIG'];
+companyService.$inject = ['$http', 'CONFIG', '$log'];
 
-function companyService($http, CONFIG) {
+function companyService($http, CONFIG, $log) {
     var pageStatuses = {
         userPage: 1,
         announcementPage: 1
@@ -21,7 +21,9 @@ function companyService($http, CONFIG) {
         setAnnouncementPage: setAnnouncementPage,
         getTopThreeByCompanyId: getTopThreeByCompanyId,
         createCompany: createCompany,
-        findUsers: findUsers
+        findUsers: findUsers,
+        getUserRequestsByStatusPending: getUserRequestsByStatusPending,
+        resolveMembershipRequest: resolveMembershipRequest
     };
 
     return service;
@@ -97,7 +99,38 @@ function companyService($http, CONFIG) {
             });
     }
 
-    function getUserPage() {
+    /**
+     * Gets {User} objects whose company request status have value 'pending'
+     * TODO - should this kind of get request have PAGEABLE parameter??
+     * 
+     * @returns response
+     */
+    function getUserRequestsByStatusPending() {
+        return $http.get(CONFIG.SERVICE_URL + '/companies/users-requests/' + '?status=pending' + '&page=0')
+            .then(function succesfullCallback(response){
+                return response;
+            }, function errorCallback(response) {
+                $log.error("Unable to retreive users with pending requests.");
+                return response;
+            });
+    };
+
+    /**
+     * Resolves {User} request to join company.
+     * @param {integer} userId      ID of the user which status will be resolved
+     * @param {boolean} accepted    Flag - true if request will be accepted, false otherwise
+     */
+    function resolveMembershipRequest(userId, accepted) {
+        return $http.put(CONFIG.SERVICE_URL + '/companies/resolve-request/user/' + userId + '?accepted=' + accepted)
+            .then(function successCallback(response){
+                return response;
+            }, function errorCallback(response) {
+                $log.error("Unable to resolve membership request.")
+                return response;
+            });
+    };
+
+    function getUserPage(){
         return pageStatuses.userPage;
     }
 
