@@ -1,17 +1,172 @@
 <div class="container">
-      <div class="col-xs-12 col-md-6 announcement-home-outside" ng-repeat="announcement in homeVm.announcements">
-          <div class="row announcement-home-inside">
-              <div class="col-xs-4">
-                  <img ng-src="{{announcement.images[0].imagePath}}" width="100%" class="thumbnail"/>
+      <div class="row">
+          <div class="col-xs-12 col-md-3">
+              <!-- Sekcija za pretragu po tipu -->
+              <div class="search-category">
+                  <h4>Tip oglasa</h4>
+                  <div class="row">
+                      <a class="reset-link pull-right" ng-click="homeVm.resetSearchByType()">Poništi odabir</a>
+                  </div>
+                  <div class="radio">
+                      <label><input type="radio" ng-model="homeVm.search.type" name="type" value="rent">Iznajmljivanje</label>
+                  </div>
+                  <div class="radio">
+                      <label><input type="radio" ng-model="homeVm.search.type" name="type" value="sell">Prodaja</label>
+                  </div>
+                  <div class="radio">
+                      <label><input type="radio" ng-model="homeVm.search.type" name="type" value="buy">Kupovina</label>
+                  </div>
               </div>
-              <div class="col-xs-8">
-                  <h4>{{announcement.realEstate.name}}</h4>
-                  <p>{{announcement.author.firstName + ' ' + announcement.author.lastName}}</p>
-                  <p>{{announcement.telephoneNo}}</p>
-                  <a ui-sref="announcement({announcementId: announcement.id})" type="button" class="btn btn-primary pull-right">Prikaži detalje</a>
+
+              <!-- Sekcija za pretragu po oglasavacu -->
+              <div class="search-category">
+                  <h4>Oglašavač</h4>
+                  <!-- Ime oglašavača -->
+                  <div class="form-group">
+                      <div class="input-group">
+                          <span class="input-group-addon" id="basic-addon1"> <i class="glyphicon glyphicon-user"></i></span>
+                          <input type="text" ng-model="homeVm.search.authorName" placeholder="Ime..." class="form-control">
+                      </div>
+                  </div>
+                  <!-- Prezime oglašavača -->
+                  <div class="form-group">
+                      <div class="input-group">
+                          <span class="input-group-addon" id="basic-addon1"> <i class="glyphicon glyphicon-user"></i></span>
+                          <input type="text" ng-model="homeVm.search.authorSurname" placeholder="Prezime..." class="form-control">
+                      </div>
+                  </div>
+                  <!-- Broj oglašavača -->
+                  <div class="form-group">
+                      <div class="input-group">
+                          <span class="input-group-addon" id="basic-addon1"> <i class="glyphicon glyphicon-earphone"></i></span>
+                          <input type="text" ng-model="homeVm.search.phoneNumber" placeholder="Broj telefona..." class="form-control">
+                      </div>
+                  </div>
               </div>
+
+              <!-- Sekcija za pretragu po lokaciji -->
+              <div class="search-category ignore-bottom-radius">
+                  <h4>Lokacija</h4>
+                  <!-- Drzava nekretnine koja se pominje u oglasu -->
+                  <div class="form-group">
+                      <div class="input-group">
+                          <span class="input-group-addon" id="basic-addon1"> <i class="glyphicon glyphicon-globe"></i></span>
+                          <input type="text" ng-model="homeVm.search.country" placeholder="Država..." class="form-control">
+                      </div>
+                  </div>
+                  <!-- Grad nekretnine koja se pominje u oglasu -->
+                  <div class="form-group">
+                      <div class="input-group">
+                          <span class="input-group-addon" id="basic-addon1"> <i class="glyphicon glyphicon-stats"></i></span>
+                          <input type="text" ng-model="homeVm.search.city" placeholder="Grad..." class="form-control">
+                      </div>
+                  </div>
+                  <!-- Naziv ulice -->
+                  <div class="form-group">
+                      <div class="input-group">
+                          <span class="input-group-addon" id="basic-addon1"> <i class="glyphicon glyphicon-equalizer"></i></span>
+                          <input type="text" ng-model="homeVm.search.cityRegion" placeholder="Regija..." class="form-control">
+                      </div>
+                  </div>
+                  <!-- Prezime oglašavača -->
+                  <div class="form-group">
+                      <div class="input-group">
+                          <span class="input-group-addon" id="basic-addon1"> <i class="glyphicon glyphicon-map-marker"></i></span>
+                          <input type="text" ng-model="homeVm.search.street" placeholder="Ulica..." class="form-control">
+                      </div>
+                  </div>
+                  <!-- Broj oglašavača -->
+                  <div class="form-group">
+                      <div class="input-group">
+                          <span class="input-group-addon" id="basic-addon1"> <i class="glyphicon glyphicon-road"></i></span>
+                          <input type="text" ng-model="homeVm.search.streetNumber" placeholder="Broj..." class="form-control">
+                      </div>
+                  </div>
+              </div>
+              <button class="btn btn-primary map-chooser">Odaberite na mapi</button>
+
+              <!-- Sekcija za pretragu po cijeni -->
+              <div class="search-category">
+                  <h4>Cijena</h4>
+                  <!-- Minimalna cijena -->
+                  <div class="form-group">
+                      <div class="input-group">
+                          <span class="input-group-addon" id="basic-addon1"> <i class="glyphicon glyphicon-eur"></i></span>
+                          <input type="number" min="0" ng-model="homeVm.search.startPrice" placeholder="Od..." class="form-control">
+                      </div>
+                  </div>
+                  <!-- Maksimalna cijena -->
+                  <div class="form-group">
+                      <div class="input-group">
+                          <span class="input-group-addon" id="basic-addon1"> <i class="glyphicon glyphicon-eur"></i></span>
+                          <input type="number" min="0" ng-model="homeVm.search.endPrice" placeholder="Do..." class="form-control">
+                      </div>
+                  </div>
+              </div>
+
+              <!-- Sekcija za pretragu po kvadraturi -->
+              <div class="search-category">
+                  <h4>Kvadratura</h4>
+                  <!-- Minimalna površina nekretnine -->
+                  <div class="form-group">
+                      <div class="input-group">
+                          <span class="input-group-addon" id="basic-addon1"> <i class="glyphicon glyphicon-fullscreen"></i></span>
+                          <input type="number" min="0" ng-model="homeVm.search.startArea" placeholder="Od..." class="form-control">
+                      </div>
+                  </div>
+                  <!-- Maksimalna površina nekretnine -->
+                  <div class="form-group">
+                      <div class="input-group">
+                          <span class="input-group-addon" id="basic-addon1"> <i class="glyphicon glyphicon-fullscreen"></i></span>
+                          <input type="number" min="0" ng-model="homeVm.search.endArea" placeholder="Do..." class="form-control">
+                      </div>
+                  </div>
+              </div>
+
+              <!-- Sekcija za pretragu po dodatnim informacijama -->
+              <div class="search-category">
+                  <h4>Dodatne informacije</h4>
+                  <!-- Naziv nekretnine -->
+                  <div class="form-group">
+                      <div class="input-group">
+                          <span class="input-group-addon" id="basic-addon1"> <i class="glyphicon glyphicon-font"></i></span>
+                          <input type="text" ng-model="homeVm.search.name" placeholder="Naziv nekretnine..." class="form-control">
+                      </div>
+                  </div>
+                  <h5>Tip grijanja</h5>
+                  <div class="row">
+                      <a class="reset-link pull-right" ng-click="homeVm.resetSearchByHeating()">Poništi odabir</a>
+                  </div>
+                  <div class="radio">
+                      <label><input type="radio" name="heatingType" value="val1">Centralno</label>
+                  </div>
+                  <div class="radio">
+                      <label><input type="radio" name="heatingType" value="val2">Daljinsko</label>
+                  </div>
+                  <div class="radio">
+                      <label><input type="radio" name="heatingType" value="val3">Etažno</label>
+                  </div>
+              </div>
+
+              <!-- Search button -->
+              <button class="btn btn-success" ng-click="homeVm.find()">Pretraži</button>
+
+          </div>
+          <div class="col-xs-12 col-md-9">
+              <div class="announcement-home-outside" ng-repeat="announcement in homeVm.announcements">
+                  <div class="row announcement-home-inside">
+                      <div class="col-xs-4">
+                          <img ng-src="{{announcement.images[0].imagePath}}" width="100%" class="thumbnail"/>
+                      </div>
+                      <div class="col-xs-8">
+                          <h4>{{announcement.realEstate.name}}</h4>
+                          <p>{{announcement.author.firstName + ' ' + announcement.author.lastName}}</p>
+                          <p>{{announcement.telephoneNo}}</p>
+                          <a ui-sref="announcement({announcementId: announcement.id})" type="button" class="btn btn-primary pull-right">Prikaži detalje</a>
+                      </div>
+                  </div>
+              </div>
+              <ul style="text-align: center;" uib-pagination class="pagination-sm" total-items="homeVm.totalItems" items-per-page="homeVm.itemsPerPage" ng-model="homeVm.page" ng-change="homeVm.transition()"></ul>
           </div>
       </div>
-
-      <ul uib-pagination class="pagination-sm" total-items="homeVm.totalItems" items-per-page="homeVm.itemsPerPage" ng-model="homeVm.page" ng-change="homeVm.transition()"></ul>
 </div>
