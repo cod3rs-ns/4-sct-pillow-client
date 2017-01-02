@@ -112,6 +112,12 @@ ul.rating {
   height: 20pt;
 }
 
+.search-category input[type="number"] {
+  margin-top: 0px;
+  font-size: 10pt;
+  height: 20pt;
+}
+
 .map-chooser {
   width: 100%;
   border-top-left-radius: 0px;
