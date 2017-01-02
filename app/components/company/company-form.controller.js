@@ -18,9 +18,9 @@
         companyFormVm.submitForm = submitForm;
         companyFormVm.update = update;
 
-        initialize();
+        activate();
 
-        function initialize() {
+        function activate() {
             companyFormVm.btnName = "Pretraži"
             companyFormVm.clearHide = false;
             companyFormVm.state = $state.current.name;
