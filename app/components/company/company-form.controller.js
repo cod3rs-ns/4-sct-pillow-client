@@ -11,17 +11,35 @@
 
         var companyFormVm = this;
 
-        companyFormVm.company = {};
-        companyFormVm.fileName = "";
-        companyFormVm.image_source = "http://www.genaw.com/linda/translucent_supplies/translucent_mask3.png";
-        companyFormVm.btnName = "Pretraži"
-        companyFormVm.clearHide = false;
-
-        companyFormVm.addCompany = addCompany;
         companyFormVm.clearFile = clearFile;
         companyFormVm.uploadFile = uploadFile;
         companyFormVm.onSelectedUserCallback = onSelectedUserCallback;
         companyFormVm.getUsers = getUsers;
+        companyFormVm.submitForm = submitForm;
+        companyFormVm.update = update;
+
+        initialize();
+
+        function initialize() {
+            companyFormVm.btnName = "Pretraži"
+            companyFormVm.clearHide = false;
+            companyFormVm.state = $state.current.name;
+
+            if (companyFormVm.state == 'addCompany') {
+                companyFormVm.company = {};
+                companyFormVm.fileName = "";
+                companyFormVm.imageSource = "http://www.genaw.com/linda/translucent_supplies/translucent_mask3.png";
+                companyFormVm.submitBtnName = 'Dodaj agenciju';
+            }
+            else {
+                companyFormVm.submitBtnName = 'Izmeni agenciju';
+                companyService.getCompanyById($stateParams.companyId)
+                    .then(function (response) {
+                        companyFormVm.company = response.data;
+                        companyFormVm.imageSource = response.data.imagePath;
+                    });
+            }
+        }
 
         // Upload images
         var uploader = companyFormVm.uploader = new FileUploader({
@@ -50,14 +68,28 @@
 
         uploader.onSuccessItem = function (fileItem, response, status, headers) {
             companyFormVm.company.imagePath = response;
-            companyFormVm.company.users = [companyFormVm.selectedUser];
-            companyService.createCompany(companyFormVm.company)
+            if (companyFormVm.state == 'addCompany') {
+                companyFormVm.company.users = [companyFormVm.selectedUser];
+                companyService.createCompany(companyFormVm.company)
+                    .then(function (response) {
+                        $state.transitionTo("company", {
+                            companyId: response.data.id
+                        });
+                    });
+            }
+            else {
+                companyFormVm.update();
+            }
+        };
+
+        function update() {
+            companyService.updateCompany(companyFormVm.company)
                 .then(function (response) {
                     $state.transitionTo("company", {
                         companyId: response.data.id
                     });
                 });
-        };
+        }
 
         function uploadFile() {
             companyFormVm.currentFile = event.target.files[0];
@@ -68,7 +100,7 @@
                 companyFormVm.clearHide = true;
                 companyFormVm.fileName = companyFormVm.currentFile.name;
 
-                companyFormVm.image_source = e.target.result;
+                companyFormVm.imageSource = e.target.result;
                 $scope.$apply();
             }
 
@@ -81,12 +113,8 @@
             companyFormVm.btnName = "Pretraži";
             companyFormVm.clearHide = false;
             companyFormVm.fileName = "";
-            companyFormVm.image_source = "http://www.genaw.com/linda/translucent_supplies/translucent_mask3.png";
+            companyFormVm.imageSource = "http://www.genaw.com/linda/translucent_supplies/translucent_mask3.png";
             uploader.queue = [];
-        }
-
-        function addCompany() {
-            uploader.uploadItem(uploader.queue[0]);
         }
 
         function getUsers(val) {
@@ -100,6 +128,14 @@
         function onSelectedUserCallback($item, $model, $label) {
             companyFormVm.selectedUser = $item
             companyFormVm.selectedItem = $item.firstName + " " + $item.lastName;
+        };
+
+        function submitForm() {
+            if (uploader.queue.length == 0 && companyFormVm.state == 'updateCompany') {
+                companyFormVm.update();
+            } else {
+                uploader.uploadItem(uploader.queue[0]);
+            }
         };
     }
 })();

@@ -5,9 +5,9 @@
         .module('awt-cts-client')
         .controller('CompanyController', CompanyController);
 
-    CompanyController.$inject = ['$scope', '$state', '$stateParams', 'companyService', 'announcementService'];
+    CompanyController.$inject = ['$scope', '$state', '$localStorage', '$stateParams', 'companyService', 'announcementService'];
 
-    function CompanyController($scope, $state, $stateParams, companyService, announcementService) {
+    function CompanyController($scope, $state, $localStorage, $stateParams, companyService, announcementService) {
 
         var companyVm = this;
 
@@ -25,6 +25,8 @@
                 pause: true,
                 interval: 4000,
             });
+
+            companyVm.showUpdateBtn = $localStorage.role == 'admin';
 
             companyVm.getTopThree($stateParams.companyId);
             companyVm.getCompany($stateParams.companyId);
