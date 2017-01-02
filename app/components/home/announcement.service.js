@@ -12,7 +12,8 @@ function announcementService($http, CONFIG, $log) {
         getSimilarRealEstates: getSimilarRealEstates,
         getRealEstateImage: getRealEstateImage,
         getAnnouncementsByAuthor: getAnnouncementsByAuthor,
-        extendExpirationDate: extendExpirationDate
+        extendExpirationDate: extendExpirationDate,
+        searchAnnouncements: searchAnnouncements
     };
 
     return service;
@@ -63,10 +64,10 @@ function announcementService($http, CONFIG, $log) {
             });
     };
 
-    
+
     /**
      * Retrieves all announcemnts by specified Author ID.
-     * 
+     *
      * @param {integer} authorId    ID of the announcements author
      * @returns response
      */
@@ -82,7 +83,7 @@ function announcementService($http, CONFIG, $log) {
 
     /**
      * Extends announcement Expiration Date to provided value.
-     * 
+     *
      * @param {any} annId           ID of the announcement
      * @param {any} expirationMap   Map containging pair expirationDate:dateValue -> format dd/MM/yyyy
      * @returns response
@@ -95,6 +96,22 @@ function announcementService($http, CONFIG, $log) {
             }, function errorCallback(response) {
                 $log.warn("Operation unsuccessful beacuse of: " + response.headers('X-SCT-ALERT'));
                 throw response.headers('X-SCT-ALERT');
+            });
+    };
+
+    /**
+     * Search announcements by defined search parameters.
+     *
+     * @param {string} searchTerm   HTTP format of parameters for search -> key1=value1&key2=value2 ...
+     * @returns list of found announcements
+     */
+    function searchAnnouncements(searchTerm) {
+        return $http.get(CONFIG.SERVICE_URL + '/announcements/search?' + searchTerm)
+            .then(function onSuccess(response) {
+                return response;
+            },
+            function onError(response) {
+                return response;
             });
     };
 }

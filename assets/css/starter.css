@@ -10,10 +10,12 @@ body {
 .announcement-home-outside {
   background-color: #fff;
   padding: 4px !important;
+  margin-top: 2px;
 }
 
 .announcement-home-inside {
   background-color: #eee;
+  border-radius: 4px;
   margin: 4px;
 }
 
@@ -95,4 +97,54 @@ ul.rating {
 
 .rating .filled {
   color: #f0ad4e;
+}
+
+.search-category {
+  background-color: #eee;
+  padding: 8px 16px;
+  margin-top: 10px;
+  border-radius: 4px;
+}
+
+.search-category input[type="text"] {
+  margin-top: 0px;
+  font-size: 10pt;
+  height: 20pt;
+}
+
+.search-category input[type="number"] {
+  margin-top: 0px;
+  font-size: 10pt;
+  height: 20pt;
+}
+
+.map-chooser {
+  width: 100%;
+  border-top-left-radius: 0px;
+  border-top-right-radius: 0px;
+}
+
+.search-category .input-group-addon {
+  font-size: 8pt;
+  background-color: #ddd;
+}
+
+.ignore-bottom-radius {
+  border-bottom-left-radius: 0px;
+  border-bottom-right-radius: 0px;
+}
+
+.reset-link {
+  font-size: 9pt;
+  padding-right: 8px;
+}
+
+.search-category > h4 {
+  margin-top: -8px;
+  margin-right: -16px;
+  margin-left: -16px;
+  background-color: #d5d5d5;
+  padding: 4px 8px;
+  border-top-left-radius: 4px;
+  border-top-right-radius: 4px;
 }
