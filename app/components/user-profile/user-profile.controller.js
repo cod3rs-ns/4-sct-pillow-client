@@ -26,13 +26,32 @@
         activate();
 
         function activate() {
-            announcementService.getAnnouncementsByAuthor(1)
+            // set Serbian locale for momment.js
+            moment.locale('sr');
+
+            announcementService.getAnnouncementsByAuthorAndStatus(1, false)
                 .then(function (response){
                     userVm.announcements = response.data;
-                    _.forEach(userVm.announcements, function() {
+                    _.forEach(userVm.announcements, function(value) {
+                        // create color picker configurations
                         userVm.pickerConfigurations.push(DatePickerService.getConfiguration());
+                        
+                        // user-friendly expiration date information
+                        var momentExpDate = moment(new Date(value.expirationDate));
+                        value.expiredMessage = momentExpDate.fromNow();
+                        if (momentExpDate.isAfter(moment())) {
+                            value.expirationClass = 'color-success';
+                            // check if expiration date is close (by 7 days)                        
+                            if (moment(new Date(value.expirationDate)).subtract(7, 'days').isBefore(moment())){
+                                value.expirationClass = 'color-warning';
+                            };
+                        }
+                        else {
+                            value.expirationClass = 'color-danger';
+                        };
                     });
                 });
+                
             companyService.getUserRequestsByStatusPending()
                 .then(function (response) {
                     userVm.usersRequests = response.data;

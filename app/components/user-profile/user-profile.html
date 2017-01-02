@@ -34,7 +34,7 @@
                             <a style="font-size: 150%;" ui-sref="announcement({announcementId: announcement.id})">{{announcement.realEstate.name}}</a>
                             <p> {{announcement.realEstate.location.city + ', ' + announcement.realEstate.location.country}}</p>
                             <p> objavljen: {{announcement.dateAnnounced | date:'dd-MM-yyyy' }}</p>
-                            <p class="color-warning">istekao pre 100 godina.</p>
+                            <p class="{{announcement.expirationClass}}"><span style="color: black">Vreme isticanja: </span><strong>{{announcement.expiredMessage}}</strong></p>
                             <div class="row">
                                 <div class="form-group pull-right col-md-10 col-xs-10">
                                     <div class="input-group">
