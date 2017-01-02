@@ -23,7 +23,8 @@ function companyService($http, CONFIG, $log) {
         createCompany: createCompany,
         findUsers: findUsers,
         getUserRequestsByStatusPending: getUserRequestsByStatusPending,
-        resolveMembershipRequest: resolveMembershipRequest
+        resolveMembershipRequest: resolveMembershipRequest,
+        updateCompany: updateCompany
     };
 
     return service;
@@ -130,6 +131,18 @@ function companyService($http, CONFIG, $log) {
             });
     };
 
+
+    function updateCompany(company){
+        return $http.put(CONFIG.SERVICE_URL + '/companies', company)
+            .then(function successCallback(response){
+                console.log(response);
+                return response;
+            }, function errorCallback(response) {
+                $log.error("Unable to update company.")
+                return response;
+            });
+    }
+
     function getUserPage(){
         return pageStatuses.userPage;
     }
@@ -145,4 +158,5 @@ function companyService($http, CONFIG, $log) {
     function setAnnouncementPage(announcementPage) {
         pageStatuses.announcementPage = announcementPage;
     }
+
 }

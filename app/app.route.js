@@ -90,7 +90,7 @@ angular
         .state('company', {
           url: "/company/:companyId",
           data: {
-                pageTitle: 'Podaci o oglasu'
+                pageTitle: 'Podaci o agenciji'
             },
             views: {
                 'content@': {
@@ -104,6 +104,19 @@ angular
           url: "/addCompany",
           data: {
                 pageTitle: 'Dodavanje agencije'
+            },
+            views: {
+                'content@': {
+                    templateUrl: "app/components/company/company-form.html",
+                    controller: "CompanyFormController",
+                    controllerAs: "companyFormVm"
+                }
+            }
+        })
+        .state('updateCompany', {
+          url: "/updateCompany/:companyId",
+          data: {
+                pageTitle: 'Izmena agencije'
             },
             views: {
                 'content@': {

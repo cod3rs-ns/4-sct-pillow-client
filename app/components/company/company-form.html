@@ -10,10 +10,10 @@
 <div class="container" style="margin-top:25px; margin-bottom:20px;">
     <div class="row" style="text-align: center;">
         <div class="col-md-3 col-md-offset-2" style="text-align: center;">
-            <img class="thumbnail" ng-src="{{companyFormVm.image_source}}" height="250px" width="250px"/>
+            <img class="thumbnail" ng-src="{{companyFormVm.imageSource}}" height="250px" width="250px"/>
         </div>
         <div class="col-md-5 col-md-offest-1" style="text-align: center;" style="margin-top:20px; padding-top:15px;">
-            <form role="form" ng-submit="companyFormVm.addCompany();" class="registration-form">
+            <form role="form" class="registration-form">
                 <div class="form-group">
                     <div class="input-group">
                         <span class="input-group-addon" id="basic-addon1"> <i class="glyphicon glyphicon-home"></i></span>
@@ -55,7 +55,7 @@
                         </span>
                     </div>
                 </div>
-                <div class="row">
+                <div class="row" ng-if="companyFormVm.state=='addCompany'">
                     <div class="form-group col-xs-6">
                         <div class="input-group">
                             <span class="input-group-addon" id="basic-addon1"> <i class="glyphicon glyphicon-user"></i></span>
@@ -71,7 +71,7 @@
                     </div>
                 </div>
 
-                <button type="submit" class="btn btn-success" style="margin-top:18px; float:right">Kreiraj agenciju</button>
+                <button type="button" class="btn btn-success" ng-click="companyFormVm.submitForm();" style="margin-top:18px; float:right">{{companyFormVm.submitBtnName}}</button>
             </form>
         </div>
     </div>
