@@ -200,11 +200,17 @@
         }
 
         function updateComment(comment) {
-          comment.date = _.now();
 
-          commentService.addComment(comment)
+          comment.announcement = { 'id': _.toInteger($stateParams.announcementId) };
+          comment.date = _.now();
+          comment.content = announcementVm.editedComment;
+
+          delete comment.isMy;
+
+          commentService.updateComment(comment)
               .then(function(response) {
-                  announcementVm.comment = "";
+                  comment.isMy = true;
+                  announcementVm.editing = undefined;
               });
         }
 
