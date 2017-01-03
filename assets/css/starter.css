@@ -19,12 +19,17 @@ body {
   margin: 4px;
 }
 
-.announcement-home-inside > .col-xs-4 {
+.announcement-home-inside > .col-md-4 {
   margin-top: 16px;
 }
 
-.announcement-home-inside > .col-xs-8 {
+.announcement-home-inside > .col-md-8 {
   margin-top: 16px;
+}
+
+.announcement-home-inside img {
+  width: 256px;
+  height: 192px;
 }
 
 .color-success {
@@ -143,7 +148,7 @@ ul.rating {
   padding-right: 8px;
 }
 
-.search-category > h4 {
+.search-category > uib-accordion-heading {
   margin-top: -8px;
   margin-right: -16px;
   margin-left: -16px;
@@ -151,4 +156,30 @@ ul.rating {
   padding: 4px 8px;
   border-top-left-radius: 4px;
   border-top-right-radius: 4px;
+}
+
+.home-info-header {
+  display: block;
+}
+
+.home-info-header > p {
+  font-size: 14pt;
+}
+
+.home-info-header > span {
+  float: left;
+  width: 32px;
+  font-size: 12pt;
+  margin-top: 4px;
+}
+
+.home-info-body {
+  display: block;
+  font-size: 12pt;
+  margin-top: -10px
+}
+
+.btn-search {
+  width: 100%;
+  margin-top: 8px;
 }
