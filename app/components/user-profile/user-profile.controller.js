@@ -5,11 +5,12 @@
         .module('awt-cts-client')
         .controller('UserProfileController', UserProfileController);
 
-    UserProfileController.$inject = ['companyService', 'announcementService', 'ngToast', 'DatePickerService', '_'];
+    UserProfileController.$inject = ['companyService', 'announcementService', 'ngToast', 'DatePickerService', '_', 'userService', '$stateParams', '$localStorage'];
 
-    function UserProfileController(companyService, announcementService, ngToast, DatePickerService, _) {
+    function UserProfileController(companyService, announcementService, ngToast, DatePickerService, _, userService, $stateParams, $localStorage) {
         var userVm = this;
-
+        /** User for whom Profile page is displayed */
+        userVm.user = {};
         /** List containing all active users requests to join company */
         userVm.usersRequests = [];
 
@@ -19,6 +20,7 @@
         /** List containing DatePicker popup configurations for every announcement */
         userVm.pickerConfigurations = [];
 
+        /** Public functions */
         userVm.acceptRequest = acceptRequest;
         userVm.rejectRequest = rejectRequest;
         userVm.extendExpirationDate = extendExpirationDate;
@@ -28,8 +30,42 @@
         function activate() {
             // set Serbian locale for momment.js
             moment.locale('sr');
+            
+            userService.getUser($stateParams.username)
+                .then(function (response){
+                    userVm.user = response.data;
+                    if (userVm.user.type === 'advertiser') {
+                        getAnnouncements();
+                    }
+                    // determine if user profile is for logged-in user
+                    if ($stateParams.username === $localStorage.user) {
+                        if (userVm.user.type === 'advertiser') {
+                            companyService.getUserRequestsByStatusPending()
+                            .then(function (response) {
+                                userVm.usersRequests = response.data;
+                            });
+                        }
+                        userVm.loggedin = true;
+                    }
+                    else {
+                        userVm.loggedin = false;
+                    };
+                })
+                .catch(function (error) {
+                     ngToast.create({
+                        className: 'danger',
+                        content: '<p>Ne postoji korisnik <strong>' + $stateParams.username + '</strong>.</p>'
+                    });
+                });
+        };
 
-            announcementService.getAnnouncementsByAuthorAndStatus(1, false)
+
+        /**
+         * -private-
+         * Retrieves announcements for active user.
+         */
+        function getAnnouncements() {
+            announcementService.getAnnouncementsByAuthorAndStatus(userVm.user.id, false)
                 .then(function (response){
                     userVm.announcements = response.data;
                     _.forEach(userVm.announcements, function(value) {
@@ -51,13 +87,7 @@
                         };
                     });
                 });
-                
-            companyService.getUserRequestsByStatusPending()
-                .then(function (response) {
-                    userVm.usersRequests = response.data;
-                });
-            
-        };
+        }
 
         /** 
          * Accepts user request to join company.

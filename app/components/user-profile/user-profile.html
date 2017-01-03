@@ -2,23 +2,29 @@
     <div class="profile-heading">
         <div class="row" style="text-align: center;">
             <div class="col-md-4">
-                <img src="http://img.uefa.com/imgml/TP/players/9/2016/324x324/93649.jpg" alt="..." width="192px" height="192px" class="img-circle">
+                <img ng-src={{userVm.user.imagePath}} alt="{{userVm.user.username + ' profile photo'}}" width="192px" height="192px" class="img-circle">
             </div>
             <div class="col-md-8">
-                <span class="glyphicon glyphicon-pencil pull-right" style="font-size: 16pt;"></span>
-                <h3>Sergio Ramos</h3>
-                <h5>sramos</h5>
-                <h6>sergioramos@real.com</h6>
-                <p>0998-90-9-80909-0-9</p>
+                <span 
+                    class="glyphicon glyphicon-pencil pull-right" 
+                    style="font-size: 16pt;"
+                    ng-show="userVm.loggedin">
+                </span>
+                <h3>{{userVm.user.firstName + ' ' + userVm.user.lastName}}</h3>
+                <h5><strong>{{userVm.user.username}}</strong></h5>
+                <h6 ng-show="userVm.user.type === 'verifier'">verifikator</h6>
+                <h6 ng-show="userVm.user.type === 'advertiser'">oglašavač</h6>
+                <h6>{{userVm.user.email}}</h6>
+                <p>{{userVm.user.phoneNumber}}</p>
             </div>
         </div>
     </div>
 
     <!-- User's announcement preview and extend Expiration date logic -->
-    <uib-tabset active="active">
+    <uib-tabset active="active" ng-show="userVm.user.type === 'advertiser'">
         <uib-tab index="0" >
             <uib-tab-heading>
-                Vaši oglasi &nbsp;<span class="badge alert-info"> {{userVm.announcements.length}}</span>
+                Aktivni oglasi &nbsp;<span class="badge alert-info"> {{userVm.announcements.length}}</span>
             </uib-tab-heading>
             <div class="container">
                 <div class="col-xs-12 col-md-6 announcement-home-outside" ng-repeat="announcement in userVm.announcements track by $index">
@@ -35,7 +41,7 @@
                             <p> {{announcement.realEstate.location.city + ', ' + announcement.realEstate.location.country}}</p>
                             <p> objavljen: {{announcement.dateAnnounced | date:'dd-MM-yyyy' }}</p>
                             <p class="{{announcement.expirationClass}}"><span style="color: black">Vreme isticanja: </span><strong>{{announcement.expiredMessage}}</strong></p>
-                            <div class="row">
+                            <div class="row" ng-show="userVm.loggedin">
                                 <div class="form-group pull-right col-md-10 col-xs-10">
                                     <div class="input-group">
                                         <span class="input-group-addon"> Produži do: </span>
@@ -71,7 +77,7 @@
         </uib-tab>
 
         <!-- Users membership requests logic -->
-        <uib-tab index="1">
+        <uib-tab index="1" ng-show="userVm.loggedin">
             <uib-tab-heading>
                 Zahtevi &nbsp;<span class="badge alert-info"> {{userVm.usersRequests.length}}</span>
             </uib-tab-heading>
