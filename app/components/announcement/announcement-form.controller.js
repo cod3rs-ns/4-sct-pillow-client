@@ -5,9 +5,9 @@
         .module('awt-cts-client')
         .controller('AnnouncementFormController', AnnouncementFormController);
 
-    AnnouncementFormController.$inject = ['$scope', '$state', '$localStorage', '$log', '_', 'FileUploader', 'announcementService', 'WizardHandler', 'CONFIG'];
+    AnnouncementFormController.$inject = ['$scope', '$state', '$localStorage', '$log', '_', 'ngToast', 'FileUploader', 'announcementService', 'WizardHandler', 'CONFIG'];
 
-    function AnnouncementFormController($scope, $state, $localStorage, $log, _, FileUploader, announcementService, WizardHandler, CONFIG) {
+    function AnnouncementFormController($scope, $state, $localStorage, $log, _, ngToast, FileUploader, announcementService, WizardHandler, CONFIG) {
 
         var announcementFormVm = this;
 
@@ -150,6 +150,34 @@
             }
         });
 
+        uploader.filters.push({
+            name: 'enforceMaxFileSize',
+            fn: function (item) {
+                var retVal = item.size <= 5242880; // 5 MB
+                if (!retVal) {
+                    ngToast.create({
+                        className: 'danger',
+                        content: '<p>Veličina fajla mora biti manja od <strong>5MB</strong>.</p>'
+                    });
+                }
+                return retVal;
+            }
+        });
+
+        uploader.filters.push({
+            name: 'queueLimit',
+            fn: function (item) {
+                var retVal = uploader.queue.length == 4; // 4 images per announcement
+                if (retVal) {
+                    ngToast.create({
+                        className: 'danger',
+                        content: '<p>Ne možete postaviti više od <strong>4</strong> slike.</p>'
+                    });
+                }
+                return !retVal;
+            }
+        });
+
         // Callbacks for image upload
         uploader.onSuccessItem = function (fileItem, response, status, headers) {
             announcementFormVm.announcement.images.push({ id: null, imagePath: response });
@@ -180,7 +208,7 @@
                     if (response.data.length > 0) {
                         announcementFormVm.similarsDisabled = false;
                         WizardHandler.wizard().goTo("Slične nekretnine");
-                    } else {                        
+                    } else {
                         announcementFormVm.similarsDisabled = true;
                         WizardHandler.wizard().goTo("Slike");
                     }

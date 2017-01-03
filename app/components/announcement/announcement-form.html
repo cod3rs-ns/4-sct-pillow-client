@@ -296,7 +296,7 @@
                 <button type="button" style="margin-right:25px;" class="btn btn-default" wz-previous >
                     <span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span> Prethodna    
                 </button>
-                <button type="button" style="margin-left:25px;"class="btn btn-default" wz-finish> &nbsp;&nbsp;&nbsp;&nbsp; Završi &nbsp;&nbsp;&nbsp;&nbsp;</button>
+                <button type="button" style="margin-left:25px;"class="btn btn-default" ng-disabled="announcementFormVm.uploader.queue.length == 0" wz-finish> &nbsp;&nbsp;&nbsp;&nbsp; Završi &nbsp;&nbsp;&nbsp;&nbsp;</button>
             </div>
         </wz-step>
     </wizard>
