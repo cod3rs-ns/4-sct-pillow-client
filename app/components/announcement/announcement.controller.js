@@ -318,7 +318,8 @@
             modalInstance.result.then(function(report) {
                 reportingService.createReport(report)
                     .then(function(response) {
-                        announcementVm.alreadyReported = true;
+                        if ($localStorage.user != undefined)
+                            announcementVm.alreadyReported = true;
                         $log.info('Report is successfully created' + response.data);
                     })
             }, function() {

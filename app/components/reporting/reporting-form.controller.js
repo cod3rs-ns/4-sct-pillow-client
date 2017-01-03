@@ -23,6 +23,8 @@
         };
 
         reportingFormVm.ok = function() {
+            if (reportingFormVm.emailInput)
+                reportingFormVm.report.email = reportingFormVm.report.email.$$state.value; 
             $uibModalInstance.close(reportingFormVm.report);
         };
 
