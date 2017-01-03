@@ -32,6 +32,18 @@ function fieldUnique($http, CONFIG) {
                             ngModel.$setValidity('unique', data);
                         });
                 }
+                else if (attrName == 'reporter') {
+                    return $http.get(CONFIG.SERVICE_URL + '/reports/exists', {
+                        params: {
+                            "email": element.val(),
+                            "id": attrs.annId
+                        }
+                    })
+                        .success(function (data) {
+                            ngModel.$loading = false;
+                            ngModel.$setValidity('unique', !data);
+                        });
+                }
             });
         }
     };

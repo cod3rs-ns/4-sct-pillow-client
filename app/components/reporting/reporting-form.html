@@ -1,0 +1,45 @@
+<form role="form" name="reportForm" novalidate>
+    <div class="modal-header label-danger" style="color: white">
+        <button class="close btn" data-dismiss="modal" style="color:white; outline: none;" ng-click="reportingFormVm.cancel();">&times;</button>
+        <h4 class="modal-title" id="modal-title">Prijava oglasa</h4>
+    </div>
+    <div class="modal-body" id="modal-body">
+        <p><b> Molimo vas da obrazložite zbog čega mislite da ovaj oglas krši pravila korišćenja i oglašavanja. </b></p>
+        <div class="form-group" ng-if="reportingFormVm.emailInput">
+            <div class="input-group" ng-class="{'has-error': reportForm.reporter.$invalid && reportForm.reporter.$touched}">
+                <span class="input-group-addon" id="basic-addon1"> <i class="glyphicon glyphicon-envelope"></i></span>
+                <input type="email" ng-model="reportingFormVm.report.email" name="reporter" placeholder="Vaša email adresa..." class="form-control"
+                    id="reporter" field-unique ann-id="{{reportingFormVm.annId}}" required>
+                <span ng-show="reportForm.reporter.$invalid && reportForm.reporter.$touched" class="glyphicon glyphicon-remove form-control-feedback"></span>
+            </div>
+            <span ng-show="reportForm.reporter.$invalid && reportForm.reporter.$touched && !reportForm.reporter.$error.unique" class="help-block"
+                style="color: black; font-size: 10pt; margin:0px;">Nepravilno formirana email adresa.</span>
+            <span ng-show="reportForm.reporter.$error.unique" class="help-block" style="color: black; font-size: 10pt; margin:0px;">Već ste prijavili oglas sa nevedene adrese.</span>
+        </div>
+        <textarea class="form-control" rows="3" ng-model="reportingFormVm.report.content" placeholder="Komentar"></textarea>
+        <p style=" margin-top:20px;"><b> Tip prijave </b></p>
+        <div style="margin-left:20px;">
+            <div class="radio">
+                <label><input type="radio" ng-model="reportingFormVm.report.type" name="optradio" value="wrong-advertiser"> Oglas nije od vlasnika/zastupnika </label>
+            </div>
+            <div class="radio">
+                <label><input type="radio" ng-model="reportingFormVm.report.type" name="optradio" value="unreachable-advertiser"> Oglašivač nije dostupan, nije ispravan broj telefona, adresa i ne odgovara na email poruke </label>
+            </div>
+            <div class="radio">
+                <label><input type="radio" ng-model="reportingFormVm.report.type" name="optradio" value="wrong-price"> Cijena koju je postavio je lažna</label>
+            </div>
+            <div class="radio">
+                <label><input type="radio" ng-model="reportingFormVm.report.type" name="optradio" value="wronf-information"> Informacije na oglasu su lažne (kvadratura, stanje objekta...)</label>
+            </div>
+            <div class="radio">
+                <label><input type="radio" ng-model="reportingFormVm.report.type" name="optradio" value="already-sold"> Predmet oglašavanja je već prodat </label>
+            </div>
+            <div class="radio">
+                <label><input type="radio" ng-model="reportingFormVm.report.type" name="optradio" value="other"> Ostalo </label>
+            </div>
+        </div>
+    </div>
+    <div class="modal-footer">
+        <button class="btn btn-danger" type="button" ng-disabled="reportForm.$invalid && reportForm.$error" ng-click="reportingFormVm.ok();">Prijavi</button>
+    </div>
+</form>

@@ -5,9 +5,9 @@
         .module('awt-cts-client')
         .controller('AnnouncementController', AnnouncementController);
 
-    AnnouncementController.$inject = ['$stateParams', '$log', '$localStorage', '_', 'announcementService', 'commentService', 'markService'];
+    AnnouncementController.$inject = ['$stateParams', '$log', '$uibModal', '$document', '$localStorage', '_', 'announcementService', 'commentService', 'markService', 'reportingService'];
 
-    function AnnouncementController($stateParams, $log, $localStorage, _, announcementService, commentService, markService) {
+    function AnnouncementController($stateParams, $log, $uibModal, $document, $localStorage, _, announcementService, commentService, markService, reportingService) {
         var announcementVm = this;
 
         announcementVm.announcement = {};
@@ -16,22 +16,22 @@
         announcementVm.comments = [];
         announcementVm.comment = null;
         announcementVm.vote = {
-          'announcer': null,
-          'announcement': null
+            'announcer': null,
+            'announcement': null
         };
         announcementVm.rating = {
-          'announcer': -1,
-          'announcement': -1
+            'announcer': -1,
+            'announcement': -1
         };
         announcementVm.votes = {
-          'announcer': {
-              'average': 0,
-              'count': 0
-          },
-          'announcement': {
-              'average': 0,
-              'count': 0
-          }
+            'announcer': {
+                'average': 0,
+                'count': 0
+            },
+            'announcement': {
+                'average': 0,
+                'count': 0
+            }
         };
 
         announcementVm.getAnnouncement = getAnnouncement;
@@ -41,10 +41,11 @@
         announcementVm.deleteComment = deleteComment;
         announcementVm.voteAnnouncer = voteAnnouncer;
         announcementVm.voteAnnouncement = voteAnnouncement;
+        announcementVm.checkIfUserAlreadyReportAnnouncement = checkIfUserAlreadyReportAnnouncement;
 
         activate();
 
-        function activate () {
+        function activate() {
             announcementVm.getAnnouncement($stateParams.announcementId);
         }
 
@@ -55,18 +56,20 @@
                     announcementVm.address = response.data.realEstate.location;
 
                     _.forEach(response.data.images, function(image, index) {
-                        announcementVm.images.push({'id': index, 'image': image.imagePath});
+                        announcementVm.images.push({ 'id': index, 'image': image.imagePath });
                     });
+
+                    announcementVm.checkIfUserAlreadyReportAnnouncement();
 
                     commentService.getCommentsForAnnouncement(announcementId)
                         .then(function(response) {
-                             _.forEach(response.data, function(comment) {
+                            _.forEach(response.data, function(comment) {
 
                                 var isMy = false;
                                 if (comment.author !== null) {
                                     var author = {
-                                      'name': comment.author.firstName + ' ' + comment.author.lastName,
-                                      'image': "http://img.uefa.com/imgml/TP/players/3/2016/324x324/250063984.jpg"
+                                        'name': comment.author.firstName + ' ' + comment.author.lastName,
+                                        'image': "http://img.uefa.com/imgml/TP/players/3/2016/324x324/250063984.jpg"
                                     }
 
                                     isMy = $localStorage.user === comment.author.username;
@@ -74,30 +77,30 @@
                                 }
                                 else {
                                     var author = {
-                                      'name': 'Gost na sajtu',
-                                      'image': "http://megaicons.net/static/img/icons_sizes/8/178/512/user-role-guest-icon.png"
+                                        'name': 'Gost na sajtu',
+                                        'image': "http://megaicons.net/static/img/icons_sizes/8/178/512/user-role-guest-icon.png"
                                     }
                                 }
 
                                 announcementVm.comments.push(
-                                  {
-                                    'id': comment.id,
-                                    'content': comment.content,
-                                    'date': comment.date,
-                                    'author': author,
-                                    'isMy': isMy
-                                  }
+                                    {
+                                        'id': comment.id,
+                                        'content': comment.content,
+                                        'date': comment.date,
+                                        'author': author,
+                                        'isMy': isMy
+                                    }
                                 );
-                             });
+                            });
                         });
 
                     var role = $localStorage.role;
 
                     markService.getMarksForAnnouncement(announcementId)
-                        .then(function (response) {
+                        .then(function(response) {
                             announcementVm.votes.announcement.average = _.meanBy(response.data, function(mark) {
-                                  return mark.value;
-                                }) || 0;
+                                return mark.value;
+                            }) || 0;
 
                             $log.log(announcementVm.votes.announcement.average);
 
@@ -114,10 +117,10 @@
                         });
 
                     markService.getMarksForAnnouncer(announcementVm.announcement.author.id)
-                        .then(function (response) {
+                        .then(function(response) {
                             announcementVm.votes.announcer.average = _.meanBy(response.data, function(mark) {
-                                  return mark.value;
-                                }) || 0;
+                                return mark.value;
+                            }) || 0;
                             $log.log(announcementVm.votes.announcer.average);
 
                             announcementVm.votes.announcer.count = _.size(response.data) || 0;
@@ -145,19 +148,28 @@
 
         function geocodeAddress(geocoder, resultsMap) {
             var address = announcementVm.address.city + ' ' + announcementVm.address.street + ' ' +
-              + announcementVm.address.streetNumber + ' ' + announcementVm.address.country;
+                + announcementVm.address.streetNumber + ' ' + announcementVm.address.country;
 
-            geocoder.geocode({'address': address}, function(results, status) {
-            if (status === google.maps.GeocoderStatus.OK) {
-                resultsMap.setCenter(results[0].geometry.location);
-                var marker = new google.maps.Marker({
-                    map: resultsMap,
-                    position: results[0].geometry.location
-                });
+            geocoder.geocode({ 'address': address }, function(results, status) {
+                if (status === google.maps.GeocoderStatus.OK) {
+                    resultsMap.setCenter(results[0].geometry.location);
+                    var marker = new google.maps.Marker({
+                        map: resultsMap,
+                        position: results[0].geometry.location
+                    });
                 } else {
                     $log.error('Geocode was not successful for the following reason: ' + status);
                 }
             });
+        }
+
+        function checkIfUserAlreadyReportAnnouncement() {
+            if ($localStorage.user != null) {
+                announcementService.alreadyReported(announcementVm.announcement.id, $localStorage.user)
+                    .then(function(response) {
+                        announcementVm.alreadyReported = response.data;
+                    });
+            }
         }
 
         function addComment() {
@@ -189,32 +201,32 @@
                     }
 
                     announcementVm.comments.push(
-                      {
-                        'id': comment.id,
-                        'content': comment.content,
-                        'date': comment.date,
-                        'author': author,
-                        'isMy': isMy
-                      });
+                        {
+                            'id': comment.id,
+                            'content': comment.content,
+                            'date': comment.date,
+                            'author': author,
+                            'isMy': isMy
+                        });
                 });
         }
 
         function updateComment(comment) {
-          comment.date = _.now();
+            comment.date = _.now();
 
-          commentService.addComment(comment)
-              .then(function(response) {
-                  announcementVm.comment = "";
-              });
+            commentService.addComment(comment)
+                .then(function(response) {
+                    announcementVm.comment = "";
+                });
         }
 
         function deleteComment(id) {
-          commentService.deleteComment(id)
-              .then(function(response) {
-                  _.remove(announcementVm.comments, function(comment) {
-                      return comment.id == id;
-                  });
-              });
+            commentService.deleteComment(id)
+                .then(function(response) {
+                    _.remove(announcementVm.comments, function(comment) {
+                        return comment.id == id;
+                    });
+                });
         }
 
         function voteAnnouncement(rating) {
@@ -231,7 +243,7 @@
                         var val = response.data.value;
                         var cnt = announcementVm.votes.announcement.count;
                         var avg = announcementVm.votes.announcement.average;
-                        announcementVm.votes.announcement.average = (avg*cnt + val)/(cnt + 1);
+                        announcementVm.votes.announcement.average = (avg * cnt + val) / (cnt + 1);
                         ++announcementVm.votes.announcement.count;
                     });
             }
@@ -247,7 +259,7 @@
                         var val = response.data.value;
                         var cnt = announcementVm.votes.announcement.count;
                         var avg = announcementVm.votes.announcement.average;
-                        announcementVm.votes.announcement.average = (avg*cnt + val - oldVal)/(cnt);
+                        announcementVm.votes.announcement.average = (avg * cnt + val - oldVal) / (cnt);
                     });
             }
         }
@@ -266,7 +278,7 @@
                         var val = response.data.value;
                         var cnt = announcementVm.votes.announcer.count;
                         var avg = announcementVm.votes.announcer.average;
-                        announcementVm.votes.announcer.average = (avg*cnt + val)/(cnt + 1);
+                        announcementVm.votes.announcer.average = (avg * cnt + val) / (cnt + 1);
                         ++announcementVm.votes.announcer.count;
                     });
             }
@@ -282,11 +294,36 @@
                         var val = response.data.value;
                         var cnt = announcementVm.votes.announcer.count;
                         var avg = announcementVm.votes.announcer.average;
-                        announcementVm.votes.announcer.average = (avg*cnt + val - oldVal)/(cnt);
+                        announcementVm.votes.announcer.average = (avg * cnt + val - oldVal) / (cnt);
                     });
             }
         }
 
-    }
+        announcementVm.reportAnnouncement = function(size, parentSelector) {
+            var modalInstance = $uibModal.open({
+                templateUrl: 'app/components/reporting/reporting-form.html',
+                controller: 'ReportingFormController',
+                controllerAs: 'reportingFormVm',
+                size: size,
+                resolve: {
+                    items: function() {
+                        return announcementVm.announcement.id;
+                    },
+                    user: function() {
+                        return $localStorage.user;
+                    }
+                }
+            });
 
+            modalInstance.result.then(function(report) {
+                reportingService.createReport(report)
+                    .then(function(response) {
+                        announcementVm.alreadyReported = true;
+                        $log.info('Report is successfully created' + response.data);
+                    })
+            }, function() {
+                $log.info('Modal dismissed at: ' + new Date());
+            });
+        }
+    }
 })();
