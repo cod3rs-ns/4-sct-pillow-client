@@ -14,21 +14,22 @@ function announcementService($http, CONFIG, $log) {
         getAnnouncementsByAuthor: getAnnouncementsByAuthor,
         getAnnouncementsByAuthorAndStatus: getAnnouncementsByAuthorAndStatus,
         extendExpirationDate: extendExpirationDate,
-        searchAnnouncements: searchAnnouncements
+        searchAnnouncements: searchAnnouncements,
+        alreadyReported: alreadyReported
     };
 
     return service;
 
     function getAnnouncements(page, size, sort) {
         return $http.get(CONFIG.SERVICE_URL + '/announcements/deleted/false?page=' + page + '&size=' + size + '&sort=' + sort)
-            .then(function (response) {
+            .then(function(response) {
                 return response;
             });
     };
 
     function getAnnouncementById(id) {
         return $http.get(CONFIG.SERVICE_URL + '/announcements/' + id)
-            .then(function (response) {
+            .then(function(response) {
                 return response;
             });
     };
@@ -36,7 +37,7 @@ function announcementService($http, CONFIG, $log) {
 
     function addAnnouncement(announcement) {
         return $http.post(CONFIG.SERVICE_URL + '/announcements', announcement)
-            .then(function (response) {
+            .then(function(response) {
                 return response;
             });
     };
@@ -53,14 +54,14 @@ function announcementService($http, CONFIG, $log) {
                     number: realEstate.location.streetNumber
                 }
             })
-            .then(function (response) {
+            .then(function(response) {
                 return response;
             });
     };
 
     function getRealEstateImage(id) {
         return $http.get(CONFIG.SERVICE_URL + '/real-estates/' + id + '/image')
-            .then(function (response) {
+            .then(function(response) {
                 return response;
             });
     };
@@ -109,7 +110,7 @@ function announcementService($http, CONFIG, $log) {
      */
     function extendExpirationDate(annId, expirationMap) {
         return $http.put(CONFIG.SERVICE_URL + '/announcements/' + annId, expirationMap)
-            .then(function successCallback(response){
+            .then(function successCallback(response) {
                 $log.info("Expiration date extended to " + expirationMap['expirationDate'] + "!");
                 return response;
             }, function errorCallback(response) {
@@ -131,6 +132,27 @@ function announcementService($http, CONFIG, $log) {
             },
             function onError(response) {
                 return response;
+            });
+    };
+
+    /**
+     * Check if user already reported announcement.
+     *
+     * @param {any} annId   ID of the announcement
+     * @param {any} email   email of the reporter
+     * @returns response
+     */
+    function alreadyReported(annId, username) {
+        return $http.get(CONFIG.SERVICE_URL + '/reports/exists', {
+            params: {
+                "username": username,
+                "id": annId
+            }
+        })
+            .then(function successCallback(response) {
+                return response;
+            }, function errorCallback(response) {
+                $log.warn("Operation unsuccessful");
             });
     };
 }
