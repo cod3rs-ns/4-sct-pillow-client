@@ -1,24 +1,26 @@
-<div class="row">
-    <div class="col-xs-12 col-md-6 announcement-home-outside" ng-repeat="announcement in vm.announcements">
-        <div class="row announcement-home-inside">
-            <div class="col-xs-4">
-                <img ng-src="{{announcement.images[0].imagePath}}" width="100%" class="thumbnail" />
-            </div>
-            <div class="col-xs-8">
-                <h4>{{announcement.realEstate.name}}</h4>
-                <div class="row">
-                    <a ui-sref="announcement({announcementId: announcement.id})" type="button" style="margin-right:5px;" class="btn btn-default pull-right">Detalji</a>
+<div class="container">
+    <div class="row">
+        <div class="col-md-6 announcement-home-outside" ng-repeat="announcement in vm.announcements">
+            <div class="row announcement-home-inside">
+                <div class="col-xs-4">
+                    <img ng-src="{{announcement.images[0].imagePath}}" width="100%" class="thumbnail" />
                 </div>
-                <div class="row">
-                    <div class="col-xs-1"><span class="glyphicon glyphicon-eur" style="color:#5bc0de;"></span></div>
-                    <div class="col-xs-10 col-mf-offset-1">
-                        <p>{{announcement.price}}</p>
+                <div class="col-xs-8">
+                    <h4>{{announcement.realEstate.name}}</h4>
+                    <div class="row">
+                        <a ui-sref="announcement({announcementId: announcement.id})" type="button" style="margin-right:5px;" class="btn btn-default pull-right">Detalji</a>
                     </div>
-                </div>
-                <div class="row">
-                    <div class="col-xs-1"><span class="glyphicon glyphicon-earphone" style="color:#5bc0de;"></span></div>
-                    <div class="col-xs-10 col-mf-offset-1">
-                        <p>{{announcement.phoneNumber}}</p>
+                    <div class="row">
+                        <div class="col-xs-1"><span class="glyphicon glyphicon-eur" style="color:#5bc0de;"></span></div>
+                        <div class="col-xs-10 col-mf-offset-1">
+                            <p>{{announcement.price}}</p>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-xs-1"><span class="glyphicon glyphicon-earphone" style="color:#5bc0de;"></span></div>
+                        <div class="col-xs-10 col-mf-offset-1">
+                            <p>{{announcement.phoneNumber}}</p>
+                        </div>
                     </div>
                 </div>
             </div>

@@ -16,10 +16,11 @@
         announcementFormVm.similarsDisabled = true;
         announcementFormVm.announcement = {
             id: null,
-            name: "",
             phoneNumber: "",
             price: 0,
+            dateAnnounced: new Date(),
             expirationDate: new Date(),
+            verified: false,
             images: [],
             type: 'buy',
             realEstate: {
