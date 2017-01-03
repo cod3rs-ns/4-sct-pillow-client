@@ -5,11 +5,12 @@
         .module('awt-cts-client')
         .controller('UserProfileController', UserProfileController);
 
-    UserProfileController.$inject = ['companyService', 'announcementService', 'ngToast', 'DatePickerService', '_'];
+    UserProfileController.$inject = ['companyService', 'announcementService', 'ngToast', 'DatePickerService', '_', 'userService', '$stateParams', '$localStorage'];
 
-    function UserProfileController(companyService, announcementService, ngToast, DatePickerService, _) {
+    function UserProfileController(companyService, announcementService, ngToast, DatePickerService, _, userService, $stateParams, $localStorage) {
         var userVm = this;
-
+        /** User for whom Profile page is displayed */
+        userVm.user = {};
         /** List containing all active users requests to join company */
         userVm.usersRequests = [];
 
@@ -19,6 +20,7 @@
         /** List containing DatePicker popup configurations for every announcement */
         userVm.pickerConfigurations = [];
 
+        /** Public functions */
         userVm.acceptRequest = acceptRequest;
         userVm.rejectRequest = rejectRequest;
         userVm.extendExpirationDate = extendExpirationDate;
@@ -26,19 +28,66 @@
         activate();
 
         function activate() {
-            announcementService.getAnnouncementsByAuthor(1)
+            // set Serbian locale for momment.js
+            moment.locale('sr');
+            
+            userService.getUser($stateParams.username)
                 .then(function (response){
-                    userVm.announcements = response.data;
-                    _.forEach(userVm.announcements, function() {
-                        userVm.pickerConfigurations.push(DatePickerService.getConfiguration());
+                    userVm.user = response.data;
+                    if (userVm.user.type === 'advertiser') {
+                        getAnnouncements();
+                    }
+                    // determine if user profile is for logged-in user
+                    if ($stateParams.username === $localStorage.user) {
+                        if (userVm.user.type === 'advertiser') {
+                            companyService.getUserRequestsByStatusPending()
+                            .then(function (response) {
+                                userVm.usersRequests = response.data;
+                            });
+                        }
+                        userVm.loggedin = true;
+                    }
+                    else {
+                        userVm.loggedin = false;
+                    };
+                })
+                .catch(function (error) {
+                     ngToast.create({
+                        className: 'danger',
+                        content: '<p>Ne postoji korisnik <strong>' + $stateParams.username + '</strong>.</p>'
                     });
                 });
-            companyService.getUserRequestsByStatusPending()
-                .then(function (response) {
-                    userVm.usersRequests = response.data;
-                });
-            
         };
+
+
+        /**
+         * -private-
+         * Retrieves announcements for active user.
+         */
+        function getAnnouncements() {
+            announcementService.getAnnouncementsByAuthorAndStatus(userVm.user.id, false)
+                .then(function (response){
+                    userVm.announcements = response.data;
+                    _.forEach(userVm.announcements, function(value) {
+                        // create color picker configurations
+                        userVm.pickerConfigurations.push(DatePickerService.getConfiguration());
+                        
+                        // user-friendly expiration date information
+                        var momentExpDate = moment(new Date(value.expirationDate));
+                        value.expiredMessage = momentExpDate.fromNow();
+                        if (momentExpDate.isAfter(moment())) {
+                            value.expirationClass = 'color-success';
+                            // check if expiration date is close (by 7 days)                        
+                            if (moment(new Date(value.expirationDate)).subtract(7, 'days').isBefore(moment())){
+                                value.expirationClass = 'color-warning';
+                            };
+                        }
+                        else {
+                            value.expirationClass = 'color-danger';
+                        };
+                    });
+                });
+        }
 
         /** 
          * Accepts user request to join company.
