@@ -9,5 +9,6 @@ angular
         'angularFileUpload',
         'angular-jwt',
         'mgo-angular-wizard',
-        'ngToast'
+        'ngToast',
+        'angularTrix'
     ]);
