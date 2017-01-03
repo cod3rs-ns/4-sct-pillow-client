@@ -212,12 +212,17 @@
         }
 
         function updateComment(comment) {
-            comment.date = _.now();
+          comment.announcement = { 'id': _.toInteger($stateParams.announcementId) };
+          comment.date = _.now();
+          comment.content = announcementVm.editedComment;
 
-            commentService.addComment(comment)
-                .then(function(response) {
-                    announcementVm.comment = "";
-                });
+          delete comment.isMy;
+
+          commentService.updateComment(comment)
+              .then(function(response) {
+                  comment.isMy = true;
+                  announcementVm.editing = undefined;
+              });
         }
 
         function deleteComment(id) {

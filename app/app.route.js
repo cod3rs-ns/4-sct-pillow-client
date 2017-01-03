@@ -127,7 +127,7 @@ angular
                 }
             })
             .state('profile', {
-                url: "/profile",
+                url: "/profile/:username",
                 data: {
                     pageTitle: 'Profil korisnika'
                 },

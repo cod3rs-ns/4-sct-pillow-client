@@ -12,6 +12,7 @@ function announcementService($http, CONFIG, $log) {
         getSimilarRealEstates: getSimilarRealEstates,
         getRealEstateImage: getRealEstateImage,
         getAnnouncementsByAuthor: getAnnouncementsByAuthor,
+        getAnnouncementsByAuthorAndStatus: getAnnouncementsByAuthorAndStatus,
         extendExpirationDate: extendExpirationDate,
         searchAnnouncements: searchAnnouncements,
         alreadyReported: alreadyReported
@@ -81,6 +82,24 @@ function announcementService($http, CONFIG, $log) {
                 return response;
             });
     };
+
+    /**
+     * Retrieves all announcemnts by specified Author ID and announcemnt's status - is deleted.
+     *
+     * @param {integer} authorId    ID of the announcements author
+     * @param {boolean} deleted     announcement's status - is deleted
+     * @returns response
+     */
+    function getAnnouncementsByAuthorAndStatus(authorId, deleted) {
+        return $http.get(CONFIG.SERVICE_URL + '/announcements/user/' + authorId + '/' + deleted + '?page=0')
+            .then(function successCallback(response) {
+                return response;
+            }, function errorCallback(response) {
+                $log.warn("Unable to retrieve announcements for provided userId.");
+                return response;
+            });
+    };
+
 
     /**
      * Extends announcement Expiration Date to provided value.

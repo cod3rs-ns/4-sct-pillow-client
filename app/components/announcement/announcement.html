@@ -84,21 +84,28 @@
                 </a>
             </div>
             <div class="media-body">
-                <h5 class="media-heading">{{comment.author.name}}</h5>
+                <h5 class="media-heading">
+                    {{comment.author.name}}
+                    <button type="button" class="btn btn-link pull-right" ng-show="comment.isMy"
+                      ng-click="announcementVm.deleteComment(comment.id)">
+                        <span class="glyphicon glyphicon-remove color-danger"></span>
+                    </button>
+                    <button type="button" class="btn btn-link pull-right" ng-show="comment.isMy"
+                      ng-click="announcementVm.editing = comment.id">
+                        <span class="glyphicon glyphicon-pencil color-gray"></span>
+                    </button>
+                </h5>
                 <h6>Objavljen: {{comment.date | date:'dd. MM. yyyy.'}}</h6>
-                <div class="row">
-                    <div class="col-md-11">
-                        <p>{{comment.content}}</p>
-                    </div>
-                    <div class="col-md-1">
-                        <button type="button" class="btn btn-primary" ng-show="comment.isMy" ng-click="announcementVm.editComment()">
-                            <span class="glyphicon glyphicon-pencil pull-right"></span>
-                        </button>
-                        <button type="button" class="btn btn-danger" ng-show="comment.isMy" ng-click="announcementVm.deleteComment(comment.id)">
-                            <span class="glyphicon glyphicon-remove pull-right"></span>
-                        </button>
-                    </div>
-                </div>
+                <p ng-if="!(comment.isMy && announcementVm.editing == comment.id)">{{comment.content}}</p>
+                <textarea id="comment-edit" class="form-control" rows="5"
+                    ng-init="announcementVm.editedComment = comment.content"
+                    ng-model="announcementVm.editedComment"
+                    ng-if="comment.isMy && announcementVm.editing == comment.id">
+                </textarea>
+                <button type="button" class="btn btn-primary pull-right" style="margin-top: 10px;" ng-if="comment.isMy && announcementVm.editing == comment.id"
+                  ng-click="announcementVm.updateComment(comment);">
+                    Sačuvaj izmjene
+                </button>
             </div>
         </div>
     </div>
