@@ -43,6 +43,10 @@ body {
   color: #ffffff;
 }
 
+.color-gray {
+  color: #999999;
+}
+
 .announcement-info {
   font-size: 18pt;
 }
