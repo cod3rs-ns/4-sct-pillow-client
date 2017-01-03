@@ -5,9 +5,9 @@
         .module('awt-cts-client')
         .controller('AnnouncementController', AnnouncementController);
 
-    AnnouncementController.$inject = ['$stateParams', '$log', '$localStorage', '_', 'announcementService', 'commentService', 'markService'];
+    AnnouncementController.$inject = ['$stateParams', '$timeout', '$log', '$localStorage', '_', 'announcementService', 'commentService', 'markService'];
 
-    function AnnouncementController($stateParams, $log, $localStorage, _, announcementService, commentService, markService) {
+    function AnnouncementController($stateParams, $timeout, $log, $localStorage, _, announcementService, commentService, markService) {
         var announcementVm = this;
 
         announcementVm.announcement = {};
@@ -138,9 +138,13 @@
             var map = new google.maps.Map(document.getElementById('map'), {
                 zoom: 16
             });
-
             var geocoder = new google.maps.Geocoder();
-            geocodeAddress(geocoder, map);
+
+            $timeout(function() {
+                // Refresh map and find center
+                google.maps.event.trigger(map, 'resize');
+                geocodeAddress(geocoder, map);
+            }, 100);
         }
 
         function geocodeAddress(geocoder, resultsMap) {
