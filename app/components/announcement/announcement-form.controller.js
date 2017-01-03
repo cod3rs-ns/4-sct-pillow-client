@@ -1,13 +1,13 @@
-(function () {
+(function() {
     'use strict';
 
     angular
         .module('awt-cts-client')
         .controller('AnnouncementFormController', AnnouncementFormController);
 
-    AnnouncementFormController.$inject = ['$scope', '$state', '$localStorage', '$log', '_', 'FileUploader', 'announcementService', 'WizardHandler', 'CONFIG'];
+    AnnouncementFormController.$inject = ['$scope', '$state', '$localStorage', '$log', '_', 'ngToast', 'FileUploader', 'announcementService', 'reportingService', 'WizardHandler', 'CONFIG'];
 
-    function AnnouncementFormController($scope, $state, $localStorage, $log, _, FileUploader, announcementService, WizardHandler, CONFIG) {
+    function AnnouncementFormController($scope, $state, $localStorage, $log, _, ngToast, FileUploader, announcementService, reportingService, WizardHandler, CONFIG) {
 
         var announcementFormVm = this;
 
@@ -16,15 +16,23 @@
         announcementFormVm.similarsDisabled = true;
         announcementFormVm.announcement = {
             id: null,
-            name: "",
             phoneNumber: "",
             price: 0,
+            dateAnnounced: new Date(),
             expirationDate: new Date(),
+            verified: false,
             images: [],
             type: 'buy',
+            name: '',
+            description: '',
             realEstate: {
                 id: null,
-                name: "",
+                intercom: false,
+                internet: false,
+                phone: false,
+                airConditioner: false,
+                videoSurveillance: false,
+                cableTV: false,
                 type: "",
                 area: 0,
                 heatingType: "",
@@ -143,27 +151,66 @@
         // FILTERS
         uploader.filters.push({
             name: 'imageFilter',
-            fn: function (item /*{File|FileLikeObject}*/, options) {
+            fn: function(item /*{File|FileLikeObject}*/, options) {
                 var type = '|' + item.type.slice(item.type.lastIndexOf('/') + 1) + '|';
                 return '|jpg|png|jpeg|bmp|gif|'.indexOf(type) !== -1;
             }
         });
 
+        uploader.filters.push({
+            name: 'enforceMaxFileSize',
+            fn: function(item) {
+                var retVal = item.size <= 5242880; // 5 MB
+                if (!retVal) {
+                    ngToast.create({
+                        className: 'danger',
+                        content: '<p>Veličina fajla mora biti manja od <strong>5MB</strong>.</p>'
+                    });
+                }
+                return retVal;
+            }
+        });
+
+        uploader.filters.push({
+            name: 'queueLimit',
+            fn: function(item) {
+                var retVal = uploader.queue.length == 4; // 4 images per announcement
+                if (retVal) {
+                    ngToast.create({
+                        className: 'danger',
+                        content: '<p>Ne možete postaviti više od <strong>4</strong> slike.</p>'
+                    });
+                }
+                return !retVal;
+            }
+        });
+
         // Callbacks for image upload
-        uploader.onSuccessItem = function (fileItem, response, status, headers) {
+        uploader.onSuccessItem = function(fileItem, response, status, headers) {
             announcementFormVm.announcement.images.push({ id: null, imagePath: response });
             $log.info('onSuccessItem', fileItem, response, status, headers);
         };
 
-        uploader.onCompleteAll = function () {
+        uploader.onCompleteAll = function() {
             announcementFormVm.uploaded = true;
 
             announcementService.addAnnouncement(announcementFormVm.announcement)
-                .then(function (response) {
+                .then(function(response) {
+                    if (announcementFormVm.similars.length > 0) {
+                        var report = {
+                            email: 'system',
+                            content: 'Postoje slične nekretnine',
+                            type: 'similar-realEstate',
+                            status: 'pending',
+                            announcement: {id : response.data.id}
+                        }
+                        reportingService.createReport(report);
+                    }
                     $state.transitionTo("announcement", {
                         announcementId: response.data.id
                     });
                 });
+
             $log.info('onCompleteAll');
         };
 
@@ -174,12 +221,12 @@
 
         function getSimilarRealEstates() {
             announcementService.getSimilarRealEstates(announcementFormVm.announcement.realEstate)
-                .then(function (response) {
+                .then(function(response) {
                     announcementFormVm.similars = response.data;
                     if (response.data.length > 0) {
                         announcementFormVm.similarsDisabled = false;
                         WizardHandler.wizard().goTo("Slične nekretnine");
-                    } else {                        
+                    } else {
                         announcementFormVm.similarsDisabled = true;
                         WizardHandler.wizard().goTo("Slike");
                     }

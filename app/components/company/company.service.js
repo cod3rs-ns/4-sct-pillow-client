@@ -31,52 +31,48 @@ function companyService($http, CONFIG, $log) {
 
     function getCompanies(page, size, sort, successCallback, errorCallback) {
         return $http.get(CONFIG.SERVICE_URL + '/companies?page=' + page + '&size=' + size + '&sort=' + sort)
-            .success(function (data, status, headers) {
-                successCallback(data, headers);
-            })
-            .error(function (data) {
-                errorCallback(data);
+            .then(function success(response) {
+                successCallback(response.data, response.headers);
+            }, function error(response) {
+                errorCallback(response.data);
             });
     };
 
     function getCompanyById(id) {
         return $http.get(CONFIG.SERVICE_URL + '/companies/' + id)
-            .success(function (data) {
-                return data;
-            })
-            .error(function (data) {
-                return data;
+            .then(function (response) {
+                return response;
+            }, function (response) {
+                return response;
             });
     };
 
     function getUsersByCompanyId(companyId, page, size, sort, successCallback, errorCallback) {
         return $http.get(CONFIG.SERVICE_URL + '/users/company/' + companyId + '?page=' + page + '&size=' + size + '&sort=' + sort)
-            .success(function (data, status, headers) {
-                successCallback(data, headers);
-            })
-            .error(function (data) {
-                errorCallback(data);
+            .then(function success(response) {
+                successCallback(response.data, response.headers);
+            }, function error(response) {
+                errorCallback(response.data);
             });
     };
 
 
     function getAnnouncementsByCompanyId(companyId, page, size, sort, successCallback, errorCallback) {
         return $http.get(CONFIG.SERVICE_URL + '/announcements/company/' + companyId + '?page=' + page + '&size=' + size + '&sort=' + sort)
-            .success(function (data, status, headers) {
-                successCallback(data, headers);
-            })
-            .error(function (data) {
-                errorCallback(data);
+            .then(function success(response) {
+                successCallback(response.data, response.headers);
+            }, function error(response) {
+                errorCallback(response.data);
             });
     };
 
     function getTopThreeByCompanyId(companyId) {
         return $http.get(CONFIG.SERVICE_URL + '/announcements/top/company/' + companyId)
-            .success(function (data, status, headers) {
-                return data;
-            })
-            .error(function (data) {
-                return data;
+            .then(function successCallback(response) {
+                return response;
+            }, function errorCallback(resposnse) {
+                $log.warn("Unsuccessful getting top three companies");
+                return response;
             });
     };
 
