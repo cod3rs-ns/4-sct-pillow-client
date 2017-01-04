@@ -1,0 +1,88 @@
+<div class="container-fluid">
+    <div class="page-header">
+        <h2>Prijave</h2>
+    </div>
+        <div class="row">
+            <div class="col-xs-2 col-md-2" style="min-height: 100%">
+                <!-- section for sorting on click -->
+                <div class="search-category">
+                    <h4>Sortiranje</h4>
+                    <div class="radio">
+                        <label><input type="radio" ng-model="reportVm.predicate" name="type" value="id" ng-click="reportVm.activate();">Broju</label>
+                    </div>
+                    <div class="radio">
+                        <label><input type="radio" ng-model="reportVm.predicate" name="type" value="type" ng-click="reportVm.activate();">Tipu</label>
+                    </div>
+                    <div class="radio">
+                        <label><input type="radio" ng-model="reportVm.predicate" name="type" value="date" ng-click="reportVm.activate();">Datumu</label>
+                    </div>
+                </div>
+                <!-- section for _search by author email_ -->
+                <div class="search-category">
+                    <h4>Pretraga</h4>
+                    <div class="form-group">
+                        <div class="input-group">
+                            <span class="input-group-addon" id="basic-addon1"> <i class="glyphicon glyphicon-user"></i></span>
+                            <input type="text" ng-model="reportVm.authorEmailSearch" placeholder="E-mail dopisnika" class="form-control">
+                        </div>
+                    </div>
+                </div>
+                <button class="btn btn-success pull-right" style="margin-top: 10px;" ng-click="reportVm.getReportsByAuthorEmail();">Pretraži</button>
+            </div>
+
+            <!-- reports container -->
+            <div class="col-xs-10 col-md-10">
+                <div class="container-fluid">
+                    <div class="col-xs-12 col-md-6" ng-repeat="report in reportVm.reports">
+                        <div class="panel panel-default" >
+                            <div class="panel-heading">
+                                <h3 class="panel-title">
+                                    <strong>{{'Prijava br. ' + report.id}}</strong>
+                                    <span   class="glyphicon glyphicon-ok pull-right"
+                                            style="color:seagreen;cursor:pointer;"
+                                            ng-click="reportVm.acceptReport(report.id);"
+                                            uib-tooltip="Prihvati sugestiju" tooltip-placement="top">
+                                    </span>
+                                    <span class="pull-right">&nbsp;</span>
+                                    <span   class="glyphicon glyphicon-remove pull-right" 
+                                            style="color:darkred;cursor:pointer;"
+                                            ng-click="reportVm.rejectReport(report.id);"
+                                            uib-tooltip="Odbij sugestiju" tooltip-placement="top">
+                                    </span>
+                                </h3>
+                            </div>
+                            <div class="panel-body">
+                                <div>
+                                    <p> 
+                                        <span class="label label-default">autor</span>
+                                        <em>{{report.email}}</em>
+                                    </p>
+                                    <p> 
+                                        <span class="label label-default">oglas</span>
+                                        <a ui-sref="announcement({announcementId: report.announcement.id})">{{report.announcement.name}}</a>
+                                    </p>
+                                </div>
+                                <hr/>
+                                <p>{{report.content}}</p>
+                            </div>
+                            <div class="panel-footer container-fluid">
+                                <span class="label label-primary">{{report.type}}</span>
+                                <span class="pull-right"><em>2. januar 2017.</em></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- pagination -->
+    <div class="text-center">
+        <ul     style="text-align: center;"
+                uib-pagination class="pagination-sm"
+                total-items="reportVm.totalItems"
+                items-per-page="reportVm.itemsPerPage"
+                ng-model="reportVm.page" 
+                ng-change="reportVm.transition()">
+        </ul>
+    </div>
+</div>
