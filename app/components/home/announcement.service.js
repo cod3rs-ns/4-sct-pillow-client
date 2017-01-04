@@ -16,21 +16,22 @@ function announcementService($http, CONFIG, $log) {
         getAnnouncementsInArea: getAnnouncementsInArea,
         extendExpirationDate: extendExpirationDate,
         searchAnnouncements: searchAnnouncements,
-        alreadyReported: alreadyReported
+        alreadyReported: alreadyReported,
+        updateAnnouncement: updateAnnouncement
     };
 
     return service;
 
     function getAnnouncements(page, size, sort) {
         return $http.get(CONFIG.SERVICE_URL + '/announcements/deleted/false?page=' + page + '&size=' + size + '&sort=' + sort)
-            .then(function(response) {
+            .then(function (response) {
                 return response;
             });
     };
 
     function getAnnouncementById(id) {
         return $http.get(CONFIG.SERVICE_URL + '/announcements/' + id)
-            .then(function(response) {
+            .then(function (response) {
                 return response;
             });
     };
@@ -38,7 +39,7 @@ function announcementService($http, CONFIG, $log) {
 
     function addAnnouncement(announcement) {
         return $http.post(CONFIG.SERVICE_URL + '/announcements', announcement)
-            .then(function(response) {
+            .then(function (response) {
                 return response;
             });
     };
@@ -55,14 +56,14 @@ function announcementService($http, CONFIG, $log) {
                     number: realEstate.location.streetNumber
                 }
             })
-            .then(function(response) {
+            .then(function (response) {
                 return response;
             });
     };
 
     function getRealEstateImage(id) {
         return $http.get(CONFIG.SERVICE_URL + '/real-estates/' + id + '/image')
-            .then(function(response) {
+            .then(function (response) {
                 return response;
             });
     };
@@ -174,4 +175,20 @@ function announcementService($http, CONFIG, $log) {
                 $log.warn("Operation unsuccessful");
             });
     };
+
+
+    /**
+     * Update one announcement.
+     *
+     * @param {any} announcemnt   announcement that will be updated
+     * @returns response
+     */
+    function updateAnnouncement(announcement) {
+        return $http.put(CONFIG.SERVICE_URL + '/announcements', announcement)
+            .then(function successCallback(response) {
+                return response;
+            }, function errorCallback(response) {
+                $log.warn("Updating announcemnt unsuccessful");
+            });
+    }
 }

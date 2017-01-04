@@ -88,6 +88,19 @@ angular
                     }
                 }
             })
+            .state('updateAnnouncement', {
+                url: "/updateAnnouncement/:announcementId",
+                data: {
+                    pageTitle: 'Izmjena oglasa'
+                },
+                views: {
+                    'content@': {
+                        templateUrl: "app/components/announcement/announcement-form.html",
+                        controller: "AnnouncementFormController",
+                        controllerAs: "announcementFormVm"
+                    }
+                }
+            })
             .state('company', {
                 url: "/company/:companyId",
                 data: {
