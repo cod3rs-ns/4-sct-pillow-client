@@ -1,4 +1,4 @@
-# awt-test-siit-project-2016-client
+# sct-2016-client
 
 Predmetni projekat iz predmeta Konstrukcija i testiranje softvera i Napredne veb tehnologije.
 
@@ -8,6 +8,10 @@ Predmetni projekat iz predmeta Konstrukcija i testiranje softvera i Napredne veb
 - SW9-2013  Bojan Blagojević
 - SWF-2013  Dragutin Marjanović
 - SW20-2013 Aleksa Zrnić
+
+###
+
+Aktivna verzija **v1.4**
 
 ## Struktura projekta
 
