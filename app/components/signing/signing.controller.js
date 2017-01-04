@@ -5,9 +5,9 @@
         .module('awt-cts-client')
         .controller('SigningController', SigningController);
 
-    SigningController.$inject = ['$http', '$window', '$location', '$localStorage', '$log', 'jwtHelper', 'signingService', 'CONFIG'];
+    SigningController.$inject = ['$http', '$window', '$location', '$localStorage', '$log', '$scope', 'jwtHelper', 'signingService', 'CONFIG'];
 
-    function SigningController($http, $window, $location, $localStorage, $log, jwtHelper, signingService, CONFIG) {
+    function SigningController($http, $window, $location, $localStorage, $log, $scope, jwtHelper, signingService, CONFIG) {
         var signingVm = this;
 
         // Setting background image for signing page
@@ -16,6 +16,7 @@
         // Variable binders
         signingVm.credentials = {};
         signingVm.registrationUser = {};
+        signingVm.registrationUser.type = 'advertiser';
         signingVm.dataLoading = false;
         signingVm.loginError = false;
 
@@ -52,8 +53,14 @@
         };
 
         function register() {
-            $log.log(signingVm.registrationUser);
-            signingService.register(signingVm.registrationUser)
+            signingVm.registrationUser.email = signingVm.registrationUser.email.$$state.value; 
+            signingVm.registrationUser.username = signingVm.registrationUser.username.$$state.value;
+            var user = angular.copy(signingVm.registrationUser);
+            $scope.registrationForm.$setPristine();
+            $scope.registrationForm.$setDirty();
+            signingVm.registrationUser.type = 'advertiser';
+            signingVm.passwordRetyped = undefined;
+            signingService.register(user)
                 .then(function(registeredUser) {
                     $log.info(registeredUser);
                     signingVm.registrationUser = {};
