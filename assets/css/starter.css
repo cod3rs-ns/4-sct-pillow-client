@@ -183,3 +183,32 @@ ul.rating {
   width: 100%;
   margin-top: 8px;
 }
+
+.average-rating {
+  background-color: #efefef;
+  border-radius: 4px;
+  text-align: center;
+  padding: 10px 2px;
+}
+
+.average-rating > p {
+  font-size: 28pt;
+}
+
+.average-rating > span {
+  font-size: 28pt;
+  color: #f0ad4e;
+}
+
+.advertiser-additional-info {
+  display: inline-flex;
+  margin-top: 10px;
+}
+
+.advertiser-additional-info .col-sm-1 {
+  float: left;
+}
+
+.advertiser-additional-info .col-sm-11 {
+  float: left;
+}
