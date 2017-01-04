@@ -1,4 +1,4 @@
-(function () {
+(function() {
     'use strict';
 
     angular
@@ -21,9 +21,14 @@
         announcementFormVm.open = open;
         announcementFormVm.datePickerConfig = datePickerConfig;
         announcementFormVm.getDayClass = getDayClass;
+
         announcementFormVm.submitAnnouncement = submitAnnouncement;
         announcementFormVm.chooseSimilarRealEstate = chooseSimilarRealEstate;
         announcementFormVm.getSimilarRealEstates = getSimilarRealEstates;
+        announcementFormVm.deleteItemFromQueue = deleteItemFromQueue;
+        announcementFormVm.canExitFirtsStep = canExitFirtsStep;
+        announcementFormVm.setRealEstateForm = setRealEstateForm;
+        announcementFormVm.setAnnouncementForm = setAnnouncementForm;
 
         activate();
 
@@ -37,19 +42,21 @@
                 }
             });
 
-            setUploaderFileters();
+            setUploaderFilters();
             createUploaderCallbacks();
 
             if (announcementFormVm.state == 'addAnnouncement') {
                 announcementFormVm.announcement = createInitialAnnouncement();
+                announcementFormVm.today();
                 announcementFormVm.datePickerConfig();
                 announcementFormVm.uploaded = false;
             }
             else {
+                announcementFormVm.datePickerConfig();
                 announcementService.getAnnouncementById($stateParams.announcementId)
-                    .then(function (response) {
+                    .then(function(response) {
                         announcementFormVm.announcement = response.data;
-                        _.forEach(response.data.images, function (image, index) {
+                        _.forEach(response.data.images, function(image, index) {
                             var url = image.imagePath;
                             $http.get(url, { responseType: "blob" })
                                 .then(function successCallback(response) {
@@ -118,8 +125,6 @@
         }
 
         function datePickerConfig() {
-            announcementFormVm.today();
-
             announcementFormVm.inlineOptions = {
                 minDate: new Date(),
                 showWeeks: true
@@ -156,11 +161,11 @@
             ];
         }
 
-        function setUploaderFileters() {
+        function setUploaderFilters() {
             // FILTERS
             announcementFormVm.uploader.filters.push({
                 name: 'imageFilter',
-                fn: function (item /*{File|FileLikeObject}*/, options) {
+                fn: function(item /*{File|FileLikeObject}*/, options) {
                     var type = '|' + item.type.slice(item.type.lastIndexOf('/') + 1) + '|';
                     return '|jpg|png|jpeg|bmp|gif|'.indexOf(type) !== -1;
                 }
@@ -168,7 +173,7 @@
 
             announcementFormVm.uploader.filters.push({
                 name: 'enforceMaxFileSize',
-                fn: function (item) {
+                fn: function(item) {
                     var retVal = item.size <= 5242880; // 5 MB
                     if (!retVal) {
                         ngToast.create({
@@ -182,7 +187,7 @@
 
             announcementFormVm.uploader.filters.push({
                 name: 'queueLimit',
-                fn: function (item) {
+                fn: function(item) {
                     var retVal = announcementFormVm.uploader.queue.length == 4; // 4 images per announcement
                     if (retVal) {
                         ngToast.create({
@@ -195,12 +200,11 @@
             });
         }
 
-        announcementFormVm.deleteItemFromQueue = deleteItemFromQueue;
         function deleteItemFromQueue(item) {
             if (announcementFormVm.state == "updateAnnouncement") {
                 if (item.file.realImg != undefined) {
                     var idx = -1;
-                    _.forEach(announcementFormVm.announcement.images, function (image, index) {
+                    _.forEach(announcementFormVm.announcement.images, function(image, index) {
                         if (image.id == item.file.realImg.id) {
                             idx = index;
                         }
@@ -214,7 +218,7 @@
 
         function addNewAnnouncement() {
             announcementService.addAnnouncement(announcementFormVm.announcement)
-                .then(function (response) {
+                .then(function(response) {
                     if (announcementFormVm.similars.length > 0) {
                         var report = {
                             email: 'system',
@@ -233,7 +237,7 @@
 
         function updateAnnouncement() {
             announcementService.updateAnnouncement(announcementFormVm.announcement)
-                .then(function (response) {
+                .then(function(response) {
                     if (announcementFormVm.similars.length > 0) {
                         var report = {
                             email: 'system',
@@ -252,12 +256,12 @@
 
         function createUploaderCallbacks() {
             // Callbacks for one image upload
-            announcementFormVm.uploader.onSuccessItem = function (fileItem, response, status, headers) {
+            announcementFormVm.uploader.onSuccessItem = function(fileItem, response, status, headers) {
                 announcementFormVm.announcement.images.push({ id: null, imagePath: response });
                 $log.info('onSuccessItem', fileItem, response, status, headers);
             };
 
-            announcementFormVm.uploader.onCompleteAll = function () {
+            announcementFormVm.uploader.onCompleteAll = function() {
                 announcementFormVm.uploaded = true;
                 if (announcementFormVm.state == 'addAnnouncement')
                     addNewAnnouncement();
@@ -274,12 +278,14 @@
 
         function getSimilarRealEstates() {
             announcementService.getSimilarRealEstates(announcementFormVm.announcement.realEstate)
-                .then(function (response) {
+                .then(function(response) {
+                    announcementFormVm.chosenSimilarRealEstateId = null;
+                    announcementFormVm.announcement.realEstate.id = null;
                     announcementFormVm.similars = response.data;
                     if (response.data.length > 0) {
                         if (announcementFormVm.state != 'addAnnouncement') {
                             var idx = -1;
-                            _.forEach(response.data, function (realEstate, index) {
+                            _.forEach(response.data, function(realEstate, index) {
                                 if (realEstate.id == announcementFormVm.announcement.realEstate.id)
                                     idx = index;
                             });
@@ -287,7 +293,7 @@
                                 announcementFormVm.similars.splice(idx, 1);
                         }
                     }
-                    if (announcementFormVm.similars.length > 0){
+                    if (announcementFormVm.similars.length > 0) {
                         announcementFormVm.similarsDisabled = false;
                         WizardHandler.wizard().goTo("Slične nekretnine");
                     } else {
@@ -297,12 +303,25 @@
                 });
         };
 
+        function setAnnouncementForm(form) {
+            announcementFormVm.announcementForm = form;
+        }
+
+        function setRealEstateForm(form) {
+            announcementFormVm.realEstateForm = form;
+        }
+
+        function canExitFirtsStep() {
+            return !announcementFormVm.announcementForm.$invalid && !announcementFormVm.realEstateForm.$invalid;
+        }
+
         function createInitialAnnouncement() {
             return {
                 dateAnnounced: new Date(),
                 expirationDate: new Date(),
                 verified: false,
                 images: [],
+                description: '',
                 type: 'kupovina',
                 realEstate: {
                     deleted: false,

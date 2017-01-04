@@ -1,17 +1,21 @@
 <div class="container" style="margin-top:25px; margin-bottom:20px;">
-   <wizard on-finish="announcementFormVm.submitAnnouncement();"> 
-        <wz-step wz-title="Osnovni podaci">
+    <wizard on-finish="announcementFormVm.submitAnnouncement();">
+        <wz-step wz-title="Osnovni podaci" canexit="announcementFormVm.canExitFirtsStep">
             <div class="row" style="margin-bottom:10px;">
                 <div class="col-md-6">
                     <h4 style="margin-top:0px; margin-bottom:17px;"> Novi oglas </h4>
 
-                    <div style="text-align: center;" style="margin-top:20px; padding-top:15px;">
-                        <form role="form" ng-submit="announcementFormVm.addAnnouncement();">
-                            <div class="form-group">
+                    <div style="text-align: center; margin-top:20px; padding-top:15px;">
+                        <form role="form" name="announcementForm" novalidate>
+                            <div ng-init="announcementFormVm.setAnnouncementForm(announcementForm);"></div>
+                            <div class="form-group" style="text-align:left;" ng-class="{ 'has-error' : announcementForm.name.$invalid && announcementForm.name.$dirty }">
                                 <div class="input-group">
                                     <span class="input-group-addon" id="basic-addon1"> <i class="glyphicon glyphicon-home"></i></span>
-                                    <input type="text" ng-model="announcementFormVm.announcement.name" placeholder="Naziv..." class="form-control" id="ann-name">
+                                    <input type="text" ng-model="announcementFormVm.announcement.name" placeholder="Naziv..." class="form-control" name="name"
+                                        id="ann-name" required>
+                                    <span ng-show="announcementForm.name.$invalid && announcementForm.name.$dirty" class="glyphicon glyphicon-remove form-control-feedback"></span>
                                 </div>
+                                <p ng-show="announcementForm.name.$invalid && announcementForm.name.$dirty" class="help-block" style="font-size: 10pt; margin:0px;">Naziv oglasa je obavezan.</p>
                             </div>
 
                             <div class="form-group">
@@ -22,35 +26,44 @@
                                 </div>
                             </div>
 
-                            <div class="form-group">
+                            <div class="form-group" style="text-align:left;" ng-class="{ 'has-error' : announcementForm.phoneNumber.$invalid && announcementForm.phoneNumber.$dirty }">
                                 <div class="input-group">
                                     <span class="input-group-addon" id="basic-addon1"> <i class="glyphicon glyphicon-earphone"></i></span>
-                                    <input type="text" ng-model="announcementFormVm.announcement.phoneNumber" placeholder="Broj telefona..." class="form-control"
-                                        id="ann-phone">
+                                    <input type="text" ng-model="announcementFormVm.announcement.phoneNumber" required placeholder="Broj telefona..." class="form-control"
+                                        name="phoneNumber" id="ann-phone">
+                                    <span ng-show="announcementForm.phoneNumber.$invalid && announcementForm.phoneNumber.$dirty" class="glyphicon glyphicon-remove form-control-feedback"></span>
                                 </div>
+                                <p ng-show="announcementForm.phoneNumber.$invalid && announcementForm.phoneNumber.$dirty" class="help-block" style="font-size: 10pt; margin:0px;">Broj telefona je obavezan.</p>
                             </div>
 
-                            <div class="form-group">
+                            <div class="form-group" style="text-align:left;" ng-class="{ 'has-error' : announcementForm.price.$invalid && announcementForm.price.$dirty }">
                                 <div class="input-group">
                                     <span class="input-group-addon" id="basic-addon1"> <i class="glyphicon glyphicon-eur"></i></span>
-                                    <input type="number" ng-model="announcementFormVm.announcement.price" placeholder="Cena..." class="form-control" id="ann-phone">
+                                    <input type="number" ng-model="announcementFormVm.announcement.price" placeholder="Cena..." class="form-control" id="ann-phone"
+                                        name="price" required min="1">
+                                    <span ng-show="announcementForm.price.$invalid && announcementForm.price.$dirty " class="glyphicon glyphicon-remove form-control-feedback"></span>
                                 </div>
+                                <p ng-show="announcementForm.price.$error.min && announcementForm.price.$dirty && !announcementForm.price.$error.required"
+                                    class="help-block" style="font-size: 10pt; margin:0px;">Cena mora biti veća od nula.</p>
+                                <p ng-show="announcementForm.price.$error.required && announcementForm.price.$dirty" class="help-block" style="font-size: 10pt; margin:0px;">Cena je obavezna.</p>
                             </div>
 
                             <div class="form-group">
                                 <p class="input-group">
                                     <span class="input-group-addon" id="basic-addon1"> Važi do: </span>
-                                    <input type="text" class="form-control" uib-datepicker-popup="{{announcementFormVm.dateFormat}}" ng-model="announcementFormVm.announcement.expirationDate"
+                                    <input type="text" class="form-control" readonly="true" uib-datepicker-popup="{{announcementFormVm.dateFormat}}" ng-model="announcementFormVm.announcement.expirationDate"
                                         is-open="announcementFormVm.popup.opened" datepicker-options="announcementFormVm.dateOptions"
-                                        ng-required="true" close-text="Zatvori" clear-text="Obriši" alt-input-formats="announcementFormVm.altInputFormats"/>
+                                        ng-required="true" close-text="Zatvori" clear-text="Obriši" alt-input-formats="announcementFormVm.altInputFormats"
+                                    />
                                     <span class="input-group-btn">
                                     <button type="button" class="btn btn-default" ng-click="announcementFormVm.open()"><i class="glyphicon glyphicon-calendar"></i></button>
                                     </span>
                                 </p>
                             </div>
-                            
+
                             <div class="form-group" style="text-align:left; margin-top:15px;">
-                                <trix-editor spellcheck="false" style="min-height:10em;" placeholder="Unesite opis..." angular-trix ng-model="announcementFormVm.announcement.description" class="trix-content"></trix-editor>
+                                <trix-editor spellcheck="false" style="height: 10em; overflow-y: auto;" placeholder="Unesite opis..." angular-trix ng-model="announcementFormVm.announcement.description"
+                                    class="trix-content"></trix-editor>
                             </div>
                         </form>
                     </div>
@@ -59,13 +72,19 @@
                     <h4 style="margin-top:0px; margin-bottom:17px;"> Nekretnina </h4>
 
                     <div style="text-align: center;" style="margin-top:20px; padding-top:15px;">
-                        <form role="form" ng-submit="">
+                        <form role="form" name="realEstateForm" novalidate>
+                            <div ng-init="announcementFormVm.setRealEstateForm(realEstateForm);"></div>
                             <div class="row">
-                                <div class="form-group col-xs-6">
+                                <div class="form-group col-xs-6" style="text-align:left;" ng-class="{ 'has-error' : realEstateForm.area.$invalid && realEstateForm.area.$dirty }">
                                     <div class="input-group">
                                         <span class="input-group-addon" id="basic-addon1"> <i class="glyphicon glyphicon-fullscreen"></i></span>
-                                        <input type="number" min="1" ng-model="announcementFormVm.announcement.realEstate.area" placeholder="Površina..." class="form-control" id="re-area">
+                                        <input type="number" min="1" ng-model="announcementFormVm.announcement.realEstate.area" placeholder="Površina..." class="form-control"
+                                            id="re-area" name="area" min='1' required>
+                                        <span ng-show="realEstateForm.area.$invalid && realEstateForm.area.$dirty " class="glyphicon glyphicon-remove form-control-feedback"></span>
                                     </div>
+                                    <p ng-show="realEstateForm.area.$error.min && realEstateForm.area.$dirty && !realEstateForm.area.$error.required"
+                                        class="help-block" style="font-size: 10pt; margin:0px;">Površina mora biti veća od nula.</p>
+                                    <p ng-show="realEstateForm.area.$error.required && realEstateForm.area.$dirty" class="help-block" style="font-size: 10pt; margin:0px;">Površina je obavezna.</p>
                                 </div>
 
                                 <div class="form-group col-xs-6">
@@ -83,56 +102,72 @@
                                 <div class="btn-group">
                                     <label class="btn btn-primary" ng-model="announcementFormVm.announcement.realEstate.type" uib-btn-radio="'kuća'" uib-uncheckable="uncheckable">Kuća</label>
                                     <label class="btn btn-primary" ng-model="announcementFormVm.announcement.realEstate.type" uib-btn-radio="'stan'" uncheckable>Stan</label>
-                                    <label class="btn btn-primary" ng-model="announcementFormVm.announcement.realEstate.type" uib-btn-radio="'poslovni prostor'" uncheckable>Poslovni prostor</label>
+                                    <label class="btn btn-primary" ng-model="announcementFormVm.announcement.realEstate.type" uib-btn-radio="'poslovni prostor'"
+                                        uncheckable>Poslovni prostor</label>
                                     <label class="btn btn-primary" ng-model="announcementFormVm.announcement.realEstate.type" uib-btn-radio="'ostalo'" uncheckable>Ostalo</label>
                                 </div>
                             </div>
 
-                            <div class="form-group">
+                            <div class="form-group" style="text-align:left;" ng-class="{ 'has-error' : realEstateForm.country.$invalid && realEstateForm.country.$dirty }">
                                 <div class="input-group">
                                     <span class="input-group-addon" id="basic-addon1"> <i class="glyphicon glyphicon-globe"></i></span>
-                                    <input type="text" ng-model="announcementFormVm.announcement.realEstate.location.country" placeholder="Država..." class="form-control">
+                                    <input type="text" ng-model="announcementFormVm.announcement.realEstate.location.country" placeholder="Država..." 
+                                        class="form-control" name="country" required>
+                                    <span ng-show="realEstateForm.country.$invalid && realEstateForm.country.$dirty" class="glyphicon glyphicon-remove form-control-feedback"></span>
                                 </div>
+                                <p ng-show="realEstateForm.country.$invalid && realEstateForm.country.$dirty" class="help-block" style="font-size: 10pt; margin:0px;">Država je obavezna.</p>
                             </div>
 
                             <div class="row">
-                                <div class="form-group col-xs-6">
+                                <div class="form-group col-xs-6"  style="text-align:left;" ng-class="{ 'has-error' : realEstateForm.city.$invalid && realEstateForm.city.$dirty }">
                                     <div class="input-group">
                                         <span class="input-group-addon" id="basic-addon1"> <i class="glyphicon glyphicon-stats"></i></span>
-                                        <input type="text" ng-model="announcementFormVm.announcement.realEstate.location.city" placeholder="Grad..." class="form-control">
+                                        <input type="text" ng-model="announcementFormVm.announcement.realEstate.location.city" placeholder="Grad..." 
+                                            class="form-control" name="city" required>
+                                        <span ng-show="realEstateForm.city.$invalid && realEstateForm.city.$dirty" class="glyphicon glyphicon-remove form-control-feedback"></span>
                                     </div>
+                                    <p ng-show="realEstateForm.city.$invalid && realEstateForm.city.$dirty" class="help-block" style="font-size: 10pt; margin:0px;">Grad je obavezan.</p>
                                 </div>
 
-                                <div class="form-group col-xs-6">
+                                <div class="form-group col-xs-6"  style="text-align:left;" ng-class="{ 'has-error' : realEstateForm.region.$invalid && realEstateForm.region.$dirty }">
                                     <div class="input-group">
                                         <span class="input-group-addon" id="basic-addon1"> <i class="glyphicon glyphicon-equalizer"></i></span>
-                                        <input type="text" ng-model="announcementFormVm.announcement.realEstate.location.cityRegion" placeholder="Region..." class="form-control">
+                                        <input type="text" ng-model="announcementFormVm.announcement.realEstate.location.cityRegion" placeholder="Region..." 
+                                            class="form-control" name="region" required>
+                                        <span ng-show="realEstateForm.region.$invalid && realEstateForm.region.$dirty" class="glyphicon glyphicon-remove form-control-feedback"></span>
                                     </div>
+                                    <p ng-show="realEstateForm.region.$invalid && realEstateForm.region.$dirty" class="help-block" style="font-size: 10pt; margin:0px;">Region je obavezan.</p>
                                 </div>
                             </div>
-                            
+
                             <div class="row">
-                                <div class="form-group col-xs-8">
+                                <div class="form-group col-xs-8"  style="text-align:left;" ng-class="{ 'has-error' : realEstateForm.street.$invalid && realEstateForm.street.$dirty }">
                                     <div class="input-group">
                                         <span class="input-group-addon" id="basic-addon1"> <i class="glyphicon glyphicon-map-marker"></i></span>
-                                        <input type="text" ng-model="announcementFormVm.announcement.realEstate.location.street" placeholder="Ulica..." class="form-control">
+                                        <input type="text" ng-model="announcementFormVm.announcement.realEstate.location.street" placeholder="Ulica..." 
+                                            class="form-control" name="street" required>
+                                        <span ng-show="realEstateForm.street.$invalid && realEstateForm.street.$dirty" class="glyphicon glyphicon-remove form-control-feedback"></span>
                                     </div>
-                                </div>     
-                                <div class="form-group col-xs-4">
+                                    <p ng-show="realEstateForm.street.$invalid && realEstateForm.street.$dirty" class="help-block" style="font-size: 10pt; margin:0px;">Ulica je obavezna.</p>
+                                </div>
+                                <div class="form-group col-xs-4"  style="text-align:left;" ng-class="{ 'has-error' : realEstateForm.streetNumber.$invalid && realEstateForm.streetNumber.$dirty }">
                                     <div class="input-group">
                                         <span class="input-group-addon" id="basic-addon1"> <i class="glyphicon glyphicon-road"></i></span>
-                                        <input type="text" ng-model="announcementFormVm.announcement.realEstate.location.streetNumber" placeholder="Broj..." class="form-control">
+                                        <input type="text" ng-model="announcementFormVm.announcement.realEstate.location.streetNumber" placeholder="Broj..." 
+                                            class="form-control" name="streetNumber" required>
+                                        <span ng-show="realEstateForm.streetNumber.$invalid && realEstateForm.streetNumber.$dirty" class="glyphicon glyphicon-remove form-control-feedback"></span>                                    
                                     </div>
+                                    <p ng-show="realEstateForm.streetNumber.$invalid && realEstateForm.streetNumber.$dirty" class="help-block" style="font-size: 10pt; margin:0px;">Broj ulice je obavezan.</p>
                                 </div>
                             </div>
-                            
+
                             <div class="form-group" style="margin-bottom:0px;">
                                 <div class="input-group">
                                     <h5 style="margin-top:0px; margin-top:5px; float:left"> Tehnička opremljenost </h5>
                                 </div>
                             </div>
 
-                            <div class="row">                        
+                            <div class="row">
                                 <div class="form-group col-xs-5 col-xs-offset-1" style="float:left !important; text-align:left;">
                                     <div class="checkbox">
                                         <label><input type="checkbox" ng-model="announcementFormVm.announcement.realEstate.intercom">Interfon</label>
@@ -161,10 +196,10 @@
                     </div>
                 </div>
             </div>
-            
+
             <div class="row" style="text-align:center; margin-bottom:20px;">
-                <button type="button" style="margin-right:25px;" class="btn btn-default" wz-reset >Odustani</button>
-                <button type="button" style="margin-left:25px;"class="btn btn-default" ng-click="announcementFormVm.getSimilarRealEstates()" >Nastavi
+                <button type="button" style="margin-right:25px;" class="btn btn-default" wz-reset ui-sref="home">Odustani</button>
+                <button type="button" style="margin-left:25px;" class="btn btn-default" ng-click="announcementFormVm.getSimilarRealEstates()" ng-disabled="announcementForm.$invalid || realEstateForm.$invalid">Nastavi
                     <span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span>    
                 </button>
             </div>
@@ -172,28 +207,31 @@
         <wz-step wz-title="Slične nekretnine" wz-disabled="{{announcementFormVm.similarsDisabled}}">
             <div class="container">
                 <h3 style="margin-top:0px; margin-bottom:10px;">Slične nekretnine</h3>
-                <h5> Naš sistem je prepoznao slične nekretnine. Ukoliko se neka od njih podudara sa vašom, kliknite na istu da biste je selektovali. </h5>
+                <h5> Naš sistem je prepoznao slične nekretnine. Ukoliko se neka od njih podudara sa vašom, kliknite na istu da
+                    biste je selektovali. </h5>
                 <div class="row form-group product-chooser">
                     <div class="col-xs-12 col-sm-12 col-md-4 col-lg-4" ng-repeat="realEstate in announcementFormVm.similars">
-                        <div ng-class="{ 'selected' : announcementFormVm.chosenSimilarRealEstateId == realEstate.id, 'product-chooser-item': true }"  ng-click="announcementFormVm.chooseSimilarRealEstate(realEstate.id);">
-                            <img ng-src="http://localhost:8091/api/real-estates/{{realEstate.id}}/image" class="img-rounded col-xs-4 col-sm-4 col-md-12 col-lg-12" alt="Real Estate" style="height:170pt !important;">
-                            <div class="col-xs-8 col-sm-8 col-md-12 col-lg-12"> 
+                        <div ng-class="{ 'selected' : announcementFormVm.chosenSimilarRealEstateId == realEstate.id, 'product-chooser-item': true }"
+                            ng-click="announcementFormVm.chooseSimilarRealEstate(realEstate.id);">
+                            <img ng-src="http://localhost:8091/api/real-estates/{{realEstate.id}}/image" class="img-rounded col-xs-4 col-sm-4 col-md-12 col-lg-12"
+                                alt="Real Estate" style="height:170pt !important;">
+                            <div class="col-xs-8 col-sm-8 col-md-12 col-lg-12">
                                 <span class="title">{{realEstate.name}}</span>
                                 <span class="description"> 
                                     <table>
                                         <tr>
                                             <td valign="top"><span class="glyphicon glyphicon-map-marker" style="float:left;">&nbsp;</span></td>
-                                            <td valign="bottom">{{realEstate.location.street}}&nbsp;{{realEstate.location.streetNumber}},&nbsp;{{realEstate.location.cityRegion}},&nbsp;{{realEstate.location.city}},&nbsp;{{realEstate.location.country}}</td>
-                                        </tr>
-                                        <tr>
-                                            <td valign="top"><span class="glyphicon glyphicon-fullscreen" style="float:left;">&nbsp;</span></td>
-                                            <td valign="bottom">{{realEstate.area}}</td>
-                                        </tr>
-                                        <tr>
-                                            <td valign="top"><span class="glyphicon glyphicon-fire" style="float:left;">&nbsp;</span></td>
-                                            <td valign="bottom">{{realEstate.heatingType}}</td>
-                                        </tr>
-                                    </table>
+                                <td valign="bottom">{{realEstate.location.street}}&nbsp;{{realEstate.location.streetNumber}},&nbsp;{{realEstate.location.cityRegion}},&nbsp;{{realEstate.location.city}},&nbsp;{{realEstate.location.country}}</td>
+                                </tr>
+                                <tr>
+                                    <td valign="top"><span class="glyphicon glyphicon-fullscreen" style="float:left;">&nbsp;</span></td>
+                                    <td valign="bottom">{{realEstate.area}}</td>
+                                </tr>
+                                <tr>
+                                    <td valign="top"><span class="glyphicon glyphicon-fire" style="float:left;">&nbsp;</span></td>
+                                    <td valign="bottom">{{realEstate.heatingType}}</td>
+                                </tr>
+                                </table>
                                 </span>
                                 <input type="radio" name="product" value="mobile_desktop" checked="checked">
                             </div>
@@ -202,14 +240,14 @@
                     </div>
                 </div>
                 <div class="row" style="text-align:center; margin-bottom:20px;">
-                    <button type="button" style="margin-right:25px;" class="btn btn-default" wz-previous >
+                    <button type="button" style="margin-right:25px;" class="btn btn-default" wz-previous>
                         <span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span> Prethodna    
                     </button>
-                    <button type="button" style="margin-left:25px;"class="btn btn-default" wz-next> &nbsp;Nastavi&nbsp;
+                    <button type="button" style="margin-left:25px;" class="btn btn-default" wz-next> &nbsp;Nastavi&nbsp;
                         <span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span>    
                     </button>
                 </div>
-                
+
             </div>
         </wz-step>
         <wz-step wz-title="Slike" nv-file-drop="" uploader="announcementFormVm.uploader">
@@ -260,7 +298,7 @@
                                             <div class="progress-bar" role="progressbar" ng-style="{ 'width': item.progress + '%' }"></div>
                                         </div>
                                     </td>
-                                    <td style="text-align:center" >
+                                    <td style="text-align:center">
                                         <span ng-show="item.isSuccess"><i class="glyphicon glyphicon-ok"></i></span>
                                         <span ng-show="item.isCancel"><i class="glyphicon glyphicon-ban-circle"></i></span>
                                         <span ng-show="item.isError"><i class="glyphicon glyphicon-remove"></i></span>
@@ -276,19 +314,21 @@
                         </table>
 
                         <div>
-                            <button type="button" class="btn btn-danger btn-s" ng-click="announcementFormVm.uploader.clearQueue(); announcementFormVm.announcement.images = [];" ng-disabled="!announcementFormVm.uploader.queue.length || announcementFormVm.uploaded">
+                            <button type="button" class="btn btn-danger btn-s" ng-click="announcementFormVm.uploader.clearQueue(); announcementFormVm.announcement.images = [];"
+                                ng-disabled="!announcementFormVm.uploader.queue.length || announcementFormVm.uploaded">
                                 <span class="glyphicon glyphicon-trash"></span> Obriši sve
                             </button>
                         </div>
-                    </div>                          
+                    </div>
                 </div>
             </div>
-            
+
             <div class="row" style="text-align:center; margin-bottom:20px;">
-                <button type="button" style="margin-right:25px;" class="btn btn-default" wz-previous >
+                <button type="button" style="margin-right:25px;" class="btn btn-default" wz-previous>
                     <span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span> Prethodna    
                 </button>
-                <button type="button" style="margin-left:25px;"class="btn btn-default" ng-disabled="announcementFormVm.uploader.queue.length == 0" wz-finish> &nbsp;&nbsp;&nbsp;&nbsp; Završi &nbsp;&nbsp;&nbsp;&nbsp;</button>
+                <button type="button" style="margin-left:25px;" class="btn btn-default" ng-disabled="announcementFormVm.uploader.queue.length == 0"
+                    wz-finish> &nbsp;&nbsp;&nbsp;&nbsp; Završi &nbsp;&nbsp;&nbsp;&nbsp;</button>
             </div>
         </wz-step>
     </wizard>
