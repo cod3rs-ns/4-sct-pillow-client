@@ -54,6 +54,7 @@
                 .then(function(response) {
                     announcementVm.announcement = response.data;
                     announcementVm.address = response.data.realEstate.location;
+                    announcementVm.isMyAdvertisement = $localStorage.user === announcementVm.announcement.author.username;
 
                     _.forEach(response.data.images, function(image, index) {
                         announcementVm.images.push({ 'id': index, 'image': image.imagePath });
@@ -69,7 +70,7 @@
                                 if (comment.author !== null) {
                                     var author = {
                                         'name': comment.author.firstName + ' ' + comment.author.lastName,
-                                        'image': "http://img.uefa.com/imgml/TP/players/3/2016/324x324/250063984.jpg"
+                                        'image': comment.author.imagePath
                                     }
 
                                     isMy = $localStorage.user === comment.author.username;
@@ -193,7 +194,7 @@
                     if (comment.author !== null) {
                         author = {
                             'name': comment.author.firstName + ' ' + comment.author.lastName,
-                            'image': "http://img.uefa.com/imgml/TP/players/3/2016/324x324/250063984.jpg"
+                            'image': comment.author.imagePath
                         }
                         isMy = $localStorage.user === comment.author.username;
                     }
