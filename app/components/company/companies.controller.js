@@ -3,11 +3,11 @@
 
     angular
         .module('awt-cts-client')
-        .controller('RealEstateController', RealEstateController);
+        .controller('CompaniesController', CompaniesController);
 
-    RealEstateController.$inject = ['$scope', '$state', '$http', '$log', 'RealEstateService', 'LinkParser', 'pagingParams', 'paginationConstants'];
+    CompaniesController.$inject = ['$scope', '$state', '$http', '$log', 'companyService', 'LinkParser', 'pagingParams', 'paginationConstants'];
 
-    function RealEstateController ($scope, $state, $http, $log, RealEstateService, LinkParser, pagingParams, paginationConstants) {
+    function CompaniesController($scope, $state, $http, $log, companyService, LinkParser, pagingParams, paginationConstants) {
         var vm = this;
 
         vm.loadPage = loadPage;
@@ -20,12 +20,9 @@
 
         activate();
 
-        function activate () {
-            RealEstateService.query({
-                page: pagingParams.page - 1,
-                size: vm.itemsPerPage,
-                sort: sort()
-            }, onSuccess, onError);
+        function activate() {
+            companyService.getCompanies(pagingParams.page - 1, vm.itemsPerPage, sort(),
+                onSuccess, onError);
 
             function sort() {
                 var result = [vm.predicate + ',' + (vm.reverse ? 'asc' : 'desc')];
@@ -38,27 +35,27 @@
                 vm.links = LinkParser.parse(headers('Link'));
                 vm.totalItems = headers('X-Total-Count');
                 vm.queryCount = vm.totalItems;
-                vm.realEstates = data;
+                vm.companies = data;
                 vm.page = pagingParams.page;
             }
             function onError(error) {
-                $log.log('Error in activating RealEstateController!');
+                $log.error('Error in activating CompaniesController!');
             }
         }
 
-        function loadPage (page) {
+        function loadPage(page) {
             vm.page = page;
             vm.transition();
         }
 
-        function transition () {
+        function transition() {
             $state.transitionTo($state.$current, {
                 page: vm.page,
                 sort: vm.predicate + ',' + (vm.reverse ? 'asc' : 'desc'),
             });
         }
 
-        function clear () {
+        function clear() {
             vm.links = null;
             vm.page = 1;
             vm.predicate = 'id';

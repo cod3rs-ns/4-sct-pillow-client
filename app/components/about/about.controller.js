@@ -1,14 +1,20 @@
-angular
-    .module('awt-cts-client')
-    .controller('AboutController', AboutController);
+(function() {
+    'use strict';
 
-function AboutController($http) {
-    var homeVm = this;
+    angular
+        .module('awt-cts-client')
+        .controller('AboutController', AboutController);
 
-    console.log("About Controller init!");
-    
-    homeVm.authors = [  "SW3-2013  Stefan Ristanović",
-                        "SW9-2013  Bojan Blagojević",
-                        "SWF-2013  Dragutin Marjanović",
-                        "SW20-2013 Aleksa Zrnić"];
-}
+    AboutController.$inject = ['$log']
+
+    function AboutController($log) {
+        var aboutVm = this;
+
+        $log.info("About Controller init!");
+
+        aboutVm.authors = [  "SW3-2013  Stefan Ristanović",
+                            "SW9-2013  Bojan Blagojević",
+                            "SWF-2013  Dragutin Marjanović",
+                            "SW20-2013 Aleksa Zrnić"];
+    }
+})();

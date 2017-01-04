@@ -1,0 +1,36 @@
+<div class="table-responsive">
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th><span>Korisnik</span></th>
+                <th><span>Ime</span></th>
+                <th><span>Prezime</span></th>
+                <th><span>Kontakt</span></th>
+                <th><span>E-mail</span></th>
+                <th><span>Tip korisnika</span></th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr ng-repeat="user in vm.users">
+                <td><img src="http://img.uefa.com/imgml/TP/players/9/2016/324x324/93649.jpg" style="height:40px; width:40px;"></td>
+                <td>{{user.firstName}}</td>
+                <td>{{user.lastName}}</td>
+                <td>{{user.phoneNumber}}</td>
+                <td>{{user.email}}</td>
+                <td>{{user.type}}</td>
+                <td class="text-right">
+                    <div class="btn-group flex-btn-group-container">
+                        <button type="submit" class="btn btn-success btn-sm">
+                            <span class="glyphicon glyphicon-eye-open"></span>
+                            <span class="hidden-xs hidden-sm"></span>
+                        </button>
+                    </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+<div class="text-center">
+    <ul uib-pagination class="pagination-sm" total-items="vm.totalItems" items-per-page="vm.itemsPerPage" ng-model="vm.page" ng-change="vm.transition()"></ul>
+</div>

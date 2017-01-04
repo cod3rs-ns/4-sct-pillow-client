@@ -12,23 +12,17 @@ function signingService($http, CONFIG) {
 
     return service;
 
-    function auth(email, password) {
-        return $http.post(CONFIG.SERVICE_URL + '/users/auth?email=' + email + '&password=' + password)
-          .success(function (data) {
-              return data.token;
-          })
-          .error(function (data) {
-              return data;
+    function auth(username, password) {
+        return $http.post(CONFIG.SERVICE_URL + '/users/auth?username=' + username + '&password=' + password)
+          .then(function (response) {
+              return response;
           });
     };
 
     function register(user) {
         return $http.post(CONFIG.SERVICE_URL + '/users/', user)
-          .success(function (data) {
-              return data.data;
-          })
-          .error(function (data) {
-              return data;
+          .then(function (response) {
+              return response.data;
           });
     };
 }

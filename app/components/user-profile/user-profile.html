@@ -1,0 +1,104 @@
+<div class="container">
+    <div class="profile-heading">
+        <div class="row" style="text-align: center;">
+            <div class="col-md-4">
+                <img ng-src={{userVm.user.imagePath}} alt="{{userVm.user.username + ' profile photo'}}" width="192px" height="192px" class="img-circle">
+            </div>
+            <div class="col-md-8">
+                <span 
+                    class="glyphicon glyphicon-pencil pull-right" 
+                    style="font-size: 16pt;"
+                    ng-show="userVm.loggedin">
+                </span>
+                <h3>{{userVm.user.firstName + ' ' + userVm.user.lastName}}</h3>
+                <h5><strong>{{userVm.user.username}}</strong></h5>
+                <h6 ng-show="userVm.user.type === 'verifier'">verifikator</h6>
+                <h6 ng-show="userVm.user.type === 'advertiser'">oglašavač</h6>
+                <h6>{{userVm.user.email}}</h6>
+                <p>{{userVm.user.phoneNumber}}</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- User's announcement preview and extend Expiration date logic -->
+    <uib-tabset active="active" ng-show="userVm.user.type === 'advertiser'">
+        <uib-tab index="0" >
+            <uib-tab-heading>
+                Aktivni oglasi &nbsp;<span class="badge alert-info"> {{userVm.announcements.length}}</span>
+            </uib-tab-heading>
+            <div class="container">
+                <div class="col-xs-12 col-md-6 announcement-home-outside" ng-repeat="announcement in userVm.announcements track by $index">
+                    <div class="row announcement-home-inside">
+                        <div class="col-md-4 col-xs-4">
+                            <img    ng-src={{announcement.images[0].imagePath}}
+                                    ui-sref="announcement({announcementId: announcement.id})"
+                                    width="150px" height="150px"
+                                    class="thumbnail"
+                                    style="cursor: hover"/>
+                        </div>
+                        <div class="col-md-8 col-xs-8">
+                            <a style="font-size: 150%;" ui-sref="announcement({announcementId: announcement.id})">{{announcement.realEstate.name}}</a>
+                            <p> {{announcement.realEstate.location.city + ', ' + announcement.realEstate.location.country}}</p>
+                            <p> objavljen: {{announcement.dateAnnounced | date:'dd-MM-yyyy' }}</p>
+                            <p class="{{announcement.expirationClass}}"><span style="color: black">Vreme isticanja: </span><strong>{{announcement.expiredMessage}}</strong></p>
+                            <div class="row" ng-show="userVm.loggedin">
+                                <div class="form-group pull-right col-md-10 col-xs-10">
+                                    <div class="input-group">
+                                        <span class="input-group-addon"> Produži do: </span>
+                                        <input  type="text" class="form-control"
+                                                ng-model="announcement.expirationDate"
+                                                uib-datepicker-popup="{{userVm.pickerConfigurations[$index].format}}"
+                                                is-open="userVm.pickerConfigurations[$index].popup.opened" 
+                                                datepicker-options="userVm.pickerConfigurations[$index].dateOptions"
+                                                alt-input-formats="userVm.pickerConfigurations[$index].altInputFormats"
+                                                ng-required="true"
+                                                close-text="Zatvori"
+                                                clear-text="Obriši"
+                                                current-text="Danas"/>
+                                        <span class="input-group-btn">
+                                            <button type="button" class="btn btn-default" 
+                                                    ng-click="userVm.pickerConfigurations[$index].open();"
+                                                    uib-tooltip="Otvori kalendar" tooltip-placement="top">
+                                                <i class="glyphicon glyphicon-calendar"></i>
+                                            </button>
+                                            <button type="button" class="btn btn-success" 
+                                                    ng-click="userVm.extendExpirationDate(announcement.id, announcement.expirationDate);"
+                                                    uib-tooltip="Produži rok" tooltip-placement="top">
+                                                <i class="glyphicon glyphicon-chevron-right"></i>
+                                            </button>
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </uib-tab>
+
+        <!-- Users membership requests logic -->
+        <uib-tab index="1" ng-show="userVm.loggedin">
+            <uib-tab-heading>
+                Zahtevi &nbsp;<span class="badge alert-info"> {{userVm.usersRequests.length}}</span>
+            </uib-tab-heading>
+            <div class="container">
+                <div class="row" ng-show="userVm.usersRequests.length === 0">
+                    <p style="margin-left: 100px; margin-top: 20px;"><em>Trenutno nema aktivnih zahteva.</em></p>    
+                </div>
+                <div class="row" ng-repeat="user in userVm.usersRequests">
+                    <p class="company-request">
+                        <img ng-src="{{user.imagePath}}" alt="{{user.firstName + user.lastName}}" width="36px" height="36px" class="img-rounded">
+                        <!-- TODO provide link to user profile -->
+                        <a href="#">{{user.firstName + ' ' + user.lastName}}</a> {{ ' (' + user.email + ')'}}
+                        <span   class="glyphicon glyphicon-ok pull-right"
+                                style="color:seagreen;cursor:pointer;"
+                                ng-click="userVm.acceptRequest(user.id);"></span>
+                        <span   class="glyphicon glyphicon-remove pull-right" 
+                                style="color:darkred;cursor:pointer;"
+                                ng-click="userVm.rejectRequest(user.id);"></span>
+                    </p>
+                </div>
+            </div>
+        </uib-tab>
+    </uib-tabset>
+</div>

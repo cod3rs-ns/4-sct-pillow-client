@@ -1,11 +1,33 @@
-angular
-    .module('awt-cts-client')
-    .controller('HeaderController', HeaderController);
+(function() {
+    'use strict';
 
-function HeaderController($http) {
-    var headerVm = this;
+    angular
+        .module('awt-cts-client')
+        .controller('HeaderController', HeaderController);
 
-    console.log("Header Controller init!");
+    HeaderController.$inject = ['$log', '$localStorage', '$location'];
 
-    headerVm.projectName = "AWT CTS project";
-}
+    function HeaderController($log, $localStorage, $location) {
+        var headerVm = this;
+
+        headerVm.projectName = "AWT CTS project";
+        headerVm.$storage = $localStorage.$default({
+          role: 'guest'
+        });
+
+        headerVm.logout = logout;
+
+        activate();
+
+        function activate() {
+            $log.info("Header Controller init!");
+            $log.info("Role " + headerVm.$storage.role);
+        }
+
+        function logout() {
+            $localStorage.$reset();
+            $localStorage.role = 'guest';
+            $location.path('/');
+        }
+    }
+})();

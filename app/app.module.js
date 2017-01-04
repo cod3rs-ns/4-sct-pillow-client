@@ -3,6 +3,12 @@ angular
         'ui.router',
         'ngResource',
         'ngAnimate',
+        'ngStorage',
         'ngSanitize',
-        'ui.bootstrap'
+        'ui.bootstrap',
+        'angularFileUpload',
+        'angular-jwt',
+        'mgo-angular-wizard',
+        'ngToast',
+        'angularTrix'
     ]);

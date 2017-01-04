@@ -1,0 +1,50 @@
+<form role="form" name="reportForm" novalidate>
+    <div class="modal-header label-danger" style="color: white">
+        <button class="close btn" data-dismiss="modal" style="color:white; outline: none;" ng-click="reportingFormVm.cancel();">&times;</button>
+        <h4 class="modal-title" id="modal-title">Prijava oglasa</h4>
+    </div>
+
+    <div class="modal-body" id="modal-body">
+        <p><b> Molimo vas da obrazložite zbog čega mislite da ovaj oglas krši pravila korišćenja i oglašavanja. </b></p>
+        <div class="form-group" ng-if="reportingFormVm.emailInput">
+            <div ng-class="{ 'input-group':true, 'has-error': reportForm.reporter.$invalid && reportForm.reporter.$dirty}">
+                <span class="input-group-addon" id="basic-addon1"> <i class="glyphicon glyphicon-envelope"></i></span>
+                <input type="text" ng-model="reportingFormVm.report.email" name="reporter" placeholder="Vaša email adresa..." class="form-control"
+                    id="reporter" reporter-unique ann-id="{{reportingFormVm.annId}}">
+                <span ng-show="reportForm.reporter.$invalid && reportForm.reporter.$dirty" class="glyphicon glyphicon-remove form-control-feedback"></span>
+            </div>
+            <span ng-show="reportForm.reporter.$error.emailValidator && reportForm.reporter.$dirty && !reportForm.reporter.$error.reporterEmailValidator"
+                class="help-block" style="color: black; font-size: 10pt; margin:0px;">Nepravilno formirana email adresa.</span>
+            <span ng-show="reportForm.reporter.$error.reporterEmailValidator" class="help-block" style="color: black; font-size: 10pt; margin:0px;">Već ste prijavili oglas sa navedene adrese</span>
+        </div>
+        <div ng-class="{'has-error': reportForm.content.$invalid && reportForm.content.$dirty}">
+            <textarea spellcheck="false" class="form-control" rows="3" name='content' ng-model="reportingFormVm.report.content" placeholder="Komentar" required></textarea>
+            <span ng-show="reportForm.content.$error.required && reportForm.content.$dirty" class="help-block" style="color: black; font-size: 10pt; margin:0px;">Obavezni ste da ostavite komentar</span>
+        </div>
+
+        <p style=" margin-top:20px;"><b> Tip prijave </b></p>
+        <div style="margin-left:20px;">
+            <div class="radio">
+                <label><input type="radio" ng-model="reportingFormVm.report.type" name="optradio" value="wrong-advertiser"> Oglas nije od vlasnika/zastupnika </label>
+            </div>
+            <div class="radio">
+                <label><input type="radio" ng-model="reportingFormVm.report.type" name="optradio" value="unreachable-advertiser"> Oglašivač nije dostupan, nije ispravan broj telefona, adresa i ne odgovara na email poruke </label>
+            </div>
+            <div class="radio">
+                <label><input type="radio" ng-model="reportingFormVm.report.type" name="optradio" value="wrong-price"> Cijena koju je postavio je lažna</label>
+            </div>
+            <div class="radio">
+                <label><input type="radio" ng-model="reportingFormVm.report.type" name="optradio" value="wronf-information"> Informacije na oglasu su lažne (kvadratura, stanje objekta...)</label>
+            </div>
+            <div class="radio">
+                <label><input type="radio" ng-model="reportingFormVm.report.type" name="optradio" value="already-sold"> Predmet oglašavanja je već prodat </label>
+            </div>
+            <div class="radio">
+                <label><input type="radio" ng-model="reportingFormVm.report.type" name="optradio" value="other"> Ostalo </label>
+            </div>
+        </div>
+    </div>
+    <div class="modal-footer">
+        <button class="btn btn-danger" type="button" ng-disabled="(!reportingFormVm.emailInput && (reportForm.content.$invalid || !reportForm.content.$dirty)) || (reportingFormVm.emailInput && (!reportForm.reporter.$dirty || reportForm.$invalid))" ng-click="reportingFormVm.ok();">Prijavi</button>
+    </div>
+</form>
