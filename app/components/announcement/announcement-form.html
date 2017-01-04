@@ -1,5 +1,5 @@
 <div class="container" style="margin-top:25px; margin-bottom:20px;">
-   <wizard on-finish="announcementFormVm.addAnnouncement();"> 
+   <wizard on-finish="announcementFormVm.submitAnnouncement();"> 
         <wz-step wz-title="Osnovni podaci">
             <div class="row" style="margin-bottom:10px;">
                 <div class="col-md-6">
@@ -16,9 +16,9 @@
 
                             <div class="form-group">
                                 <div class="btn-group">
-                                    <label class="btn btn-primary" ng-model="announcementFormVm.announcement.type" uib-btn-radio="'buy'" uib-uncheckable="uncheckable">Kupovina</label>
-                                    <label class="btn btn-primary" ng-model="announcementFormVm.announcement.type" uib-btn-radio="'sell'" uncheckable>Prodaja</label>
-                                    <label class="btn btn-primary" ng-model="announcementFormVm.announcement.type" uib-btn-radio="'rent'" uncheckable>Iznajmljivanje</label>
+                                    <label class="btn btn-primary" ng-model="announcementFormVm.announcement.type" uib-btn-radio="'kupovina'" uib-uncheckable="uncheckable">Kupovina</label>
+                                    <label class="btn btn-primary" ng-model="announcementFormVm.announcement.type" uib-btn-radio="'prodaja'" uncheckable>Prodaja</label>
+                                    <label class="btn btn-primary" ng-model="announcementFormVm.announcement.type" uib-btn-radio="'iznajmljivanje'" uncheckable>Iznajmljivanje</label>
                                 </div>
                             </div>
 
@@ -72,19 +72,19 @@
                                     <div class="selectContainer input-group">
                                         <span class="input-group-addon" id="basic-addon1"> <i class="glyphicon glyphicon-fire"></i></span>
                                         <select class="form-control" name="role" ng-model="announcementFormVm.announcement.realEstate.heatingType">
-                                            <option value="Centralno">Centralno</option>
-                                            <option value="Daljinsko">Daljinsko</option>
-                                            <option value="Etažno">Etažno</option>
+                                            <option value="centralno">Centralno</option>
+                                            <option value="daljinsko">Daljinsko</option>
+                                            <option value="etažno">Etažno</option>
                                         </select>
                                     </div>
                                 </div>
                             </div>
                             <div class="form-group">
                                 <div class="btn-group">
-                                    <label class="btn btn-primary" ng-model="announcementFormVm.announcement.realEstate.type" uib-btn-radio="'home'" uib-uncheckable="uncheckable">Kuća</label>
-                                    <label class="btn btn-primary" ng-model="announcementFormVm.announcement.realEstate.type" uib-btn-radio="'flat'" uncheckable>Stan</label>
-                                    <label class="btn btn-primary" ng-model="announcementFormVm.announcement.realEstate.type" uib-btn-radio="'bussiness'" uncheckable>Poslovni prostor</label>
-                                    <label class="btn btn-primary" ng-model="announcementFormVm.announcement.realEstate.type" uib-btn-radio="'other'" uncheckable>Ostalo</label>
+                                    <label class="btn btn-primary" ng-model="announcementFormVm.announcement.realEstate.type" uib-btn-radio="'kuća'" uib-uncheckable="uncheckable">Kuća</label>
+                                    <label class="btn btn-primary" ng-model="announcementFormVm.announcement.realEstate.type" uib-btn-radio="'stan'" uncheckable>Stan</label>
+                                    <label class="btn btn-primary" ng-model="announcementFormVm.announcement.realEstate.type" uib-btn-radio="'poslovni prostor'" uncheckable>Poslovni prostor</label>
+                                    <label class="btn btn-primary" ng-model="announcementFormVm.announcement.realEstate.type" uib-btn-radio="'ostalo'" uncheckable>Ostalo</label>
                                 </div>
                             </div>
 
@@ -267,13 +267,7 @@
                                     </td>
                                     <td nowrap>
                                         <span width="50px;"> &nbsp; </span>
-                                        <!--button type="button" class="btn btn-success btn-xs" ng-click="item.upload()" ng-disabled="item.isReady || item.isUploading || item.isSuccess">
-                                            <span class="glyphicon glyphicon-upload"></span> Postavi
-                                        </button-->
-                                        <!--button type="button" class="btn btn-warning btn-xs" ng-click="item.cancel()" ng-disabled="!item.isUploading">
-                                            <span class="glyphicon glyphicon-ban-circle"></span> Prekini
-                                        </button-->
-                                        <button type="button" class="btn btn-danger btn-xs" ng-click="item.remove()" ng-disabled="announcementFormVm.uploaded">
+                                        <button type="button" class="btn btn-danger btn-xs" ng-click="announcementFormVm.deleteItemFromQueue(item);" ng-disabled="announcementFormVm.uploaded">
                                             <span class="glyphicon glyphicon-trash"></span> Obriši
                                         </button>
                                     </td>
@@ -282,13 +276,7 @@
                         </table>
 
                         <div>
-                            <!--button type="button" class="btn btn-success btn-s" ng-click="announcementFormVm.uploader.uploadAll()" ng-disabled="!announcementFormVm.uploader.getNotUploadedItems().length">
-                                <span class="glyphicon glyphicon-upload"></span> Postavi sve
-                            </button>
-                            <button type="button" class="btn btn-warning btn-s" ng-click="announcementFormVm.uploader.cancelAll()" ng-disabled="!announcementFormVm.uploader.isUploading">
-                                <span class="glyphicon glyphicon-ban-circle"></span> Prekini sve
-                            </button-->
-                            <button type="button" class="btn btn-danger btn-s" ng-click="announcementFormVm.uploader.clearQueue()" ng-disabled="!announcementFormVm.uploader.queue.length || announcementFormVm.uploaded">
+                            <button type="button" class="btn btn-danger btn-s" ng-click="announcementFormVm.uploader.clearQueue(); announcementFormVm.announcement.images = [];" ng-disabled="!announcementFormVm.uploader.queue.length || announcementFormVm.uploaded">
                                 <span class="glyphicon glyphicon-trash"></span> Obriši sve
                             </button>
                         </div>
