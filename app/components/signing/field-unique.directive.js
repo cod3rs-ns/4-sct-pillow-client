@@ -5,46 +5,43 @@ angular
 fieldUnique.$inject = ['$http', 'CONFIG']
 
 function fieldUnique($http, CONFIG) {
-    console.log("unique");
     return {
         restrict: 'A',
         require: 'ngModel',
-        link: function (scope, element, attrs, ngModel) {
-            element.bind('change', function (e) {
+        link: function (scope, element, attrs, ctrl) {
+            function customValidator(ngModelValue) {
                 attrName = element.attr("name");
-                if (!ngModel || !element.val()) return;
-                var keyProperty = scope.$eval(attrs.fieldUnique);
-                var currentValue = element.val();
 
                 if (attrName == 'username') {
-                    $http.get(CONFIG.SERVICE_URL + "/users/username-available",
+                    return $http.get(CONFIG.SERVICE_URL + "/users/username-available",
                         { params: { username: element.val() } })
-                        .success(function (data) {
-                            ngModel.$loading = false;
-                            ngModel.$setValidity('unique', data);
+                        .then(function (response) {
+                            if (response.data != true && response.data != false)
+                                ctrl.$setValidity('unique', true);
+                            else
+                                ctrl.$setValidity('unique', response.data);
+                            return ngModelValue;
                         });
                 }
                 else if (attrName == 'email') {
-                    $http.get(CONFIG.SERVICE_URL + "/users/email-available",
+                    if (/^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/.test(ngModelValue)) {
+                        ctrl.$setValidity('emailValidator', true);
+                    } else {
+                        ctrl.$setValidity('emailValidator', false);
+                    }
+
+                    return $http.get(CONFIG.SERVICE_URL + "/users/email-available",
                         { params: { email: element.val() } })
-                        .success(function (data) {
-                            ngModel.$loading = false;
-                            ngModel.$setValidity('unique', data);
+                        .then(function (response) {
+                            if (response.data != true && response.data != false)
+                                ctrl.$setValidity('unique', true);
+                            else
+                                ctrl.$setValidity('unique', response.data);
+                            return ngModelValue;
                         });
                 }
-                else if (attrName == 'reporter') {
-                    return $http.get(CONFIG.SERVICE_URL + '/reports/exists', {
-                        params: {
-                            "email": element.val(),
-                            "id": attrs.annId
-                        }
-                    })
-                        .success(function (data) {
-                            ngModel.$loading = false;
-                            ngModel.$setValidity('unique', !data);
-                        });
-                }
-            });
+            }
+            ctrl.$parsers.push(customValidator);
         }
     };
 }

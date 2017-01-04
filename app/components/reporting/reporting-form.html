@@ -18,7 +18,7 @@
             <span ng-show="reportForm.reporter.$error.reporterEmailValidator" class="help-block" style="color: black; font-size: 10pt; margin:0px;">Već ste prijavili oglas sa navedene adrese</span>
         </div>
         <div ng-class="{'has-error': reportForm.content.$invalid && reportForm.content.$dirty}">
-            <textarea class="form-control" rows="3" name='content' ng-model="reportingFormVm.report.content" placeholder="Komentar" required></textarea>
+            <textarea spellcheck="false" class="form-control" rows="3" name='content' ng-model="reportingFormVm.report.content" placeholder="Komentar" required></textarea>
             <span ng-show="reportForm.content.$error.required && reportForm.content.$dirty" class="help-block" style="color: black; font-size: 10pt; margin:0px;">Obavezni ste da ostavite komentar</span>
         </div>
 
