@@ -93,7 +93,7 @@
                               <input type="text" ng-model="homeVm.search.streetNumber" placeholder="Broj..." class="form-control">
                           </div>
                       </div>
-                      <button class="btn btn-primary" data-toggle="modal" data-target="#searchLocationMap">Odaberite na mapi</button>
+                      <button class="btn btn-primary" data-toggle="modal" ng-click="homeVm.initMap();" data-target="#searchLocationMap">Odaberite na mapi</button>
                   </div>
               </uib-accordion>
 
@@ -180,6 +180,7 @@
 
           </div>
           <div class="col-xs-12 col-md-9">
+              <h3 ng-show="homeVm.announcements.length == 0">Nažalost, nema rezultata... Pokušajte drugačiju pretragu...</h3>
               <div class="announcement-home-outside" ng-repeat="announcement in homeVm.announcements">
                   <div class="row announcement-home-inside">
                       <div class="col-sm-12 col-md-4">
@@ -188,7 +189,7 @@
                       <div class="col-sm-12 col-md-8">
                           <h4><span class="label label-primary">{{announcement.type}}</span><small class="pull-right">{{announcement.dateAnnounced | date:'dd. MM. yyyy.' }} godine</small></h4>
 
-                          <h3>{{announcement.realEstate.name}}</h3>
+                          <h3>{{announcement.name}}</h3>
 
                           <div class="row">
                               <div class="col-xs-12 col-md-6">
@@ -222,18 +223,14 @@
 
 <!-- Google Map Modal - find announcements by location... -->
 <div id="searchLocationMap" class="modal fade" tabindex="-1" role="dialog">
-    <div class="modal-dialog" role="document">
+    <div class="modal-dialog" style="width: 80%;" role="document">
         <div class="modal-content">
-            <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                <h4 class="modal-title">Modal title</h4>
-            </div>
             <div class="modal-body">
-                <p>One fine body&hellip;</p>
+                <div id="map" style="width: 100%; height: 512px;"></div>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-primary">Save changes</button>
+                <button type="button" class="btn btn-default" data-dismiss="modal">Zatvori</button>
+                <button type="button" class="btn btn-primary" ng-click="homeVm.showMapResult()" data-dismiss="modal">Prikaži sve sa mape</button>
             </div>
         </div>
     </div>
