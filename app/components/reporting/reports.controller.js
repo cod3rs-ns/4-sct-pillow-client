@@ -32,17 +32,14 @@
 
         activate();
 
-        function activate() { 
-            reportingService.getReportsByStatus('pending', pagingParams.page - 1, reportVm.itemsPerPage, reportVm.sort())
-                .then(function (response) {
-                    reportVm.links = LinkParser.parse(response.headers('Link'));
-                    reportVm.totalItems = response.headers('X-Total-Count');
-                    reportVm.page = pagingParams.page;
-                    reportVm.reports = response.data;
-                })
-                .catch(function (error) {
-                    console.log('unable to retrieve reports');
-                });
+        function activate() {
+            // required for sorting when search term is active
+            if (reportVm.authorEmailSearch) {
+                getReportsByAuthorEmail();
+            }
+            else {
+                getPendingReports();
+            };
         };
 
 
@@ -93,10 +90,25 @@
 
 
         /**
+         * Retrieves all pending reports.
+         */
+        function getPendingReports() {
+            reportingService.getReportsByStatus('pending', pagingParams.page - 1, reportVm.itemsPerPage, reportVm.sort())
+                .then(function (response) {
+                    reportVm.links = LinkParser.parse(response.headers('Link'));
+                    reportVm.totalItems = response.headers('X-Total-Count');
+                    reportVm.page = pagingParams.page;
+                    reportVm.reports = response.data;
+                })
+                .catch(function (error) {
+                    console.log('unable to retrieve reports');
+                });
+        }
+
+        /**
          * Retrieves all reports posted by provided author email in attribute reportVm.authorEmailSearch.
          */
         function getReportsByAuthorEmail() {
-            reportVm.clear();
             reportingService.getReportsByAuthorEmail(reportVm.authorEmailSearch, pagingParams.page - 1, reportVm.itemsPerPage, reportVm.sort())
                 .then(function (response) {
                     reportVm.links = LinkParser.parse(response.headers('Link'));

@@ -7,6 +7,22 @@
                 <!-- section for sorting on click -->
                 <div class="search-category">
                     <h4>Sortiranje</h4>
+                    <div class="btn-group">
+                        <label  class="btn btn-default" 
+                                ng-model="reportVm.reverse" 
+                                uib-btn-radio="true"
+                                ng-click="reportVm.activate();"
+                                uncheckable>
+                            <span class="glyphicon glyphicon-sort-by-alphabet" aria-hidden="true"></span>
+                        </label>
+                        <label  class="btn btn-default"
+                                ng-model="reportVm.reverse"
+                                uib-btn-radio="false"
+                                ng-click="reportVm.activate();"
+                                uncheckable>
+                            <span class="glyphicon glyphicon-sort-by-alphabet-alt" aria-hidden="true"></span>
+                        </label>
+                    </div>
                     <div class="radio">
                         <label><input type="radio" ng-model="reportVm.predicate" name="type" value="id" ng-click="reportVm.activate();">Broju</label>
                     </div>
@@ -26,8 +42,20 @@
                             <input type="text" ng-model="reportVm.authorEmailSearch" placeholder="E-mail dopisnika" class="form-control">
                         </div>
                     </div>
+                    <div class="row">
+                        <!-- has two actions assigned -->
+                        <a  class="reset-link pull-right" href 
+                            ng-click="reportVm.authorEmailSearch='';reportVm.activate();"
+                             ng-show=reportVm.authorEmailSearch>
+                             Poništi pretragu
+                        </a>
+                    </div>
                 </div>
-                <button class="btn btn-success pull-right" style="margin-top: 10px;" ng-click="reportVm.getReportsByAuthorEmail();">Pretraži</button>
+                <!-- button has two actions assigned to it -->
+                <button class="btn btn-success pull-right" style="margin-top: 10px;"
+                        ng-click="reportVm.clear(); reportVm.getReportsByAuthorEmail();">
+                        Pretraži
+                </button>
             </div>
 
             <!-- reports container -->
