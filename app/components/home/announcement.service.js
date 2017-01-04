@@ -13,6 +13,7 @@ function announcementService($http, CONFIG, $log) {
         getRealEstateImage: getRealEstateImage,
         getAnnouncementsByAuthor: getAnnouncementsByAuthor,
         getAnnouncementsByAuthorAndStatus: getAnnouncementsByAuthorAndStatus,
+        getAnnouncementsInArea: getAnnouncementsInArea,
         extendExpirationDate: extendExpirationDate,
         searchAnnouncements: searchAnnouncements,
         alreadyReported: alreadyReported
@@ -96,6 +97,24 @@ function announcementService($http, CONFIG, $log) {
                 return response;
             }, function errorCallback(response) {
                 $log.warn("Unable to retrieve announcements for provided userId.");
+                return response;
+            });
+    };
+
+    /**
+     * Retrieves all announcemnets that are in provided area
+     *
+     * @param {object} northEast     North East longitude and latitude
+     * @param {object} southWest     South West longitude and latitude
+     * @returns response
+     */
+    function getAnnouncementsInArea(northEast, southWest) {
+        return $http.get(CONFIG.SERVICE_URL + '/announcements/location-search?topRightLat='
+          + northEast.lat() + '&topRightLong=' + northEast.lng() + '&bottomLeftLat=' + southWest.lat() + '&bottomLeftLong=' + southWest.lng())
+            .then(function successCallback(response) {
+                return response;
+            }, function errorCallback(response) {
+                $log.warn("Unable to retrieve announcements for provided area.");
                 return response;
             });
     };
