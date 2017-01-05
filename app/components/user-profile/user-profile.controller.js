@@ -20,6 +20,7 @@
         /** List containing DatePicker popup configurations for every announcement */
         userVm.pickerConfigurations = [];
 
+        /** Attributes used for Edit state */
         userVm.passEditState = false;
         userVm.infoEditState = false;
         userVm.newPassword = null;
@@ -157,6 +158,10 @@
                 });
         };
 
+
+        /**
+         * Initializes - edit profile information - state.
+         */
         function initEditInfoState() {
             userVm.infoEditState = true;
             userVm.editUser.firstName = userVm.user.firstName;
@@ -164,21 +169,35 @@
             userVm.editUser.phoneNumber = userVm.user.phoneNumber;
         };
 
+        /**
+         * Intitializes - edit password - state.
+         */
         function initEditPasswordState() {
             userVm.passEditState = true;
+            userVm.newPassword = null;
+            userVm.retypedPassword = null;
         };
 
+        /**
+         * Cancels - edit profile information - state and resets attributes.
+         */
         function cancelEditInfo() {
             userVm.infoEditState = false;
             userVm.editUser = {};
         };
 
+        /**
+         * Cancels - edit password - state and resets attributes.
+         */
         function cancelEditPassword() {
             userVm.passEditState = false;
             userVm.newPassword = null;
             userVm.retypedPassword = null;
         };
 
+        /**
+         * Saves changed user password.
+         */
         function changePassword() {
             userVm.user.password = userVm.newPassword;
             userService.updateUser(userVm.user)
@@ -196,7 +215,10 @@
                     });
                 });
         };
-
+        
+        /**
+         * Saves changed user profile information.
+         */
         function changeInfo() {
             userVm.user.firstName = userVm.editUser.firstName;
             userVm.user.lastName = userVm.editUser.lastName;

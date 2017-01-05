@@ -8,7 +8,14 @@
                 <div class="well well-sm">
                     <div class="row">
                         <div class="col-sm-6 col-md-4">
-                            <img ng-src={{userVm.user.imagePath}} alt="{{userVm.user.username + ' profile photo'}}" width="192px" height="192px" class="img-circle img-responsive">
+                            <!-- button for profile image change -->
+                            <span 
+                                class="glyphicon glyphicon-camera pull-right" 
+                                style="position:absolute; cursor: pointer;"
+                                ng-show="userVm.loggedin"
+                                uib-tooltip="Promeni fotografiju" tooltip-placement="left">
+                            </span>
+                            <img ng-src={{userVm.user.imagePath}} alt="{{userVm.user.username + ' profile photo'}}" class="img-circle img-responsive">
                         </div>
                         <div class="col-sm-6 col-md-8">
                             <h4>{{userVm.user.firstName + ' ' + userVm.user.lastName}}</h4>
@@ -22,6 +29,8 @@
                                 <cite title="{{userVm.user.type}}"><i class="glyphicon glyphicon-asterisk"></i> administrator</cite>
                             </span>
                             <p>
+                                <i class="glyphicon glyphicon-user"></i> &nbsp;<strong>{{userVm.user.username}}</strong>
+                                <br />
                                 <i class="glyphicon glyphicon-envelope"></i> &nbsp;{{userVm.user.email}}
                                 <br />
                                 <i class="glyphicon glyphicon-phone"></i> &nbsp;{{userVm.user.phoneNumber}}
