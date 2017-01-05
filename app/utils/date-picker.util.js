@@ -3,12 +3,17 @@
 
     angular
         .module('awt-cts-client')
-        .service('DatePickerService', DatePickerService);
+        .factory('DatePickerService', DatePickerService);
 
     function DatePickerService() {
-        this.getConfiguration = getConfiguration;
-        
-        function getConfiguration() { 
+
+        var service = {
+            getConfiguration : getConfiguration
+        };
+
+        return service;
+
+        function getConfiguration() {
             var pickerCfg = {};
 
             // Date picker functions
@@ -77,7 +82,7 @@
 
                 return '';
             }
-        
+
         return pickerCfg;
         }
     }

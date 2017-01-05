@@ -1,21 +1,23 @@
 (function() {
-'use strict';
+    'use strict';
 
     angular
         .module('awt-cts-client')
         .service('userService', userService);
 
-    userService.inject = ['$http', 'CONFIG', '$log'];
-    function userService($http, CONFIG, $log) {
+    userService.inject = ['$http', '$log', 'CONFIG'];
+
+    function userService($http, $log, CONFIG) {
         var service = {
             getUser: getUser,
             updateUser: updateUser
         };
+
         return service;
 
         /**
-         * Retrieves User (if user is logged-in) or UserDTO for the provided username. 
-         * 
+         * Retrieves User (if user is logged-in) or UserDTO for the provided username.
+         *
          * @param {string} username User's username
          * @returns response
          */
@@ -25,14 +27,14 @@
                     $log.info('User successfully retrieved.');
                     return response;
                 }, function errorCallback(response) {
-                    $log.error('User cannot be retrieved.');
-                    throw "cannot_retrieve_user";
+                    $log.warn(response.headers('X-SCT-Alert'));
+                    throw response.headers('X-SCT-Alert');
                 });
         };
 
         /**
          * Updates current logged in user.
-         * 
+         *
          * @param {User} user   Logged-in user to be updated
          * @returns response
          */
@@ -42,10 +44,10 @@
                     $log.info('User successfully updated.');
                     return response;
                 }, function errorCallback(response) {
-                    $log.error('User cannot be updated.');
-                    throw "cannot_update_user";
+                    $log.warn(response.headers('X-SCT-Alert'));
+                    throw response.headers('X-SCT-Alert');
                 });
         };
-        
+
     }
 })();

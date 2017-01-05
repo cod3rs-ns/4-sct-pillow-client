@@ -17,6 +17,9 @@
             verificationTokenService.resendToken(verificationTokenVm.username)
                 .then(function (response) {
                     $log.info("Verification token is resend successfully.");
+                })
+                .catch(function (error) {
+                    $log.error(error);
                 });
         }
     }
