@@ -145,11 +145,11 @@
     <uib-tabset active="active" ng-show="userVm.user.type === 'advertiser'" type="pills">
         <uib-tab index="0" >
             <uib-tab-heading>
-                Aktivni oglasi &nbsp;<span class="badge alert-info"> {{userVm.announcements.length}}</span>
+                Aktivni oglasi &nbsp;<span class="badge alert-info"> {{userVm.totalItems}}</span>
             </uib-tab-heading>
             <hr/>
             <div class="container" style="padding-top: 10px; padding-left: 0px;">
-                <div class="row" ng-show="userVm.announcements.length === 0">
+                <div class="row" ng-show="userVm.totalItems === 0">
                     <p style="margin-left: 100px; margin-top: 20px;"><strong>Trenutno nemate oglasa.</strong></p>    
                 </div>
                 <div class="col-xs-12 col-sm-6 col-md-6" ng-repeat="announcement in userVm.announcements track by $index">
@@ -230,6 +230,16 @@
                         </div>
                     </div>
                 </div>
+            </div>
+            <!-- pagination -->
+            <div class="text-center">
+                <ul     style="text-align: center;"
+                        uib-pagination class="pagination-sm"
+                        total-items="userVm.totalItems"
+                        items-per-page="userVm.itemsPerPage"
+                        ng-model="userVm.page" 
+                        ng-change="userVm.transition()">
+                </ul>
             </div>
         </uib-tab>
 
