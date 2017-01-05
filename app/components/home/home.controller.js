@@ -54,12 +54,11 @@
                         map.setCenter(yourPosition);
 
                     }, function() {
-                        // handleLocationError(true, tooltip, map.getCenter());
+                        handleLocationError(true, tooltip, map.getCenter());
                     });
                 } else {
                     // Browser doesn't support Geolocation
-                    // TODO
-                    // handleLocationError(false, tooltip, map.getCenter());
+                    handleLocationError(false, tooltip, map.getCenter());
                 }
             }, 500);
 
@@ -157,5 +156,12 @@
               '</div>' +
             '</div>';
         }
+
+        function handleLocationError(browserHasGeolocation, tooltip, pos) {
+            var content = (browserHasGeolocation) ? "Ne dozvoljavate Vaše lociranje." : "Vaš pretraživač ne podržava ovu uslugu.";
+
+            tooltip.setPosition(pos);
+            tooltip.setContent(content);
+      }
     }
 })();
