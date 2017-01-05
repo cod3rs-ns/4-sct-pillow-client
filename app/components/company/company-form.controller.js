@@ -33,6 +33,7 @@
             }
             else {
                 companyFormVm.submitBtnName = 'Izmeni agenciju';
+
                 companyService.getCompanyById($stateParams.companyId)
                     .then(function (response) {
                         companyFormVm.company = response.data;
@@ -41,11 +42,12 @@
             }
         }
 
+        var headerToken = CONFIG.AUTH_TOKEN;
         // Upload images
         var uploader = companyFormVm.uploader = new FileUploader({
             url: CONFIG.SERVICE_URL + '/images/company/',
             headers: {
-                "X-Auth-Token": $localStorage.token
+                headerToken: $localStorage.token
             }
         });
 
@@ -68,6 +70,7 @@
 
         uploader.onSuccessItem = function (fileItem, response, status, headers) {
             companyFormVm.company.imagePath = response;
+
             if (companyFormVm.state == 'addCompany') {
                 companyFormVm.company.users = [companyFormVm.selectedUser];
                 companyService.createCompany(companyFormVm.company)
@@ -109,7 +112,6 @@
         }
 
         function clearFile() {
-            $log.info("Clear");
             companyFormVm.btnName = "Pretraži";
             companyFormVm.clearHide = false;
             companyFormVm.fileName = "";
@@ -131,7 +133,7 @@
         };
 
         function submitForm() {
-            if (uploader.queue.length == 0 && companyFormVm.state == 'updateCompany') {
+            if (_.isEmpty(uploader.queue) && companyFormVm.state == 'updateCompany') {
                 companyFormVm.update();
             } else {
                 uploader.uploadItem(uploader.queue[0]);

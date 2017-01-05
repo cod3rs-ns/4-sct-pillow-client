@@ -5,9 +5,9 @@
         .module('awt-cts-client')
         .controller('CompanyController', CompanyController);
 
-    CompanyController.$inject = ['$scope', '$state', '$localStorage', '$stateParams', 'companyService', 'announcementService'];
+    CompanyController.$inject = ['$state', '$localStorage', '$stateParams', 'companyService', 'announcementService'];
 
-    function CompanyController($scope, $state, $localStorage, $stateParams, companyService, announcementService) {
+    function CompanyController($state, $localStorage, $stateParams, companyService, announcementService) {
 
         var companyVm = this;
 

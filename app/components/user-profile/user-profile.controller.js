@@ -62,7 +62,7 @@
                     }
                     // determine if user profile is for logged-in user
                     if ($stateParams.username === $localStorage.user) {
-                        if (userVm.user.type === 'advertiser' && userVm.user.company != null && userVm.user.companyVerified === 'accepted') {
+                        if (userVm.user.type === 'advertiser' && !_.isNull(userVm.user.company) && userVm.user.companyVerified === 'accepted') {
                             companyService.getUserRequestsByStatusPending()
                                 .then(function (response) {
                                     userVm.usersRequests = response.data;
@@ -74,6 +74,7 @@
                                     });
                                 });
                         };
+
                         initializeFileUploader();
                         userVm.loggedin = true;
                     }
@@ -100,6 +101,7 @@
                     userVm.totalItems = response.headers('X-Total-Count');
                     userVm.page = pagingParams.page;
                     userVm.announcements = response.data;
+
                     _.forEach(userVm.announcements, function (value) {
                         // create color picker configurations
                         userVm.pickerConfigurations.push(DatePickerService.getConfiguration());
@@ -109,7 +111,7 @@
                         value.expiredMessage = momentExpDate.fromNow();
                         if (momentExpDate.isAfter(moment())) {
                             value.expirationClass = 'color-success';
-                            // check if expiration date is close (by 7 days)                        
+                            // check if expiration date is close (by 7 days)
                             if (moment(new Date(value.expirationDate)).subtract(7, 'days').isBefore(moment())) {
                                 value.expirationClass = 'color-warning';
                             };
@@ -121,9 +123,9 @@
                 });
         };
 
-        /** 
+        /**
          * Accepts user request to join company.
-         * @param {integer} userId ID of the user which request will be accepted. 
+         * @param {integer} userId ID of the user which request will be accepted.
          */
         function acceptRequest(userId) {
             companyService.resolveMembershipRequest(userId, true)
@@ -153,7 +155,7 @@
 
         /**
          * Extends announcemnts expiration date.
-         * 
+         *
          * @param {any} annId   ID of the announcement
          * @param {any} expDate Expiration date timestamp
          */
@@ -261,7 +263,7 @@
 
         /**
          * Loads provided page.
-         * 
+         *
          * @param {integer} page    page to load.
          */
         function loadPage(page) {
@@ -270,7 +272,7 @@
         };
 
         /**
-         * Makes state transition to new page. 
+         * Makes state transition to new page.
          */
         function transition() {
             $state.transitionTo($state.$current, {
@@ -281,7 +283,7 @@
         };
 
         /**
-         * Resets pagination attributes. 
+         * Resets pagination attributes.
          */
         function clear() {
             userVm.links = null;
@@ -303,10 +305,12 @@
         * Initializing file uploader and its filters and callback functions.
         */
         function initializeFileUploader() {
+            var headerToken = CONFIG.AUTH_TOKEN;
+
             userVm.uploader = new FileUploader({
                 url: CONFIG.SERVICE_URL + '/images/users/',
                 headers: {
-                    "X-Auth-Token": $localStorage.token
+                    headerToken: $localStorage.token
                 }
             });
 
@@ -341,7 +345,7 @@
 
         /**
         * Updating user when image is properly uploaded.
-        */        
+        */
         function uploadImage(fileItem, response, status, headers) {
             userVm.user.imagePath = response;
             userService.updateUser(userVm.user)

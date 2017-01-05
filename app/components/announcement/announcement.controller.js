@@ -55,6 +55,7 @@
                 .then(function(response) {
                     announcementVm.announcement = response.data;
                     announcementVm.address = response.data.realEstate.location;
+
                     announcementVm.isMyAdvertisement = $localStorage.user === announcementVm.announcement.author.username;
 
                     _.forEach(response.data.images, function(image, index) {
@@ -63,6 +64,7 @@
 
                     announcementVm.checkIfUserAlreadyReportAnnouncement();
 
+                    // Get all comments for announcement
                     commentService.getCommentsForAnnouncement(announcementId)
                         .then(function(response) {
                             _.forEach(response.data, function(comment) {
@@ -75,7 +77,6 @@
                                     }
 
                                     isMy = $localStorage.user === comment.author.username;
-                                    $log.log(isMy);
                                 }
                                 else {
                                     var author = {
@@ -96,45 +97,50 @@
                             });
                         });
 
+                    // Get all marks for announcement
                     var role = $localStorage.role;
-
                     markService.getMarksForAnnouncement(announcementId)
                         .then(function(response) {
+                            // Average Announcement mark
                             announcementVm.votes.announcement.average = _.meanBy(response.data, function(mark) {
                                 return mark.value;
                             }) || 0;
 
-                            $log.log(announcementVm.votes.announcement.average);
-
+                            // Number of votes
                             announcementVm.votes.announcement.count = _.size(response.data) || 0;
-                            $log.log(announcementVm.votes.announcement.count);
 
-                            var myVote = _.find(response.data, function(o) { return o.grader.username === $localStorage.user; });
+                            // Check if logged user is voted
+                            var myVote = _.find(response.data, function(vote) {
+                                return vote.grader.username === $localStorage.user;
+                            });
                             var exist = _.size(myVote) !== 0;
 
                             announcementVm.vote.announcement = myVote;
 
                             announcementVm.rating.announcement = (exist) ? myVote.value : -1;
-                            announcementVm.isAnnouncementMarkEnabled = (role === 'advertiser' || role === 'verifier'); // && !exist;
+                            announcementVm.isAnnouncementMarkEnabled = (role === 'advertiser' || role === 'verifier');
                         });
 
+                    // Get all marks for announcer
                     markService.getMarksForAnnouncer(announcementVm.announcement.author.id)
                         .then(function(response) {
+                            // Average Announcer mark
                             announcementVm.votes.announcer.average = _.meanBy(response.data, function(mark) {
                                 return mark.value;
                             }) || 0;
-                            $log.log(announcementVm.votes.announcer.average);
 
+                            // Number of votes
                             announcementVm.votes.announcer.count = _.size(response.data) || 0;
-                            $log.log(announcementVm.votes.announcer.count);
 
-                            var myVote = _.find(response.data, function(o) { return o.grader.username === $localStorage.user; });
+                            // Check if logged user is voted
+                            var myVote = _.find(response.data, function(vote) {
+                                return vote.grader.username === $localStorage.user; });
                             var exist = _.size(myVote) !== 0;
 
                             announcementVm.vote.announcer = myVote;
 
                             announcementVm.rating.announcer = (exist) ? myVote.value : -1;
-                            announcementVm.isAnnouncerMarkEnabled = (role === 'advertiser' || role === 'verifier'); // && !exist;
+                            announcementVm.isAnnouncerMarkEnabled = (role === 'advertiser' || role === 'verifier');
                         });
                 });
         }
@@ -170,7 +176,7 @@
         }
 
         function checkIfUserAlreadyReportAnnouncement() {
-            if ($localStorage.user != null) {
+            if (!_.isNull($localStorage.user)) {
                 announcementService.alreadyReported(announcementVm.announcement.id, $localStorage.user)
                     .then(function(response) {
                         announcementVm.alreadyReported = response.data;
@@ -235,7 +241,7 @@
             commentService.deleteComment(id)
                 .then(function(response) {
                     _.remove(announcementVm.comments, function(comment) {
-                        return comment.id == id;
+                        return comment.id === id;
                     });
                 });
         }
@@ -243,7 +249,7 @@
         function voteAnnouncement(rating) {
             var mark = {};
 
-            if (announcementVm.vote.announcement === undefined) {
+            if (_.isUndefined(announcementVm.vote.announcement)) {
                 mark.announcement = { 'id': _.toInteger($stateParams.announcementId) };
                 mark.value = _.toInteger(rating);
 
@@ -278,7 +284,7 @@
         function voteAnnouncer(rating) {
             var mark = {};
 
-            if (announcementVm.vote.announcer === undefined) {
+            if (_.isUndefined(announcementVm.vote.announcer)) {
                 mark.gradedAnnouncer = { 'id': _.toInteger(announcementVm.announcement.author.id) };
                 mark.value = _.toInteger(rating);
 
@@ -329,16 +335,17 @@
             modalInstance.result.then(function(report) {
                 reportingService.createReport(report)
                     .then(function(response) {
-                        if ($localStorage.user != undefined)
+                        if (!_.isUndefined($localStorage.user))
                             announcementVm.alreadyReported = true;
                         $log.info('Report is successfully created' + response.data);
                     })
             }, function() {
-                $log.info('Modal dismissed at: ' + new Date());
+                $log.info('Modal dismissed at: ' + _.now());
             });
         }
 
         function cancel(event) {
+            // If Escape is pressed
             if (27 === event.keyCode) {
                 announcementVm.editing = undefined;
             }

@@ -2,11 +2,11 @@
     'use strict';
     angular
         .module('awt-cts-client')
-        .factory('VerificationTokenService', VerificationTokenService);
+        .factory('verificationTokenService', verificationTokenService);
 
-    VerificationTokenService.$inject = ['$http', '$resource', '$log', 'CONFIG'];
+    verificationTokenService.$inject = ['$http', '$resource', '$log', 'CONFIG'];
 
-    function VerificationTokenService($http, $resource, $log, CONFIG) {
+    function verificationTokenService($http, $resource, $log, CONFIG) {
 
         var service = {
             resendToken: resendToken

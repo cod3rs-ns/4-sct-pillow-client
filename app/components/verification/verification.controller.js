@@ -5,16 +5,16 @@
         .module('awt-cts-client')
         .controller('VerificationTokenController', VerificationTokenController);
 
-    VerificationTokenController.$inject = ['$scope', '$state', '$http', '$log', 'VerificationTokenService'];
+    VerificationTokenController.$inject = ['$state', '$http', '$log', 'verificationTokenService'];
 
-    function VerificationTokenController($scope, $state, $http, $log, VerificationTokenService) {
+    function VerificationTokenController($state, $http, $log, verificationTokenService) {
         var verificationTokenVm = this;
 
         verificationTokenVm.username = "";
         verificationTokenVm.sendMailAgain = sendMailAgain;
 
         function sendMailAgain() {
-            VerificationTokenService.resendToken(verificationTokenVm.username)
+            verificationTokenService.resendToken(verificationTokenVm.username)
                 .then(function (response) {
                     $log.info("Verification token is resend successfully.");
                 });

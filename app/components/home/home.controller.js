@@ -117,7 +117,6 @@
         function getAllAnnouncements() {
             announcementService.getAnnouncements(homeVm.page, homeVm.itemsPerPage, homeVm.sortBy)
                 .then(function(response) {
-                    $log.log(response);
                     homeVm.announcements = response.data;
                     homeVm.totalItems = response.headers('X-Total-Count');
                 });
@@ -127,7 +126,7 @@
             var searchTerm = "";
 
             _.forEach(homeVm.search, function(value, key) {
-                if (value !== '' && value !== undefined) {
+                if (value !== '' && !_.isUndefined(value)) {
                     searchTerm += key + "=" + value + "&";
                 }
             });
