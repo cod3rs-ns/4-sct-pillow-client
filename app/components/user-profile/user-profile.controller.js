@@ -5,9 +5,9 @@
         .module('awt-cts-client')
         .controller('UserProfileController', UserProfileController);
 
-    UserProfileController.$inject = ['companyService', 'announcementService', 'ngToast', 'DatePickerService', '_', 'userService', '$stateParams', '$localStorage', '$state', 'LinkParser', 'pagingParams', 'paginationConstants', 'FileUploader', 'CONFIG'];
+    UserProfileController.$inject = ['companyService', 'announcementService', 'ngToast', 'DatePickerService', '_', 'userService', '$stateParams', '$localStorage', '$state', '$log', 'LinkParser', 'pagingParams', 'paginationConstants', 'FileUploader', 'CONFIG'];
 
-    function UserProfileController(companyService, announcementService, ngToast, DatePickerService, _, userService, $stateParams, $localStorage, $state, LinkParser, pagingParams, paginationConstants, FileUploader, CONFIG) {
+    function UserProfileController(companyService, announcementService, ngToast, DatePickerService, _, userService, $stateParams, $localStorage, $state, $log, LinkParser, pagingParams, paginationConstants, FileUploader, CONFIG) {
         var userVm = this;
         /** User for whom Profile page is displayed */
         userVm.user = {};
@@ -120,6 +120,9 @@
                             value.expirationClass = 'color-danger';
                         };
                     });
+                })
+                .catch(function (error) {
+                    $log.error(error);
                 });
         };
 
@@ -135,6 +138,9 @@
                         className: 'success',
                         content: '<strong>Korisnikov zahtev prihvaćen.</strong>'
                     });
+                })
+                .catch(function (error) {
+                    $log.error(error);
                 });
         };
 
@@ -150,6 +156,9 @@
                         className: 'danger',
                         content: '<strong>Korisnikov zahtev odbijen.</strong>'
                     });
+                })
+                .catch(function (error) {
+                    $log.error(error);
                 });
         };
 

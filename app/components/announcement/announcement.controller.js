@@ -70,6 +70,9 @@
                             _.forEach(response.data, function(comment) {
                                 announcementVm.comments.push(CommentsUtil.formatComment(comment));
                             });
+                        })
+                        .catch(function (error) {
+                            $log.error(error);
                         });
 
                     // Get all marks for announcement
@@ -87,6 +90,9 @@
                             announcementVm.rating.announcement = myVote.value || -1;
 
                             announcementVm.isAnnouncementMarkEnabled = (role === 'advertiser' || role === 'verifier');
+                        })
+                        .catch(function (error) {
+                            $log.error(error);
                         });
 
                     // Get all marks for announcer
@@ -103,6 +109,9 @@
                             announcementVm.rating.announcer = myVote.value || -1;
 
                             announcementVm.isAnnouncerMarkEnabled = (role === 'advertiser' || role === 'verifier');
+                        })
+                        .catch(function (error) {
+                            $log.error(error);
                         });
                 });
         }
@@ -142,6 +151,9 @@
                 announcementService.alreadyReported(announcementVm.announcement.id, $localStorage.user)
                     .then(function(response) {
                         announcementVm.alreadyReported = response.data;
+                    })
+                    .catch(function (error) {
+                        $log.error(error);
                     });
             }
         }
@@ -159,6 +171,9 @@
                     var comment = CommentsUtil.formatComment(response.data);
 
                     announcementVm.comments.push(comment);
+                })
+                .catch(function (error) {
+                    $log.error(error);
                 });
         }
 
@@ -173,6 +188,9 @@
               .then(function(response) {
                   comment.isMy = true;
                   announcementVm.editing = undefined;
+              })
+              .catch(function (error) {
+                  $log.error(error);
               });
         }
 
@@ -182,6 +200,9 @@
                     _.remove(announcementVm.comments, function(comment) {
                         return comment.id === id;
                     });
+                })
+                .catch(function (error) {
+                    $log.error(error);
                 });
         }
 
@@ -199,6 +220,9 @@
 
                       announcementVm.votes.announcement.average =
                           MarksUtil.updateAverage(response.data.value, votes.count++, votes.average);
+                    })
+                    .catch(function (error) {
+                        $log.error(error);
                     });
             }
             else {
@@ -213,6 +237,9 @@
 
                         announcementVm.votes.announcement.average =
                             MarksUtil.updateAverage(response.data.value, votes.count, votes.average, oldVal);
+                    })
+                    .catch(function (error) {
+                        $log.error(error);
                     });
             }
         }
@@ -231,6 +258,9 @@
 
                       announcementVm.votes.announcer.average =
                           MarksUtil.updateAverage(response.data.value, votes.count++, votes.average);
+                    })
+                    .catch(function (error) {
+                        $log.error(error);
                     });
             }
             else {
@@ -245,6 +275,9 @@
 
                       announcementVm.votes.announcer.average =
                           MarksUtil.updateAverage(response.data.value, votes.count, votes.average, oldVal);
+                    })
+                    .catch(function (error) {
+                        $log.error(error);
                     });
             }
         }
@@ -272,6 +305,9 @@
                             announcementVm.alreadyReported = true;
                         $log.info('Report is successfully created' + response.data);
                     })
+                    .catch(function (error) {
+                        $log.error(error);
+                    });
             }, function() {
                 $log.info('Modal dismissed at: ' + _.now());
             });

@@ -52,6 +52,9 @@
 
                     // Setting background image for comapny header page
                     $("#company-cover").backstretch("assets/img/companyCover.jpg");
+                })
+                .catch(function (error) {
+                    $log.error(error);
                 });
         }
 
@@ -59,6 +62,9 @@
             companyService.getTopThreeByCompanyId(companyId)
                 .then(function (response) {
                     companyVm.topThree = response.data;
+                })
+                .catch(function (error) {
+                    $log.error(error);
                 });
         }
     }

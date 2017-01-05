@@ -79,7 +79,11 @@
                                 }, function errorCallback(data, status, headers, config) {
                                     $log.info("Wrong image url.");
                                 });
+                        })
+                        .catch(function (error) {
+                            $log.error(error);
                         });
+
                         announcementFormVm.uploader.progress = 100;
                     });
             }
@@ -232,6 +236,9 @@
                     $state.transitionTo("announcement", {
                         announcementId: response.data.id
                     });
+                })
+                .catch(function (error) {
+                    $log.error(error);
                 });
         }
 
@@ -253,6 +260,9 @@
                     $state.transitionTo("announcement", {
                         announcementId: response.data.id
                     });
+                })
+                .catch(function (error) {
+                    $log.error(error);
                 });
         }
 
@@ -304,6 +314,9 @@
                         announcementFormVm.similarsDisabled = true;
                         WizardHandler.wizard().goTo("Slike");
                     }
+                })
+                .catch(function (error) {
+                    $log.error(error);
                 });
         };
 
