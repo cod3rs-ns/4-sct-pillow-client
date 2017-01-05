@@ -24,13 +24,15 @@ angular
         'AUTH_TOKEN': 'X-Auth-Token'
     }
     )
-    .config(function ($stateProvider, $urlRouterProvider, $httpProvider) {
+    .config(function ($stateProvider, $urlRouterProvider, $httpProvider, $locationProvider) {
 
         // http://stackoverflow.com/questions/39931983/angularjs-possible-unhandled-rejection-when-using-ui-router
 
         // $qProvider.errorOnUnhandledRejections(false);
 
-
+        // For excluding exclamation from url
+        $locationProvider.hashPrefix('');
+        
         // For any unmatched url, redirect to /home
         $urlRouterProvider.otherwise("/home");
 

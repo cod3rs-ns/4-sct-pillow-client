@@ -9,12 +9,14 @@
                     <div class="row">
                         <div class="col-sm-6 col-md-4">
                             <!-- button for profile image change -->
-                            <span 
-                                class="glyphicon glyphicon-camera pull-right" 
-                                style="position:absolute; cursor: pointer;"
-                                ng-show="userVm.loggedin"
-                                uib-tooltip="Promeni fotografiju" tooltip-placement="left">
-                            </span>
+                            <label ng-if="userVm.uploader">
+                                <input  type="file" style="display: none;" accept="image/png, image/jpeg, image/gif" nv-file-select uploader="userVm.uploader"/>
+                                <span
+                                    class="glyphicon glyphicon-camera pull-right" 
+                                    style="position:absolute; cursor: pointer;"
+                                    uib-tooltip="Promeni fotografiju" tooltip-placement="left">
+                                </span>
+                            </label>
                             <img ng-src={{userVm.user.imagePath}} alt="{{userVm.user.username + ' profile photo'}}" class="img-circle img-responsive">
                         </div>
                         <div class="col-sm-6 col-md-8">
