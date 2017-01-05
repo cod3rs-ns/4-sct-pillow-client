@@ -13,6 +13,7 @@
     <div id="navbar" class="collapse navbar-collapse">
       <ul class="nav navbar-nav">
         <li><a ui-sref="home">Početna</a></li>
+        <li ng-if="headerVm.$storage.role === 'guest'"><a ui-sref="companies">Sve agencije</a></li>
         <li ng-if="headerVm.$storage.role === 'admin'"><a ui-sref="announcements">Svi oglasi</a></li>
         <li ng-if="headerVm.$storage.role === 'advertiser'"><a ui-sref="addAnnouncement">Dodaj oglas</a></li>
         <li ng-if="headerVm.$storage.role === 'advertiser'"><a ui-sref="announcement">Moji oglasi</a></li>
