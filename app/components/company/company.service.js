@@ -108,7 +108,7 @@ function companyService($http, CONFIG, $log) {
                 return response;
             }, function errorCallback(response) {
                 $log.error("Unable to retreive users with pending requests.");
-                return response;
+                throw response.headers('X-SCT-Alert');
             });
     };
 

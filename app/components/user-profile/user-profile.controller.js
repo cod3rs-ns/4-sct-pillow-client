@@ -62,12 +62,18 @@
                     }
                     // determine if user profile is for logged-in user
                     if ($stateParams.username === $localStorage.user) {
-                        if (userVm.user.type === 'advertiser') {
+                        if (userVm.user.type === 'advertiser' && userVm.user.company != null && userVm.user.companyVerified === 'accepted') {
                             companyService.getUserRequestsByStatusPending()
-                            .then(function (response) {
-                                userVm.usersRequests = response.data;
+                                .then(function (response) {
+                                    userVm.usersRequests = response.data;
+                                })
+                                .catch(function (error) {
+                                    ngToast.create({
+                                    className: 'danger',
+                                    content: '<p><strong>GREŠKA! </strong>' + error + '</p>'
+                                });
                             });
-                        }
+                        };
                         userVm.loggedin = true;
                     }
                     else {

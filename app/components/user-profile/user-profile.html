@@ -29,13 +29,13 @@
                                 <cite title="{{userVm.user.type}}"><i class="glyphicon glyphicon-asterisk"></i> administrator</cite>
                             </span>
                             <p>
-                                <i class="glyphicon glyphicon-user"></i> &nbsp;<strong>{{userVm.user.username}}</strong>
+                                <i class="glyphicon glyphicon-user" uib-tooltip="Korisničko ime" tooltip-placement="left"></i> &nbsp;<strong>{{userVm.user.username}}</strong>
                                 <br />
-                                <i class="glyphicon glyphicon-envelope"></i> &nbsp;{{userVm.user.email}}
+                                <i class="glyphicon glyphicon-envelope" uib-tooltip="Email" tooltip-placement="left"></i> &nbsp;{{userVm.user.email}}
                                 <br />
-                                <i class="glyphicon glyphicon-phone"></i> &nbsp;{{userVm.user.phoneNumber}}
+                                <i class="glyphicon glyphicon-phone" uib-tooltip="Telefon" tooltip-placement="left"></i> &nbsp;{{userVm.user.phoneNumber}}
                                 <br />
-                                <i ng-show="userVm.user.companyVerified === true"class="glyphicon glyphicon-home"></i> <a ng-show="userVm.user.companyVerified === true" ui-sref="company.members({companyId: userVm.user.company.id})">&nbsp;{{userVm.user.company.name}}</a>
+                                <i ng-show="userVm.user.companyVerified === 'accepted'"class="glyphicon glyphicon-home" uib-tooltip="Kompanija" tooltip-placement="left"></i> <a ng-show="userVm.user.companyVerified === 'accepted'" ui-sref="company.members({companyId: userVm.user.company.id})">&nbsp;{{userVm.user.company.name}}</a>
                             </p>
                             <!-- info edit switch button -->
                             <span 
@@ -257,7 +257,12 @@
                     <p class="company-request">
                         <img ng-src="{{user.imagePath}}" alt="{{user.firstName + user.lastName}}" width="36px" height="36px" class="img-rounded">
                         <!-- TODO provide link to user profile -->
-                        <a href="#">{{user.firstName + ' ' + user.lastName}}</a> {{ ' (' + user.email + ')'}}
+                        <a ui-sref="profile({username: user.username})">{{user.firstName + ' ' + user.lastName}}</a>
+                        <small style="font-size: 80%;">
+                            <em>
+                                &nbsp;{{user.email}}
+                            </em>
+                        </small>
                         <span   class="glyphicon glyphicon-ok pull-right"
                                 style="color:seagreen;cursor:pointer;"
                                 ng-click="userVm.acceptRequest(user.id);"></span>
