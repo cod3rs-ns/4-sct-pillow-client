@@ -20,10 +20,22 @@
         /** List containing DatePicker popup configurations for every announcement */
         userVm.pickerConfigurations = [];
 
+        userVm.passEditState = false;
+        userVm.infoEditState = false;
+        userVm.newPassword = null;
+        userVm.retypedPassword = null;
+        userVm.editUser = {};
+
         /** Public functions */
         userVm.acceptRequest = acceptRequest;
         userVm.rejectRequest = rejectRequest;
         userVm.extendExpirationDate = extendExpirationDate;
+        userVm.initEditInfoState = initEditInfoState;
+        userVm.initEditPasswordState = initEditPasswordState;
+        userVm.cancelEditInfo = cancelEditInfo;
+        userVm.cancelEditPassword = cancelEditPassword;
+        userVm.changePassword = changePassword;
+        userVm.changeInfo = changeInfo;
 
         activate();
 
@@ -59,7 +71,6 @@
                 });
         };
 
-
         /**
          * -private-
          * Retrieves announcements for active user.
@@ -87,7 +98,7 @@
                         };
                     });
                 });
-        }
+        };
 
         /** 
          * Accepts user request to join company.
@@ -146,5 +157,64 @@
                 });
         };
 
+        function initEditInfoState() {
+            userVm.infoEditState = true;
+            userVm.editUser.firstName = userVm.user.firstName;
+            userVm.editUser.lastName = userVm.user.lastName;
+            userVm.editUser.phoneNumber = userVm.user.phoneNumber;
+        };
+
+        function initEditPasswordState() {
+            userVm.passEditState = true;
+        };
+
+        function cancelEditInfo() {
+            userVm.infoEditState = false;
+            userVm.editUser = {};
+        };
+
+        function cancelEditPassword() {
+            userVm.passEditState = false;
+            userVm.newPassword = null;
+            userVm.retypedPassword = null;
+        };
+
+        function changePassword() {
+            userVm.user.password = userVm.newPassword;
+            userService.updateUser(userVm.user)
+                .then(function (response) {
+                    ngToast.create({
+                        className: 'success',
+                        content: '<strong>Uspešno ste promenili lozinku!</strong>'
+                    });
+                    userVm.passEditState = false;
+                })
+                .catch(function (error) {
+                    ngToast.create({
+                        className: 'danger',
+                        content: '<p><strong>GREŠKA! </strong>' + error + '</p>'
+                    });
+                });
+        };
+
+        function changeInfo() {
+            userVm.user.firstName = userVm.editUser.firstName;
+            userVm.user.lastName = userVm.editUser.lastName;
+            userVm.user.phoneNumber = userVm.editUser.phoneNumber;
+            userService.updateUser(userVm.user)
+                .then(function (response) {
+                    ngToast.create({
+                        className: 'success',
+                        content: '<strong>Uspešno ste ažurirali informacije!</strong>'
+                    });
+                    userVm.infoEditState = false;
+                })
+                .catch(function (error) {
+                    ngToast.create({
+                        className: 'danger',
+                        content: '<p><strong>GREŠKA! </strong>' + error + '</p>'
+                    });
+                });
+        };
     }
 })();
