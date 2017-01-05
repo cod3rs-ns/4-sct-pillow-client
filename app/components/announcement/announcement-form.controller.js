@@ -35,11 +35,10 @@
         function activate() {
             announcementFormVm.state = $state.current.name;
 
-            var headerToken = CONFIG.AUTH_TOKEN;
             announcementFormVm.uploader = new FileUploader({
                 url: CONFIG.SERVICE_URL + '/images/announcements/',
                 headers: {
-                    headerToken: $localStorage.token
+                    "X-Auth-Token": $localStorage.token
                 }
             });
 
@@ -260,7 +259,6 @@
             // Callbacks for one image upload
             announcementFormVm.uploader.onSuccessItem = function (fileItem, response, status, headers) {
                 announcementFormVm.announcement.images.push({ id: null, imagePath: response });
-
                 $log.info('Item upload completed.', fileItem, response, status, headers);
             };
 

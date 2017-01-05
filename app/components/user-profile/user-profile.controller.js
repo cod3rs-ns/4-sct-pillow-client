@@ -305,12 +305,10 @@
         * Initializing file uploader and its filters and callback functions.
         */
         function initializeFileUploader() {
-            var headerToken = CONFIG.AUTH_TOKEN;
-
             userVm.uploader = new FileUploader({
                 url: CONFIG.SERVICE_URL + '/images/users/',
                 headers: {
-                    headerToken: $localStorage.token
+                    "X-Auth-Token": $localStorage.token
                 }
             });
 
