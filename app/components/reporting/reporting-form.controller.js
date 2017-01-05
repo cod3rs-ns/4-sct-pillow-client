@@ -5,9 +5,9 @@
         .module('awt-cts-client')
         .controller('ReportingFormController', ReportingFormController);
 
-    ReportingFormController.$inject = ['$scope', '$state', '$localStorage', '$stateParams', '$uibModalInstance', 'items', 'user'];
+    ReportingFormController.$inject = ['$state', '$localStorage', '$stateParams', '$uibModalInstance', 'items', 'user'];
 
-    function ReportingFormController($scope, $state, $localStorage, $stateParams, $uibModalInstance, items, user) {
+    function ReportingFormController($state, $localStorage, $stateParams, $uibModalInstance, items, user) {
 
         var reportingFormVm = this;
 
@@ -16,15 +16,17 @@
         reportingFormVm.report = {
             id: null,
             email: "",
-            status: "", 
+            status: "",
             content: "",
             type : 'other',
             announcement : { id: items }
         };
 
         reportingFormVm.ok = function() {
-            if (reportingFormVm.emailInput)
-                reportingFormVm.report.email = reportingFormVm.report.email.$$state.value; 
+            if (reportingFormVm.emailInput) {
+                reportingFormVm.report.email = reportingFormVm.report.email.$$state.value;
+            }
+
             $uibModalInstance.close(reportingFormVm.report);
         };
 

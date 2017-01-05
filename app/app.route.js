@@ -14,25 +14,21 @@ angular
     ])
     .factory('_', ['$window',
         function ($window) {
-            // place lodash include before angular
+            // place lodash include before Angular
             return $window._;
         }
     ])
     .constant(
-    'CONFIG', {
-        'SERVICE_URL': 'http://localhost:8091/api',
-        'AUTH_TOKEN': 'X-Auth-Token'
-    }
+        'CONFIG', {
+            'SERVICE_URL': 'http://localhost:8091/api',
+            'AUTH_TOKEN': 'X-Auth-Token'
+        }
     )
     .config(function ($stateProvider, $urlRouterProvider, $httpProvider, $locationProvider) {
 
-        // http://stackoverflow.com/questions/39931983/angularjs-possible-unhandled-rejection-when-using-ui-router
-
-        // $qProvider.errorOnUnhandledRejections(false);
-
         // For excluding exclamation from url
         $locationProvider.hashPrefix('');
-        
+
         // For any unmatched url, redirect to /home
         $urlRouterProvider.otherwise("/home");
 
@@ -51,19 +47,6 @@ angular
                     }
                 }
             })
-            .state('about', {
-                url: "/about",
-                data: {
-                    pageTitle: 'Početna'
-                },
-                views: {
-                    'content@': {
-                        templateUrl: "app/components/about/about.html",
-                        controller: "AboutController",
-                        controllerAs: "aboutVm"
-                    }
-                }
-            })
             .state('announcement', {
                 url: "/announcement/:announcementId",
                 data: {
@@ -78,7 +61,7 @@ angular
                 }
             })
             .state('addAnnouncement', {
-                url: "/addAnnouncement",
+                url: "/announcement/add",
                 data: {
                     pageTitle: 'Dodavanje oglasa'
                 },
@@ -91,7 +74,7 @@ angular
                 }
             })
             .state('updateAnnouncement', {
-                url: "/updateAnnouncement/:announcementId",
+                url: "/announcement/update/:announcementId",
                 data: {
                     pageTitle: 'Izmjena oglasa'
                 },
@@ -117,7 +100,7 @@ angular
                 }
             })
             .state('addCompany', {
-                url: "/addCompany",
+                url: "/company/add",
                 data: {
                     pageTitle: 'Dodavanje agencije'
                 },
@@ -130,7 +113,7 @@ angular
                 }
             })
             .state('updateCompany', {
-                url: "/updateCompany/:companyId",
+                url: "/company/update/:companyId",
                 data: {
                     pageTitle: 'Izmena agencije'
                 },
@@ -195,8 +178,10 @@ angular
                     }
                     return config;
                 },
+
                 // When try to get Unauthorized or Forbidden page
                 'responseError': function (response) {
+
                     // If you get Unauthorized on login page you should just write message
                     if ("/login" !== $location.path()) {
                         if (response.status === 401 || response.status === 403) {

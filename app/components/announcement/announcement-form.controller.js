@@ -35,10 +35,11 @@
         function activate() {
             announcementFormVm.state = $state.current.name;
 
+            var headerToken = CONFIG.AUTH_TOKEN;
             announcementFormVm.uploader = new FileUploader({
                 url: CONFIG.SERVICE_URL + '/images/announcements/',
                 headers: {
-                    "X-Auth-Token": $localStorage.token
+                    headerToken: $localStorage.token
                 }
             });
 
@@ -58,11 +59,13 @@
                         announcementFormVm.announcement = response.data;
                         _.forEach(response.data.images, function(image, index) {
                             var url = image.imagePath;
+
                             $http.get(url, { responseType: "blob" })
                                 .then(function successCallback(response) {
                                     var mimetype = response.data.type;
                                     var file = new File([response.data], "Slika" + (index + 1), { type: mimetype });
                                     var dummy = new FileUploader.FileItem(announcementFormVm.uploader, {});
+
                                     dummy._file = file;
                                     dummy.progress = 100;
                                     dummy.isUploaded = true;
@@ -83,11 +86,10 @@
         }
 
         function submitAnnouncement() {
-            if (announcementFormVm.state == "updateAnnouncement") {
-                if (announcementFormVm.uploader.getNotUploadedItems().length == 0)
-                    updateAnnouncement(announcementFormVm.announcement);
-                else
-                    announcementFormVm.uploader.uploadAll();
+            var notUploaded = announcementFormVm.uploader.getNotUploadedItems();
+
+            if (announcementFormVm.state == "updateAnnouncement" && _.isEmpty(notUploaded)) {
+                updateAnnouncement(announcementFormVm.announcement);
             }
             else {
                 announcementFormVm.uploader.uploadAll();
@@ -95,7 +97,7 @@
         }
 
         function today() {
-            announcementFormVm.announcement.expirationDate = new Date();
+            announcementFormVm.announcement.expirationDate = _.now();
         };
 
         function clear() {
@@ -106,6 +108,7 @@
             announcementFormVm.popup.opened = true;
         };
 
+        // FIXME @bblagojevic - refactor this function
         function getDayClass(data) {
             var date = data.date,
                 mode = data.mode;
@@ -124,6 +127,7 @@
             return '';
         }
 
+        // FIXME @bblagojevic - refactor this function
         function datePickerConfig() {
             announcementFormVm.inlineOptions = {
                 minDate: new Date(),
@@ -201,25 +205,19 @@
         }
 
         function deleteItemFromQueue(item) {
-            if (announcementFormVm.state == "updateAnnouncement") {
-                if (item.file.realImg != undefined) {
-                    var idx = -1;
-                    _.forEach(announcementFormVm.announcement.images, function(image, index) {
-                        if (image.id == item.file.realImg.id) {
-                            idx = index;
-                        }
-                    });
-                    if (idx != -1)
-                        announcementFormVm.announcement.images.splice(idx, 1);
-                }
+            if (announcementFormVm.state == "updateAnnouncement" && !_.isUndefined(item.file.realImg)) {
+                _.remove(announcementFormVm.announcement.images, function(image) {
+                    return image.id === item.file.realImg.id;
+                })
             }
+
             item.remove();
         }
 
         function addNewAnnouncement() {
             announcementService.addAnnouncement(announcementFormVm.announcement)
                 .then(function(response) {
-                    if (announcementFormVm.similars.length > 0) {
+                    if (!_.isEmpty(announcementFormVm.similars)) {
                         var report = {
                             email: 'system',
                             content: 'Postoje slične nekretnine',
@@ -227,8 +225,10 @@
                             status: 'pending',
                             announcement: { id: response.data.id }
                         }
+                        // Create new report if announcement is referenced to existed real estate
                         reportingService.createReport(report);
                     }
+
                     $state.transitionTo("announcement", {
                         announcementId: response.data.id
                     });
@@ -238,7 +238,7 @@
         function updateAnnouncement() {
             announcementService.updateAnnouncement(announcementFormVm.announcement)
                 .then(function(response) {
-                    if (announcementFormVm.similars.length > 0) {
+                    if (!_.isEmpty(announcementFormVm.similars)) {
                         var report = {
                             email: 'system',
                             content: 'Postoje slične nekretnine',
@@ -246,8 +246,10 @@
                             status: 'pending',
                             announcement: { id: response.data.id }
                         }
+                        // Create new report if announcement is referenced to existed real estate
                         reportingService.createReport(report);
                     }
+
                     $state.transitionTo("announcement", {
                         announcementId: response.data.id
                     });
@@ -258,16 +260,21 @@
             // Callbacks for one image upload
             announcementFormVm.uploader.onSuccessItem = function(fileItem, response, status, headers) {
                 announcementFormVm.announcement.images.push({ id: null, imagePath: response });
-                $log.info('onSuccessItem', fileItem, response, status, headers);
+
+                $log.info('Item upload completed.', fileItem, response, status, headers);
             };
 
             announcementFormVm.uploader.onCompleteAll = function() {
                 announcementFormVm.uploaded = true;
-                if (announcementFormVm.state == 'addAnnouncement')
+
+                if (announcementFormVm.state == 'addAnnouncement') {
                     addNewAnnouncement();
-                else
+                }
+                else {
                     updateAnnouncement();
-                $log.info('onCompleteAll');
+                }
+
+                $log.info('All uploads completed.');
             };
         }
 
@@ -282,21 +289,18 @@
                     announcementFormVm.chosenSimilarRealEstateId = null;
                     announcementFormVm.announcement.realEstate.id = null;
                     announcementFormVm.similars = response.data;
-                    if (response.data.length > 0) {
-                        if (announcementFormVm.state != 'addAnnouncement') {
-                            var idx = -1;
-                            _.forEach(response.data, function(realEstate, index) {
-                                if (realEstate.id == announcementFormVm.announcement.realEstate.id)
-                                    idx = index;
-                            });
-                            if (idx != -1)
-                                announcementFormVm.similars.splice(idx, 1);
-                        }
+
+                    if (announcementFormVm.state != 'addAnnouncement') {
+                        _.remove(announcementFormVm.similars, function(realEstate) {
+                            return realEstate.id === announcementFormVm.announcement.realEstate.id;
+                        });
                     }
-                    if (announcementFormVm.similars.length > 0) {
+
+                    if (!_.isEmpty(announcementFormVm.similars)) {
                         announcementFormVm.similarsDisabled = false;
                         WizardHandler.wizard().goTo("Slične nekretnine");
-                    } else {
+                    }
+                    else {
                         announcementFormVm.similarsDisabled = true;
                         WizardHandler.wizard().goTo("Slike");
                     }
@@ -317,16 +321,16 @@
 
         function createInitialAnnouncement() {
             return {
-                dateAnnounced: new Date(),
-                expirationDate: new Date(),
+                dateAnnounced: _.now(),
+                expirationDate: _.now(),
                 verified: false,
                 images: [],
                 description: '',
-                type: 'kupovina',
+                type: 'buy',
                 realEstate: {
                     deleted: false,
-                    type: "ostalo",
-                    heatingType: "centralno",
+                    type: 'other',
+                    heatingType: 'central',
                     location: {},
                     announcements: []
                 }
