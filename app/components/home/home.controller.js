@@ -93,7 +93,9 @@
                                 dialog.open(map, marker);
                             });
                         });
-
+                    })
+                    .catch(function (error) {
+                        $log.error(error);
                     });
             });
         }
@@ -119,6 +121,9 @@
                 .then(function(response) {
                     homeVm.announcements = response.data;
                     homeVm.totalItems = response.headers('X-Total-Count');
+                })
+                .catch(function (error) {
+                    $log.error(error);
                 });
         }
 
@@ -134,6 +139,9 @@
             announcementService.searchAnnouncements(searchTerm)
                 .then(function(response) {
                     homeVm.announcements = response.data;
+                })
+                .catch(function (error) {
+                    $log.error(error);
                 });
         }
 

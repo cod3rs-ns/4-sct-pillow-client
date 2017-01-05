@@ -47,6 +47,9 @@
                         }
                     }
                     signingVm.dataLoading = false;
+                })
+                .catch(function (error) {
+                    $log.error(error);
                 });
         };
 
@@ -64,8 +67,10 @@
 
             signingService.register(user)
                 .then(function(registeredUser) {
-                    $log.info(registeredUser);
                     signingVm.registrationUser = {};
+                })
+                .catch(function (error) {
+                    $log.error(error);
                 });
         };
     }

@@ -38,6 +38,9 @@
                     .then(function (response) {
                         companyFormVm.company = response.data;
                         companyFormVm.imageSource = response.data.imagePath;
+                    })
+                    .catch(function (error) {
+                        $log.error(error);
                     });
             }
         }
@@ -77,6 +80,9 @@
                     .then(function (response) {
                         $state.transitionTo("company", {
                             companyId: response.data.id
+                        })
+                        .catch(function (error) {
+                            $log.error(error);
                         });
                     });
             }
@@ -90,6 +96,9 @@
                 .then(function (response) {
                     $state.transitionTo("company", {
                         companyId: response.data.id
+                    })
+                    .catch(function (error) {
+                        $log.error(error);
                     });
                 });
         }
@@ -124,6 +133,9 @@
             return companyService.findUsers(splitted[0], splitted[1] || "")
                 .then(function (response) {
                     return response.data;
+                })
+                .catch(function (error) {
+                    $log.error(error);
                 });
         };
 
