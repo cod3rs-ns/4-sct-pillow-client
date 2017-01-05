@@ -5,9 +5,9 @@
         .module('awt-cts-client')
         .controller('AnnouncementController', AnnouncementController);
 
-    AnnouncementController.$inject = ['$stateParams', '$timeout', '$log', '$uibModal', '$document', '$localStorage', '_', 'announcementService', 'commentService', 'markService', 'reportingService'];
+    AnnouncementController.$inject = ['$stateParams', '$timeout', '$log', '$uibModal', '$document', '$localStorage', '_', 'CommentsUtil', 'MarksUtil', 'announcementService', 'commentService', 'markService', 'reportingService'];
 
-    function AnnouncementController($stateParams, $timeout, $log, $uibModal, $document, $localStorage, _, announcementService, commentService, markService, reportingService) {
+    function AnnouncementController($stateParams, $timeout, $log, $uibModal, $document, $localStorage, _, CommentsUtil, MarksUtil, announcementService, commentService, markService, reportingService) {
         var announcementVm = this;
 
         announcementVm.announcement = {};
@@ -68,32 +68,7 @@
                     commentService.getCommentsForAnnouncement(announcementId)
                         .then(function(response) {
                             _.forEach(response.data, function(comment) {
-
-                                var isMy = false;
-                                if (comment.author !== null) {
-                                    var author = {
-                                        'name': comment.author.firstName + ' ' + comment.author.lastName,
-                                        'image': comment.author.imagePath
-                                    }
-
-                                    isMy = $localStorage.user === comment.author.username;
-                                }
-                                else {
-                                    var author = {
-                                        'name': 'Gost na sajtu',
-                                        'image': "http://megaicons.net/static/img/icons_sizes/8/178/512/user-role-guest-icon.png"
-                                    }
-                                }
-
-                                announcementVm.comments.push(
-                                    {
-                                        'id': comment.id,
-                                        'content': comment.content,
-                                        'date': comment.date,
-                                        'author': author,
-                                        'isMy': isMy
-                                    }
-                                );
+                                announcementVm.comments.push(CommentsUtil.formatComment(comment));
                             });
                         });
 
@@ -101,45 +76,32 @@
                     var role = $localStorage.role;
                     markService.getMarksForAnnouncement(announcementId)
                         .then(function(response) {
-                            // Average Announcement mark
-                            announcementVm.votes.announcement.average = _.meanBy(response.data, function(mark) {
-                                return mark.value;
-                            }) || 0;
+                            var marks = response.data;
 
-                            // Number of votes
-                            announcementVm.votes.announcement.count = _.size(response.data) || 0;
+                            announcementVm.votes.announcement.average = MarksUtil.average(marks);
+                            announcementVm.votes.announcement.count = MarksUtil.count(marks);
 
-                            // Check if logged user is voted
-                            var myVote = _.find(response.data, function(vote) {
-                                return vote.grader.username === $localStorage.user;
-                            });
-                            var exist = _.size(myVote) !== 0;
+                            var myVote = MarksUtil.getMyVote(marks);
 
                             announcementVm.vote.announcement = myVote;
+                            announcementVm.rating.announcement = myVote.value || -1;
 
-                            announcementVm.rating.announcement = (exist) ? myVote.value : -1;
                             announcementVm.isAnnouncementMarkEnabled = (role === 'advertiser' || role === 'verifier');
                         });
 
                     // Get all marks for announcer
                     markService.getMarksForAnnouncer(announcementVm.announcement.author.id)
                         .then(function(response) {
-                            // Average Announcer mark
-                            announcementVm.votes.announcer.average = _.meanBy(response.data, function(mark) {
-                                return mark.value;
-                            }) || 0;
+                            var marks = response.data;
 
-                            // Number of votes
-                            announcementVm.votes.announcer.count = _.size(response.data) || 0;
+                            announcementVm.votes.announcer.average = MarksUtil.average(marks);
+                            announcementVm.votes.announcer.count = MarksUtil.count(marks);
 
-                            // Check if logged user is voted
-                            var myVote = _.find(response.data, function(vote) {
-                                return vote.grader.username === $localStorage.user; });
-                            var exist = _.size(myVote) !== 0;
+                            var myVote = MarksUtil.getMyVote(marks);
 
                             announcementVm.vote.announcer = myVote;
+                            announcementVm.rating.announcer = myVote.value || -1;
 
-                            announcementVm.rating.announcer = (exist) ? myVote.value : -1;
                             announcementVm.isAnnouncerMarkEnabled = (role === 'advertiser' || role === 'verifier');
                         });
                 });
@@ -194,32 +156,9 @@
             commentService.addComment(comment)
                 .then(function(response) {
                     announcementVm.comment = "";
-                    var comment = response.data;
+                    var comment = CommentsUtil.formatComment(response.data);
 
-                    var author;
-                    var isMy = false;
-                    if (comment.author !== null) {
-                        author = {
-                            'name': comment.author.firstName + ' ' + comment.author.lastName,
-                            'image': comment.author.imagePath
-                        }
-                        isMy = $localStorage.user === comment.author.username;
-                    }
-                    else {
-                        author = {
-                            'name': 'Gost na sajtu',
-                            'image': "http://megaicons.net/static/img/icons_sizes/8/178/512/user-role-guest-icon.png"
-                        }
-                    }
-
-                    announcementVm.comments.push(
-                        {
-                            'id': comment.id,
-                            'content': comment.content,
-                            'date': comment.date,
-                            'author': author,
-                            'isMy': isMy
-                        });
+                    announcementVm.comments.push(comment);
                 });
         }
 
@@ -249,19 +188,17 @@
         function voteAnnouncement(rating) {
             var mark = {};
 
-            if (_.isUndefined(announcementVm.vote.announcement)) {
+            if (_.isEmpty(announcementVm.vote.announcement)) {
                 mark.announcement = { 'id': _.toInteger($stateParams.announcementId) };
                 mark.value = _.toInteger(rating);
 
                 markService.vote(mark)
                     .then(function(response) {
-                        announcementVm.vote.announcement = response.data;
+                      announcementVm.vote.announcement = response.data;
+                      var votes = announcementVm.votes.announcement;
 
-                        var val = response.data.value;
-                        var cnt = announcementVm.votes.announcement.count;
-                        var avg = announcementVm.votes.announcement.average;
-                        announcementVm.votes.announcement.average = (avg * cnt + val) / (cnt + 1);
-                        ++announcementVm.votes.announcement.count;
+                      announcementVm.votes.announcement.average =
+                          MarksUtil.updateAverage(response.data.value, votes.count++, votes.average);
                     });
             }
             else {
@@ -272,11 +209,10 @@
                 markService.updateVote(mark)
                     .then(function(response) {
                         announcementVm.vote.announcement = response.data;
+                        var votes = announcementVm.votes.announcement;
 
-                        var val = response.data.value;
-                        var cnt = announcementVm.votes.announcement.count;
-                        var avg = announcementVm.votes.announcement.average;
-                        announcementVm.votes.announcement.average = (avg * cnt + val - oldVal) / (cnt);
+                        announcementVm.votes.announcement.average =
+                            MarksUtil.updateAverage(response.data.value, votes.count, votes.average, oldVal);
                     });
             }
         }
@@ -284,19 +220,17 @@
         function voteAnnouncer(rating) {
             var mark = {};
 
-            if (_.isUndefined(announcementVm.vote.announcer)) {
+            if (_.isEmpty(announcementVm.vote.announcer)) {
                 mark.gradedAnnouncer = { 'id': _.toInteger(announcementVm.announcement.author.id) };
                 mark.value = _.toInteger(rating);
 
                 markService.vote(mark)
                     .then(function(response) {
-                        announcementVm.vote.announcer = response.data;
+                      announcementVm.vote.announcer = response.data;
+                      var votes = announcementVm.votes.announcer;
 
-                        var val = response.data.value;
-                        var cnt = announcementVm.votes.announcer.count;
-                        var avg = announcementVm.votes.announcer.average;
-                        announcementVm.votes.announcer.average = (avg * cnt + val) / (cnt + 1);
-                        ++announcementVm.votes.announcer.count;
+                      announcementVm.votes.announcer.average =
+                          MarksUtil.updateAverage(response.data.value, votes.count++, votes.average);
                     });
             }
             else {
@@ -306,12 +240,11 @@
 
                 markService.updateVote(mark)
                     .then(function(response) {
-                        announcementVm.vote.announcer = response.data;
+                      announcementVm.vote.announcer = response.data;
+                      var votes = announcementVm.votes.announcer;
 
-                        var val = response.data.value;
-                        var cnt = announcementVm.votes.announcer.count;
-                        var avg = announcementVm.votes.announcer.average;
-                        announcementVm.votes.announcer.average = (avg * cnt + val - oldVal) / (cnt);
+                      announcementVm.votes.announcer.average =
+                          MarksUtil.updateAverage(response.data.value, votes.count, votes.average, oldVal);
                     });
             }
         }
