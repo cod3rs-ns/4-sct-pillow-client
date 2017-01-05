@@ -25,6 +25,8 @@
                 pause: true,
                 interval: 4000,
             });
+            companyService.setUserPage(0);
+            companyService.setAnnouncementPage(0);
 
             companyVm.showUpdateBtn = $localStorage.role == 'admin';
 

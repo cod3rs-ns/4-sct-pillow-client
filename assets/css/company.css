@@ -29,6 +29,7 @@
 
 .company-info{
     background-color: black;
+    border-radius: 25px;
     color: white;
     opacity: 0.75;
     margin-top: 20px;
@@ -215,3 +216,29 @@ div.product-chooser div.product-chooser-item input {
     top: 0;
     visibility:hidden;
 }
+
+.company-home-outside {
+  background-color: #fff;
+  padding: 4px !important;
+  margin-top: 2px;
+}
+
+.company-home-inside {
+  background-color: #eee;
+  border-radius: 4px;
+  margin: 4px;
+}
+
+.company-home-inside > .col-xs-4 {
+  margin-top: 16px;
+}
+
+.company-home-inside > .col-xs-8 {
+  margin-top: 16px;
+}
+
+.company-home-inside > .col-xs-4 > img {
+    height: 10em; 
+    width: 10em;
+}
+

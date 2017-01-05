@@ -13,7 +13,7 @@
         </thead>
         <tbody>
             <tr ng-repeat="user in vm.users">
-                <td><img src="http://img.uefa.com/imgml/TP/players/9/2016/324x324/93649.jpg" style="height:40px; width:40px;"></td>
+                <td><img ng-src="{{user.imagePath}}" style="height:40px; width:40px;"></td>
                 <td>{{user.firstName}}</td>
                 <td>{{user.lastName}}</td>
                 <td>{{user.phoneNumber}}</td>
@@ -21,7 +21,7 @@
                 <td>{{user.type}}</td>
                 <td class="text-right">
                     <div class="btn-group flex-btn-group-container">
-                        <button type="submit" class="btn btn-success btn-sm">
+                        <button ui-sref="profile({username: user.username})" class="btn btn-success btn-sm">
                             <span class="glyphicon glyphicon-eye-open"></span>
                             <span class="hidden-xs hidden-sm"></span>
                         </button>
