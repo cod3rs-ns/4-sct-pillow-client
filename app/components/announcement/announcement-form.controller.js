@@ -1,4 +1,4 @@
-(function() {
+(function () {
     'use strict';
 
     angular
@@ -35,11 +35,10 @@
         function activate() {
             announcementFormVm.state = $state.current.name;
 
-            var headerToken = CONFIG.AUTH_TOKEN;
             announcementFormVm.uploader = new FileUploader({
                 url: CONFIG.SERVICE_URL + '/images/announcements/',
                 headers: {
-                    headerToken: $localStorage.token
+                    "X-Auth-Token": $localStorage.token
                 }
             });
 
@@ -55,9 +54,9 @@
             else {
                 announcementFormVm.datePickerConfig();
                 announcementService.getAnnouncementById($stateParams.announcementId)
-                    .then(function(response) {
+                    .then(function (response) {
                         announcementFormVm.announcement = response.data;
-                        _.forEach(response.data.images, function(image, index) {
+                        _.forEach(response.data.images, function (image, index) {
                             var url = image.imagePath;
 
                             $http.get(url, { responseType: "blob" })
@@ -169,7 +168,7 @@
             // FILTERS
             announcementFormVm.uploader.filters.push({
                 name: 'imageFilter',
-                fn: function(item /*{File|FileLikeObject}*/, options) {
+                fn: function (item /*{File|FileLikeObject}*/, options) {
                     var type = '|' + item.type.slice(item.type.lastIndexOf('/') + 1) + '|';
                     return '|jpg|png|jpeg|bmp|gif|'.indexOf(type) !== -1;
                 }
@@ -177,7 +176,7 @@
 
             announcementFormVm.uploader.filters.push({
                 name: 'enforceMaxFileSize',
-                fn: function(item) {
+                fn: function (item) {
                     var retVal = item.size <= 5242880; // 5 MB
                     if (!retVal) {
                         ngToast.create({
@@ -191,7 +190,7 @@
 
             announcementFormVm.uploader.filters.push({
                 name: 'queueLimit',
-                fn: function(item) {
+                fn: function (item) {
                     var retVal = announcementFormVm.uploader.queue.length == 4; // 4 images per announcement
                     if (retVal) {
                         ngToast.create({
@@ -206,7 +205,7 @@
 
         function deleteItemFromQueue(item) {
             if (announcementFormVm.state == "updateAnnouncement" && !_.isUndefined(item.file.realImg)) {
-                _.remove(announcementFormVm.announcement.images, function(image) {
+                _.remove(announcementFormVm.announcement.images, function (image) {
                     return image.id === item.file.realImg.id;
                 })
             }
@@ -216,7 +215,7 @@
 
         function addNewAnnouncement() {
             announcementService.addAnnouncement(announcementFormVm.announcement)
-                .then(function(response) {
+                .then(function (response) {
                     if (!_.isEmpty(announcementFormVm.similars)) {
                         var report = {
                             email: 'system',
@@ -237,7 +236,7 @@
 
         function updateAnnouncement() {
             announcementService.updateAnnouncement(announcementFormVm.announcement)
-                .then(function(response) {
+                .then(function (response) {
                     if (!_.isEmpty(announcementFormVm.similars)) {
                         var report = {
                             email: 'system',
@@ -258,13 +257,12 @@
 
         function createUploaderCallbacks() {
             // Callbacks for one image upload
-            announcementFormVm.uploader.onSuccessItem = function(fileItem, response, status, headers) {
+            announcementFormVm.uploader.onSuccessItem = function (fileItem, response, status, headers) {
                 announcementFormVm.announcement.images.push({ id: null, imagePath: response });
-
                 $log.info('Item upload completed.', fileItem, response, status, headers);
             };
 
-            announcementFormVm.uploader.onCompleteAll = function() {
+            announcementFormVm.uploader.onCompleteAll = function () {
                 announcementFormVm.uploaded = true;
 
                 if (announcementFormVm.state == 'addAnnouncement') {
@@ -285,13 +283,13 @@
 
         function getSimilarRealEstates() {
             announcementService.getSimilarRealEstates(announcementFormVm.announcement.realEstate)
-                .then(function(response) {
+                .then(function (response) {
                     announcementFormVm.chosenSimilarRealEstateId = null;
                     announcementFormVm.announcement.realEstate.id = null;
                     announcementFormVm.similars = response.data;
 
                     if (announcementFormVm.state != 'addAnnouncement') {
-                        _.remove(announcementFormVm.similars, function(realEstate) {
+                        _.remove(announcementFormVm.similars, function (realEstate) {
                             return realEstate.id === announcementFormVm.announcement.realEstate.id;
                         });
                     }
@@ -316,7 +314,28 @@
         }
 
         function canExitFirtsStep() {
-            return !announcementFormVm.announcementForm.$invalid && !announcementFormVm.realEstateForm.$invalid;
+            var formValid = !announcementFormVm.announcementForm.$invalid && !announcementFormVm.realEstateForm.$invalid;
+            if (!formValid) {
+                ngToast.create({
+                    className: 'danger',
+                    content: '<p>Morate popuniti sva polja ispravno da biste prešli na sljedeći korak.</p>'
+                });
+                return false;
+            } else {
+                var address = announcementFormVm.announcement.realEstate.location.city + ' ' + announcementFormVm.announcement.realEstate.location.street + ' ' +
+                    + announcementFormVm.announcement.realEstate.location.streetNumber + ' ' + announcementFormVm.announcement.realEstate.location.country;
+
+                return findLocation(address)
+                    .then(function (response) {
+                        return response;
+                    }, function (response) {
+                        ngToast.create({
+                            className: 'danger',
+                            content: '<p>Adresa koju ste unijeli je nevalidna.</p>'
+                        });
+                        return response;
+                    });
+            }
         }
 
         function createInitialAnnouncement() {
@@ -335,6 +354,23 @@
                     announcements: []
                 }
             };
+        }
+
+        function findLocation(location) {
+            var deferred = $.Deferred();
+            var geocoder = new google.maps.Geocoder();
+
+            geocoder.geocode({ 'address': location }, function (results, status) {
+                if (status === google.maps.GeocoderStatus.OK) {
+                    announcementFormVm.announcement.realEstate.location.latitude = results[0].geometry.location.lat();
+                    announcementFormVm.announcement.realEstate.location.longitude = results[0].geometry.location.lng();
+                    deferred.resolve(true);
+                } else {
+                    deferred.reject(false);
+                }
+            });
+
+            return deferred.promise();
         }
     }
 })();

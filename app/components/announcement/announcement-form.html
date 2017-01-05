@@ -20,9 +20,9 @@
 
                             <div class="form-group">
                                 <div class="btn-group">
-                                    <label class="btn btn-primary" ng-model="announcementFormVm.announcement.type" uib-btn-radio="'kupovina'" uib-uncheckable="uncheckable">Kupovina</label>
-                                    <label class="btn btn-primary" ng-model="announcementFormVm.announcement.type" uib-btn-radio="'prodaja'" uncheckable>Prodaja</label>
-                                    <label class="btn btn-primary" ng-model="announcementFormVm.announcement.type" uib-btn-radio="'iznajmljivanje'" uncheckable>Iznajmljivanje</label>
+                                    <label class="btn btn-primary" ng-model="announcementFormVm.announcement.type" uib-btn-radio="'buy'" uib-uncheckable="uncheckable">Kupovina</label>
+                                    <label class="btn btn-primary" ng-model="announcementFormVm.announcement.type" uib-btn-radio="'sale'" uncheckable>Prodaja</label>
+                                    <label class="btn btn-primary" ng-model="announcementFormVm.announcement.type" uib-btn-radio="'rent'" uncheckable>Iznajmljivanje</label>
                                 </div>
                             </div>
 
@@ -91,20 +91,20 @@
                                     <div class="selectContainer input-group">
                                         <span class="input-group-addon" id="basic-addon1"> <i class="glyphicon glyphicon-fire"></i></span>
                                         <select class="form-control" name="role" ng-model="announcementFormVm.announcement.realEstate.heatingType">
-                                            <option value="centralno">Centralno</option>
-                                            <option value="daljinsko">Daljinsko</option>
-                                            <option value="etažno">Etažno</option>
+                                            <option value="central">Centralno</option>
+                                            <option value="remote">Daljinsko</option>
+                                            <option value="direct">Etažno</option>
                                         </select>
                                     </div>
                                 </div>
                             </div>
                             <div class="form-group">
                                 <div class="btn-group">
-                                    <label class="btn btn-primary" ng-model="announcementFormVm.announcement.realEstate.type" uib-btn-radio="'kuća'" uib-uncheckable="uncheckable">Kuća</label>
-                                    <label class="btn btn-primary" ng-model="announcementFormVm.announcement.realEstate.type" uib-btn-radio="'stan'" uncheckable>Stan</label>
-                                    <label class="btn btn-primary" ng-model="announcementFormVm.announcement.realEstate.type" uib-btn-radio="'poslovni prostor'"
-                                        uncheckable>Poslovni prostor</label>
-                                    <label class="btn btn-primary" ng-model="announcementFormVm.announcement.realEstate.type" uib-btn-radio="'ostalo'" uncheckable>Ostalo</label>
+                                    <label class="btn btn-primary" ng-model="announcementFormVm.announcement.realEstate.type" uib-btn-radio="'house'" uib-uncheckable="uncheckable">Kuća</label>
+                                    <label class="btn btn-primary" ng-model="announcementFormVm.announcement.realEstate.type" uib-btn-radio="'apartment'" uncheckable>Stan</label>
+                                    <label class="btn btn-primary" ng-model="announcementFormVm.announcement.realEstate.type" uib-btn-radio="'warehouse'"
+                                        uncheckable>Skladište</label>
+                                    <label class="btn btn-primary" ng-model="announcementFormVm.announcement.realEstate.type" uib-btn-radio="'other'" uncheckable>Ostalo</label>
                                 </div>
                             </div>
 
