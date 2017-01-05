@@ -42,6 +42,7 @@
         announcementVm.voteAnnouncer = voteAnnouncer;
         announcementVm.voteAnnouncement = voteAnnouncement;
         announcementVm.checkIfUserAlreadyReportAnnouncement = checkIfUserAlreadyReportAnnouncement;
+        announcementVm.cancel = cancel;
 
         activate();
 
@@ -335,6 +336,12 @@
             }, function() {
                 $log.info('Modal dismissed at: ' + new Date());
             });
+        }
+
+        function cancel(event) {
+            if (27 === event.keyCode) {
+                announcementVm.editing = undefined;
+            }
         }
     }
 })();
