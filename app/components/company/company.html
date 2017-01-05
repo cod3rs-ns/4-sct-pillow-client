@@ -1,31 +1,19 @@
 <div class="container">
-    <div class="row" id="company-cover">
-        <div class="col-md-3 col-md-offset-1 col-xs-6 col-xs-offset-3">
+    <div id="company-cover">
+    <div class="row" >
+        <div class="col-md-4 col-md-offset-1">
             <img ng-src="{{companyVm.company.imagePath}}" alt="..." class="img-thumbnail img-company-profile">
 
             <div class="company-contact-container" style="margin-top:7px; width:100%">
                 <div class="company-info">
-                    <h3 style="padding-top:4px;margin-top:10px;">
-                        <div style="text-align:center;" class="top-bid-title"> {{companyVm.company.name}} </div>
-                    </h3>
-                    <div class="row company-info-text">
-                        <div class="col-md-1"><span class="glyphicon glyphicon-earphone" style="float:left; color:#5bc0de;"></span></div>
-                        <div class="col-md-10 col-mf-offset-1">
-                            <p>{{companyVm.company.phoneNumber}}</p>
-                        </div>
-                    </div>
-                    <div class="row company-info-text">
-                        <div class="col-md-1"><span class="glyphicon glyphicon-map-marker" style="float:left; color:#5bc0de;"></span></div>
-                        <div class="col-md-10 col-mf-offset-1">
-                            <p>{{companyVm.company.address}}</p>
-                        </div>
-                    </div>
+                    <h3 style="margin-top:0px">{{companyVm.company.name}}</h3>
                 </div>
             </div>
         </div>
 
-        <div class="col-md-6 col-md-offset-1 col-xs-10 col-xs-offset-1">
-            <div ng-hide="companyVm.topThree.length===0" class="carousel slide thumbnail" data-ride="carousel" style="color:black; margin-top:50px;" id="quote-carousel">
+        <div class="col-md-6">
+            <div ng-hide="companyVm.topThree.length===0" class="carousel slide thumbnail" data-ride="carousel" style="color:black; margin-top:50px;"
+                id="quote-carousel">
                 <!-- Bottom Carousel Indicators -->
                 <ol class="carousel-indicators">
                     <li data-target="#quote-carousel" ng-if="companyVm.topThree.length > 1" data-slide-to="0" class="active"></li>
@@ -67,8 +55,7 @@
                         <div style="margin-top:10px;">
                             <div class="row">
                                 <div class="col-sm-3 text-center">
-                                    <img class="img-circle" ng-src="{{companyVm.topThree[1].images[0].imagePath}}"
-                                        style="width: 100px;height:100px;">
+                                    <img class="img-circle" ng-src="{{companyVm.topThree[1].images[0].imagePath}}" style="width: 100px;height:100px;">
                                 </div>
                                 <div class="col-sm-9">
                                     <h2 style="margin-top: 5px; height:70px;">
@@ -78,7 +65,7 @@
                                     </h2>
                                     <div style="text-align:left;">
                                         <span class="glyphicon glyphicon-map-marker" style="float:left; color:#5bc0de;">&nbsp;</span>
-                                        <p>{{companyVm.topThree[1].realEstate.location.cityRegion}},&nbsp;{{companyVm.topThree[1].realEstate.location.city}}</p>
+                                        <p>{{companyVm.topThree[1].realEstate.location.street}},&nbsp;{{companyVm.topThree[1].realEstate.location.streetNumber}},&nbsp;{{companyVm.topThree[1].realEstate.location.city}}</p>
                                         <span class="glyphicon glyphicon-eur" style="float:left; color:#5bc0de;">&nbsp;</span>
                                         <p>{{companyVm.topThree[1].price}}</p>
                                         <div style="text-align: right">
@@ -105,7 +92,7 @@
                                     </h2>
                                     <div style="text-align:left;">
                                         <span class="glyphicon glyphicon-map-marker" style="float:left; color:#5bc0de;">&nbsp;</span>
-                                        <p>{{companyVm.topThree[2].realEstate.location.cityRegion}},&nbsp;{{companyVm.topThree[2].realEstate.location.city}}</p>
+                                        <p>{{companyVm.topThree[2].realEstate.location.street}},&nbsp;{{companyVm.topThree[2].realEstate.location.streetNumber}},&nbsp;{{companyVm.topThree[2].realEstate.location.city}}</p>
                                         <span class="glyphicon glyphicon-eur" style="float:left; color:#5bc0de;">&nbsp;</span>
                                         <p>{{companyVm.topThree[2].price}}</p>
                                         <div style="text-align: right">
@@ -124,14 +111,33 @@
                 <a data-slide="next" data-target="#quote-carousel" ng-show="companyVm.topThree.length > 1" class="right carousel-control"><i class="fa fa-chevron-right"></i></a>
             </div>
             <div style="float:right; margin-top:25px" ng-if='companyVm.showUpdateBtn'>
-                <a ui-sref="updateCompany({companyId: companyVm.company.id})" type="button" class="btn btn-primary pull-right">Izmeni</a>
+                <a ui-sref="updateCompany({companyId: companyVm.company.id})" type="button" class="btn btn-primary pull-right">Izmijeni</a>
             </div>
         </div>
-
     </div>
-
+    <div class="row" style="text-align:left">
+        <div class="col-xs-12 col-md-2 col-md-offset-1">
+            <div class="home-info-header">
+                <span class="glyphicon glyphicon-map-marker" aria-hidden="true"></span>
+                <p>Lokacija</p>
+            </div>
+            <div class="home-info-body">
+                <small>{{companyVm.company.address}}</small>
+            </div>
+        </div>
+        <div class="col-xs-12 col-md-2">
+            <div class="home-info-header">
+                <span class="glyphicon glyphicon-earphone" aria-hidden="true"></span>
+                <p>Telefon</p>
+            </div>
+            <div class="home-info-body">
+                <small>{{companyVm.company.phoneNumber}}</small>
+            </div>
+        </div>
+    </div>
+    </div>
     <div class="row">
-        <uib-tabset type="pills">
+        <uib-tabset>
             <uib-tab heading="Članovi agencije" select="companyVm.selectedTab('members');" active="companyVm.activeTabIndex">
                 <div ui-view="companyMembers">
                 </div>
