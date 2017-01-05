@@ -90,10 +90,14 @@ function announcementService($http, CONFIG, $log) {
      *
      * @param {integer} authorId    ID of the announcements author
      * @param {boolean} deleted     announcement's status - is deleted
+     * @param {integer} page        page to retrieve from repository
+     * @param {integer} size        page size
+     * @param {string}  sort        sort attributes
      * @returns response
      */
-    function getAnnouncementsByAuthorAndStatus(authorId, deleted) {
-        return $http.get(CONFIG.SERVICE_URL + '/announcements/user/' + authorId + '/' + deleted + '?page=0')
+    
+    function getAnnouncementsByAuthorAndStatus(authorId, deleted, page, size, sort) {
+        return $http.get(CONFIG.SERVICE_URL + '/announcements/user/' + authorId + '/' + deleted + '?page=' + page + '&size=' + size + '&sort=' + sort)
             .then(function successCallback(response) {
                 return response;
             }, function errorCallback(response) {
