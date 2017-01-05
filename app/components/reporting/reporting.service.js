@@ -1,13 +1,13 @@
 (function() {
-'use strict';
+    'use strict';
 
     angular
         .module('awt-cts-client')
         .service('reportingService', reportingService);
 
-    reportingService.$inject = ['$http', 'CONFIG', '$log'];
+    reportingService.$inject = ['$http', '$log', 'CONFIG'];
 
-    function reportingService($http, CONFIG, $log) {
+    function reportingService($http, $log, CONFIG) {
         var service = {
             createReport: createReport,
             getReportsByStatus: getReportsByStatus,
@@ -19,23 +19,23 @@
 
         /**
          * Creating new report
-         * 
+         *
          * @param {any} report   report that will be created
          * @returns response
          */
         function createReport(report) {
-            console.log(report);
             return $http.post(CONFIG.SERVICE_URL + '/reports', report)
                 .then(function successCallback(response) {
                     return response;
                 }, function errorCallback(response) {
-                    $log.warn("Creating report is unsuccessfull");
+                    $log.warn(response.headers('X-SCT-Alert'));
+                    throw response.headers('X-SCT-Alert');
                 });
         };
 
         /**
          * Retrieves all reports that matches provided status.
-         * 
+         *
          * @param {string}  status  report status - pending, accepted, rejected
          * @param {integer} page    page to retrieve from repository
          * @param {integer} size    page size
@@ -47,15 +47,15 @@
                 .then(function successCallback(response) {
                     return response;
                 }, function errorCallback(response) {
-                    $log.warn("Unable to retrieve reports");
-                    throw "unable_to_retreave_reports";
+                    $log.warn(response.headers('X-SCT-Alert'));
+                    throw response.headers('X-SCT-Alert');
                 });
         };
 
         /**
          * Resolves report's status.
-         * 
-         * @param {integer} reportId    ID of the report to be resolved   
+         *
+         * @param {integer} reportId    ID of the report to be resolved
          * @param {string}  status      resolving status - accepted, rejected
          * @returns response
          */
@@ -71,7 +71,7 @@
 
         /**
          * Retrieves reports posted by provided email.
-         * 
+         *
          * @param {any} authorEmail email of the author of the reports
          * @param {integer} page    page to retrieve from repository
          * @param {integer} size    page size
