@@ -43,7 +43,7 @@
                             $localStorage.user = tokenPayload.sub;
                             $localStorage.role = tokenPayload.role.authority;
 
-                            $location.path('/');
+                            $location.path('/home');
                         }
                     }
                     signingVm.dataLoading = false;
