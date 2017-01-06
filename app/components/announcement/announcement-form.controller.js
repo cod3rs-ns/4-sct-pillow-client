@@ -56,8 +56,6 @@
                 announcementService.getAnnouncementById($stateParams.announcementId)
                     .then(function(response) {
                         announcementFormVm.announcement = response.data;
-                        console.log(response.data);
-                        console.log(announcementFormVm.announcement);
                         _.forEach(response.data.images, function(image, index) {
                             var url = image.imagePath;
 
@@ -81,7 +79,6 @@
                                     $log.info("Wrong image url.");
                                 });
                         });
-                        console.log(announcementFormVm.announcement);
                         announcementFormVm.uploader.progress = 100;
                     })
                     .catch(function(error) {
@@ -306,7 +303,6 @@
                         _.remove(announcementFormVm.similars, function(realEstate) {
                             return realEstate.id == announcementFormVm.announcement.realEstate.id;
                         });
-                        console.log(announcementFormVm.similars);
                     }
 
                     if (!_.isEmpty(announcementFormVm.similars)) {

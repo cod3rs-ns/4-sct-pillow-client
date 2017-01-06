@@ -1,4 +1,4 @@
-(function() {
+(function () {
     'use strict';
 
     angular
@@ -6,10 +6,10 @@
         .controller('AnnouncementController', AnnouncementController);
 
     AnnouncementController.$inject = ['$stateParams', '$timeout', '$log', '$uibModal', '$document', '$localStorage', 'ngToast', '_', 'CommentsUtil', 'MarksUtil',
-                                        'announcementService', 'commentService', 'markService', 'reportingService'];
+        'announcementService', 'commentService', 'markService', 'reportingService'];
 
     function AnnouncementController($stateParams, $timeout, $log, $uibModal, $document, $localStorage, ngToast, _, CommentsUtil, MarksUtil,
-                                        announcementService, commentService, markService, reportingService) {
+        announcementService, commentService, markService, reportingService) {
         var announcementVm = this;
 
         announcementVm.announcement = {};
@@ -59,13 +59,13 @@
 
         function getAnnouncement(announcementId) {
             announcementService.getAnnouncementById(announcementId)
-                .then(function(response) {
+                .then(function (response) {
                     announcementVm.announcement = response.data;
                     announcementVm.address = response.data.realEstate.location;
 
                     announcementVm.isMyAdvertisement = $localStorage.user === announcementVm.announcement.author.username;
 
-                    _.forEach(response.data.images, function(image, index) {
+                    _.forEach(response.data.images, function (image, index) {
                         announcementVm.images.push({ 'id': index, 'image': image.imagePath });
                     });
 
@@ -73,8 +73,8 @@
 
                     // Get all comments for announcement
                     commentService.getCommentsForAnnouncement(announcementId)
-                        .then(function(response) {
-                            _.forEach(response.data, function(comment) {
+                        .then(function (response) {
+                            _.forEach(response.data, function (comment) {
                                 announcementVm.comments.push(CommentsUtil.formatComment(comment));
                             });
                         })
@@ -85,7 +85,7 @@
                     // Get all marks for announcement
                     var role = $localStorage.role;
                     markService.getMarksForAnnouncement(announcementId)
-                        .then(function(response) {
+                        .then(function (response) {
                             var marks = response.data;
 
                             announcementVm.votes.announcement.average = MarksUtil.average(marks);
@@ -104,7 +104,7 @@
 
                     // Get all marks for announcer
                     markService.getMarksForAnnouncer(announcementVm.announcement.author.id)
-                        .then(function(response) {
+                        .then(function (response) {
                             var marks = response.data;
 
                             announcementVm.votes.announcer.average = MarksUtil.average(marks);
@@ -129,7 +129,7 @@
             });
             var geocoder = new google.maps.Geocoder();
 
-            $timeout(function() {
+            $timeout(function () {
                 // Refresh map and find center
                 google.maps.event.trigger(map, 'resize');
                 geocodeAddress(geocoder, map);
@@ -140,7 +140,7 @@
             var address = announcementVm.address.city + ' ' + announcementVm.address.street + ' ' +
                 + announcementVm.address.streetNumber + ' ' + announcementVm.address.country;
 
-            geocoder.geocode({ 'address': address }, function(results, status) {
+            geocoder.geocode({ 'address': address }, function (results, status) {
                 if (status === google.maps.GeocoderStatus.OK) {
                     resultsMap.setCenter(results[0].geometry.location);
                     var marker = new google.maps.Marker({
@@ -156,7 +156,7 @@
         function checkIfUserAlreadyReportAnnouncement() {
             if (!_.isNull($localStorage.user)) {
                 announcementService.alreadyReported(announcementVm.announcement.id, $localStorage.user)
-                    .then(function(response) {
+                    .then(function (response) {
                         announcementVm.alreadyReported = response.data;
                     })
                     .catch(function (error) {
@@ -173,7 +173,7 @@
             comment.date = _.now();
 
             commentService.addComment(comment)
-                .then(function(response) {
+                .then(function (response) {
                     announcementVm.comment = "";
                     var comment = CommentsUtil.formatComment(response.data);
 
@@ -185,26 +185,26 @@
         }
 
         function updateComment(comment) {
-          comment.announcement = { 'id': _.toInteger($stateParams.announcementId) };
-          comment.date = _.now();
-          comment.content = announcementVm.editedComment;
+            comment.announcement = { 'id': _.toInteger($stateParams.announcementId) };
+            comment.date = _.now();
+            comment.content = announcementVm.editedComment;
 
-          delete comment.isMy;
+            delete comment.isMy;
 
-          commentService.updateComment(comment)
-              .then(function(response) {
-                  comment.isMy = true;
-                  announcementVm.editing = undefined;
-              })
-              .catch(function (error) {
-                  $log.error(error);
-              });
+            commentService.updateComment(comment)
+                .then(function (response) {
+                    comment.isMy = true;
+                    announcementVm.editing = undefined;
+                })
+                .catch(function (error) {
+                    $log.error(error);
+                });
         }
 
         function deleteComment(id) {
             commentService.deleteComment(id)
-                .then(function(response) {
-                    _.remove(announcementVm.comments, function(comment) {
+                .then(function (response) {
+                    _.remove(announcementVm.comments, function (comment) {
                         return comment.id === id;
                     });
                 })
@@ -221,12 +221,12 @@
                 mark.value = _.toInteger(rating);
 
                 markService.vote(mark)
-                    .then(function(response) {
-                      announcementVm.vote.announcement = response.data;
-                      var votes = announcementVm.votes.announcement;
+                    .then(function (response) {
+                        announcementVm.vote.announcement = response.data;
+                        var votes = announcementVm.votes.announcement;
 
-                      announcementVm.votes.announcement.average =
-                          MarksUtil.updateAverage(response.data.value, votes.count++, votes.average);
+                        announcementVm.votes.announcement.average =
+                            MarksUtil.updateAverage(response.data.value, votes.count++, votes.average);
                     })
                     .catch(function (error) {
                         $log.error(error);
@@ -238,7 +238,7 @@
                 mark.value = _.toInteger(rating);
 
                 markService.updateVote(mark)
-                    .then(function(response) {
+                    .then(function (response) {
                         announcementVm.vote.announcement = response.data;
                         var votes = announcementVm.votes.announcement;
 
@@ -259,12 +259,12 @@
                 mark.value = _.toInteger(rating);
 
                 markService.vote(mark)
-                    .then(function(response) {
-                      announcementVm.vote.announcer = response.data;
-                      var votes = announcementVm.votes.announcer;
+                    .then(function (response) {
+                        announcementVm.vote.announcer = response.data;
+                        var votes = announcementVm.votes.announcer;
 
-                      announcementVm.votes.announcer.average =
-                          MarksUtil.updateAverage(response.data.value, votes.count++, votes.average);
+                        announcementVm.votes.announcer.average =
+                            MarksUtil.updateAverage(response.data.value, votes.count++, votes.average);
                     })
                     .catch(function (error) {
                         $log.error(error);
@@ -276,12 +276,12 @@
                 mark.value = _.toInteger(rating);
 
                 markService.updateVote(mark)
-                    .then(function(response) {
-                      announcementVm.vote.announcer = response.data;
-                      var votes = announcementVm.votes.announcer;
+                    .then(function (response) {
+                        announcementVm.vote.announcer = response.data;
+                        var votes = announcementVm.votes.announcer;
 
-                      announcementVm.votes.announcer.average =
-                          MarksUtil.updateAverage(response.data.value, votes.count, votes.average, oldVal);
+                        announcementVm.votes.announcer.average =
+                            MarksUtil.updateAverage(response.data.value, votes.count, votes.average, oldVal);
                     })
                     .catch(function (error) {
                         $log.error(error);
@@ -289,25 +289,30 @@
             }
         }
 
-        announcementVm.reportAnnouncement = function(size, parentSelector) {
+        announcementVm.reportAnnouncement = function (size, parentSelector) {
             var modalInstance = $uibModal.open({
                 templateUrl: 'app/components/reporting/reporting-form.html',
                 controller: 'ReportingFormController',
                 controllerAs: 'reportingFormVm',
                 size: size,
                 resolve: {
-                    items: function() {
+                    items: function () {
                         return announcementVm.announcement.id;
                     },
-                    user: function() {
+                    user: function () {
                         return $localStorage.user;
                     }
                 }
             });
 
-            modalInstance.result.then(function(report) {
+            modalInstance.result.then(function (report) {
+                report.createdAt = _.now();
                 reportingService.createReport(report)
-                    .then(function(response) {
+                    .then(function (response) {
+                        ngToast.create({
+                            className: 'success',
+                            content: '<strong>Oglas je uspješno prijavljen.</strong>'
+                        });
                         if (!_.isUndefined($localStorage.user))
                             announcementVm.alreadyReported = true;
                         $log.info('Report is successfully created' + response.data);
@@ -315,7 +320,7 @@
                     .catch(function (error) {
                         $log.error(error);
                     });
-            }, function() {
+            }, function () {
                 $log.info('Modal dismissed at: ' + _.now());
             });
         }
@@ -334,10 +339,10 @@
         function verifyAnnouncement() {
             announcementService.verifyAnnouncement($stateParams.announcementId)
                 .then(function (response) {
-                     announcementVm.getAnnouncement($stateParams.announcementId);
-                     ngToast.create({
+                    announcementVm.getAnnouncement($stateParams.announcementId);
+                    ngToast.create({
                         className: 'success',
-                        content: '<strong>Oglas je uspešno verifikovan.</strong>'
+                        content: '<strong>Oglas je uspješno verifikovan.</strong>'
                     });
                 })
                 .catch(function (error) {

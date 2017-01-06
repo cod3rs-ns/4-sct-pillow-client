@@ -28,7 +28,7 @@
             });
             companyService.setUserPage(0);
             companyService.setAnnouncementPage(0);
-            
+
             companyVm.showMembership = $localStorage.role == 'advertiser';
             companyVm.showUpdateBtn = $localStorage.role == 'admin';
 
@@ -89,7 +89,12 @@
             userService.getUser($localStorage.user)
                 .then(function (response) {
                     companyVm.loggedUser = response.data;
-                    companyVm.disableMembership = companyVm.loggedUser.company.id == companyVm.company.id;
+                    if (companyVm.loggedUser.company == null) {
+                        companyVm.disableMembership = false;
+                    }
+                    else {
+                        companyVm.disableMembership = companyVm.loggedUser.company.id == companyVm.company.id;
+                    }
                 })
                 .catch(function (error) {
                     $log.error(error);
