@@ -164,8 +164,8 @@ function announcementService($http, $log, CONFIG) {
      * @param {string} searchTerm   HTTP format of parameters for search -> key1=value1&key2=value2 ...
      * @returns list of found announcements
      */
-    function searchAnnouncements(searchTerm) {
-        return $http.get(CONFIG.SERVICE_URL + '/announcements/search?' + searchTerm)
+    function searchAnnouncements(searchTerm, page, size, sort) {
+        return $http.get(CONFIG.SERVICE_URL + '/announcements/search?' + searchTerm + 'page=' + page + '&size=' + size + '&sort=' + sort)
             .then(function successCallback(response) {
                 return response;
             },

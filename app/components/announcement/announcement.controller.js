@@ -5,9 +5,11 @@
         .module('awt-cts-client')
         .controller('AnnouncementController', AnnouncementController);
 
-    AnnouncementController.$inject = ['$stateParams', '$timeout', '$log', '$uibModal', '$document', '$localStorage', '_', 'CommentsUtil', 'MarksUtil', 'announcementService', 'commentService', 'markService', 'reportingService'];
+    AnnouncementController.$inject = ['$stateParams', '$timeout', '$log', '$uibModal', '$document', '$localStorage', '_', 'CommentsUtil', 'MarksUtil',
+                                        'announcementService', 'commentService', 'markService', 'reportingService'];
 
-    function AnnouncementController($stateParams, $timeout, $log, $uibModal, $document, $localStorage, _, CommentsUtil, MarksUtil, announcementService, commentService, markService, reportingService) {
+    function AnnouncementController($stateParams, $timeout, $log, $uibModal, $document, $localStorage, _, CommentsUtil, MarksUtil,
+                                        announcementService, commentService, markService, reportingService) {
         var announcementVm = this;
 
         announcementVm.announcement = {};
