@@ -10,7 +10,7 @@
     function stateConfig($stateProvider) {
         $stateProvider
         .state('home', {
-            url: "/home",
+            url: "/home?search&page&sort",
             data: {
                 pageTitle: 'Početna'
             },
@@ -27,7 +27,8 @@
                 },
                 sort: {
                     value: 'id,asc'
-                }
+                },
+                search: null
             },
             resolve: {
                 pagingParams: ['$stateParams', 'Pagination', function ($stateParams, Pagination) {
@@ -35,7 +36,8 @@
                         page: Pagination.parsePage($stateParams.page),
                         sort: $stateParams.sort,
                         predicate: Pagination.parsePredicate($stateParams.sort),
-                        ascending: Pagination.parseAscending($stateParams.sort)
+                        ascending: Pagination.parseAscending($stateParams.sort),
+                        search: $stateParams.search
                     };
                 }],
             }
