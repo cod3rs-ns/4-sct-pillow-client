@@ -5,9 +5,9 @@
         .module('awt-cts-client')
         .controller('HomeController', HomeController);
 
-    HomeController.$inject = ['$state', '$document', '$timeout', '$log', '_', 'announcementService', 'LinkParser', 'pagingParams', 'paginationConstants'];
+    HomeController.$inject = ['$state', '$document', '$timeout', '$location', '$log', '_', 'announcementService', 'LinkParser', 'pagingParams', 'paginationConstants'];
 
-    function HomeController($state, $document, $timeout, $log, _, announcementService, LinkParser, pagingParams, paginationConstants) {
+    function HomeController($state, $document, $timeout, $location, $log, _, announcementService, LinkParser, pagingParams, paginationConstants) {
         var homeVm = this;
 
         homeVm.announcements = {};
@@ -27,6 +27,7 @@
         homeVm.find = find;
         homeVm.initMap = initMap;
         homeVm.showMapResult = showMapResult;
+        homeVm.redirect = redirect;
 
         activate();
 
@@ -164,7 +165,7 @@
             var searchTerm = "";
 
             _.forEach(homeVm.search, function(value, key) {
-                if (value !== '' && !_.isUndefined(value) && !_.isNull(value)) {
+                if (value !== '' && value !== false && !_.isUndefined(value) && !_.isNull(value)) {
                     searchTerm += key + "=" + value + "&";
                 }
             });
@@ -243,9 +244,13 @@
               '<div class="media-body">' +
                 '<h4 class="media-heading">' + announcement.name + '</h4>' +
                 announcement.description +
-                '<a ui-sref="announcement({announcementId: ' + announcement.id + '})" type="button" class="btn btn-primary pull-right">Prikaži detalje</a>' +
               '</div>' +
             '</div>';
+        }
+
+        function redirect(id) {
+            $log.log(':)');
+            $location.path('/announcement/' + id);
         }
 
         function handleLocationError(browserHasGeolocation, tooltip, pos) {
