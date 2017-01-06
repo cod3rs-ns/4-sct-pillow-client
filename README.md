@@ -11,13 +11,13 @@ Predmetni projekat iz predmeta Konstrukcija i testiranje softvera i Napredne veb
 
 ###
 
-Aktivna verzija **v1.4**
+Aktivna verzija **v1.5**
 
 ## Struktura projekta
 
 Organizacija entiteta projekta organizovana je na sledeći način:
 ```
-- app 
+- app
   - shared          // komponente koje se koriste na više mesta
   - components      // komponente, svaka u svom folderu (HTML, controller.js, directive.js, service.js)
 - assets
@@ -26,7 +26,7 @@ Organizacija entiteta projekta organizovana je na sledeći način:
   - js              // JavaScript koji nije vezan za Angular konkretno
   - libs            // biblioteke, bower ih tu smešta
 - index.html
-``` 
+```
 
 ## Rad sa **bower**-om
 
