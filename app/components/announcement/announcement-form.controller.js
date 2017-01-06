@@ -1,4 +1,4 @@
-(function () {
+(function() {
     'use strict';
 
     angular
@@ -54,9 +54,11 @@
             else {
                 announcementFormVm.datePickerConfig();
                 announcementService.getAnnouncementById($stateParams.announcementId)
-                    .then(function (response) {
+                    .then(function(response) {
                         announcementFormVm.announcement = response.data;
-                        _.forEach(response.data.images, function (image, index) {
+                        console.log(response.data);
+                        console.log(announcementFormVm.announcement);
+                        _.forEach(response.data.images, function(image, index) {
                             var url = image.imagePath;
 
                             $http.get(url, { responseType: "blob" })
@@ -78,18 +80,22 @@
                                 }, function errorCallback(data, status, headers, config) {
                                     $log.info("Wrong image url.");
                                 });
-                        })
-                        .catch(function (error) {
-                            $log.error(error);
                         });
-
+                        console.log(announcementFormVm.announcement);
                         announcementFormVm.uploader.progress = 100;
+                    })
+                    .catch(function(error) {
+                        $log.error(error);
                     });
             }
         }
 
         function submitAnnouncement() {
             var notUploaded = announcementFormVm.uploader.getNotUploadedItems();
+            
+            if (announcementFormVm.chosenSimilarRealEstateId != null){
+                announcementFormVm.announcement.realEstate.id = announcementFormVm.chosenSimilarRealEstateId;
+            }
 
             if (announcementFormVm.state == "updateAnnouncement" && _.isEmpty(notUploaded)) {
                 updateAnnouncement(announcementFormVm.announcement);
@@ -172,7 +178,7 @@
             // FILTERS
             announcementFormVm.uploader.filters.push({
                 name: 'imageFilter',
-                fn: function (item /*{File|FileLikeObject}*/, options) {
+                fn: function(item /*{File|FileLikeObject}*/, options) {
                     var type = '|' + item.type.slice(item.type.lastIndexOf('/') + 1) + '|';
                     return '|jpg|png|jpeg|bmp|gif|'.indexOf(type) !== -1;
                 }
@@ -180,7 +186,7 @@
 
             announcementFormVm.uploader.filters.push({
                 name: 'enforceMaxFileSize',
-                fn: function (item) {
+                fn: function(item) {
                     var retVal = item.size <= 5242880; // 5 MB
                     if (!retVal) {
                         ngToast.create({
@@ -194,7 +200,7 @@
 
             announcementFormVm.uploader.filters.push({
                 name: 'queueLimit',
-                fn: function (item) {
+                fn: function(item) {
                     var retVal = announcementFormVm.uploader.queue.length == 4; // 4 images per announcement
                     if (retVal) {
                         ngToast.create({
@@ -209,7 +215,7 @@
 
         function deleteItemFromQueue(item) {
             if (announcementFormVm.state == "updateAnnouncement" && !_.isUndefined(item.file.realImg)) {
-                _.remove(announcementFormVm.announcement.images, function (image) {
+                _.remove(announcementFormVm.announcement.images, function(image) {
                     return image.id === item.file.realImg.id;
                 })
             }
@@ -219,7 +225,7 @@
 
         function addNewAnnouncement() {
             announcementService.addAnnouncement(announcementFormVm.announcement)
-                .then(function (response) {
+                .then(function(response) {
                     if (!_.isEmpty(announcementFormVm.similars)) {
                         var report = {
                             email: 'system',
@@ -236,14 +242,14 @@
                         announcementId: response.data.id
                     });
                 })
-                .catch(function (error) {
+                .catch(function(error) {
                     $log.error(error);
                 });
         }
 
         function updateAnnouncement() {
             announcementService.updateAnnouncement(announcementFormVm.announcement)
-                .then(function (response) {
+                .then(function(response) {
                     if (!_.isEmpty(announcementFormVm.similars)) {
                         var report = {
                             email: 'system',
@@ -260,19 +266,19 @@
                         announcementId: response.data.id
                     });
                 })
-                .catch(function (error) {
+                .catch(function(error) {
                     $log.error(error);
                 });
         }
 
         function createUploaderCallbacks() {
             // Callbacks for one image upload
-            announcementFormVm.uploader.onSuccessItem = function (fileItem, response, status, headers) {
+            announcementFormVm.uploader.onSuccessItem = function(fileItem, response, status, headers) {
                 announcementFormVm.announcement.images.push({ id: null, imagePath: response });
                 $log.info('Item upload completed.', fileItem, response, status, headers);
             };
 
-            announcementFormVm.uploader.onCompleteAll = function () {
+            announcementFormVm.uploader.onCompleteAll = function() {
                 announcementFormVm.uploaded = true;
 
                 if (announcementFormVm.state == 'addAnnouncement') {
@@ -288,20 +294,19 @@
 
         function chooseSimilarRealEstate(id) {
             announcementFormVm.chosenSimilarRealEstateId = id;
-            announcementFormVm.announcement.realEstate.id = id;
         };
 
         function getSimilarRealEstates() {
             announcementService.getSimilarRealEstates(announcementFormVm.announcement.realEstate)
-                .then(function (response) {
+                .then(function(response) {
                     announcementFormVm.chosenSimilarRealEstateId = null;
-                    announcementFormVm.announcement.realEstate.id = null;
                     announcementFormVm.similars = response.data;
 
                     if (announcementFormVm.state != 'addAnnouncement') {
-                        _.remove(announcementFormVm.similars, function (realEstate) {
-                            return realEstate.id === announcementFormVm.announcement.realEstate.id;
+                        _.remove(announcementFormVm.similars, function(realEstate) {
+                            return realEstate.id == announcementFormVm.announcement.realEstate.id;
                         });
+                        console.log(announcementFormVm.similars);
                     }
 
                     if (!_.isEmpty(announcementFormVm.similars)) {
@@ -313,7 +318,7 @@
                         WizardHandler.wizard().goTo("Slike");
                     }
                 })
-                .catch(function (error) {
+                .catch(function(error) {
                     $log.error(error);
                 });
         };
@@ -339,9 +344,9 @@
                     + announcementFormVm.announcement.realEstate.location.streetNumber + ' ' + announcementFormVm.announcement.realEstate.location.country;
 
                 return findLocation(address)
-                    .then(function (response) {
+                    .then(function(response) {
                         return response;
-                    }, function (response) {
+                    }, function(response) {
                         ngToast.create({
                             className: 'danger',
                             content: '<p>Adresa koju ste unijeli je nevalidna.</p>'
@@ -373,7 +378,7 @@
             var deferred = $.Deferred();
             var geocoder = new google.maps.Geocoder();
 
-            geocoder.geocode({ 'address': location }, function (results, status) {
+            geocoder.geocode({ 'address': location }, function(results, status) {
                 if (status === google.maps.GeocoderStatus.OK) {
                     announcementFormVm.announcement.realEstate.location.latitude = results[0].geometry.location.lat();
                     announcementFormVm.announcement.realEstate.location.longitude = results[0].geometry.location.lng();
