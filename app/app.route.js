@@ -34,19 +34,6 @@ angular
 
         // States setup
         $stateProvider
-            .state('home', {
-                url: "/home",
-                data: {
-                    pageTitle: 'Početna'
-                },
-                views: {
-                    'content@': {
-                        templateUrl: "app/components/home/home.html",
-                        controller: "HomeController",
-                        controllerAs: "homeVm"
-                    }
-                }
-            })
             .state('announcement', {
                 url: "/announcement/:announcementId",
                 data: {

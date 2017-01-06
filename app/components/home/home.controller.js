@@ -5,17 +5,20 @@
         .module('awt-cts-client')
         .controller('HomeController', HomeController);
 
-    HomeController.$inject = ['$state', '$document', '$timeout', '$log', '_', 'announcementService'];
+    HomeController.$inject = ['$state', '$document', '$timeout', '$log', '_', 'announcementService', 'LinkParser', 'pagingParams', 'paginationConstants'];
 
-    function HomeController($state, $document, $timeout, $log, _, announcementService) {
+    function HomeController($state, $document, $timeout, $log, _, announcementService, LinkParser, pagingParams, paginationConstants) {
         var homeVm = this;
 
         homeVm.announcements = {};
 
         // Pagination init params
-        homeVm.page = 0;
+        homeVm.loadPage = loadPage;
+        homeVm.predicate = pagingParams.predicate;
+        homeVm.reverse = pagingParams.ascending;
+        homeVm.transition = transition;
         homeVm.itemsPerPage = 10;
-        homeVm.sortBy = 'id,desc';
+        homeVm.clear = clear;
 
         homeVm.getAllAnnouncements = getAllAnnouncements;
         homeVm.find = find;
@@ -26,6 +29,54 @@
 
         function activate () {
           homeVm.getAllAnnouncements();
+        }
+
+        function getAllAnnouncements() {
+            announcementService.getAnnouncements(pagingParams.page - 1, homeVm.itemsPerPage, sort())
+                .then(function(response) {
+                    var headers = response.headers;
+
+                    homeVm.announcements = response.data;
+                    homeVm.totalItems = response.headers('X-Total-Count');
+
+                    homeVm.links = LinkParser.parse(headers('Link'));
+                    homeVm.totalItems = headers('X-Total-Count');
+                    homeVm.queryCount = homeVm.totalItems;
+                    homeVm.page = pagingParams.page;
+                })
+                .catch(function (error) {
+                    $log.error(error);
+                });
+
+            function sort() {
+                var result = [homeVm.predicate + ',' + (homeVm.reverse ? 'asc' : 'desc')];
+
+                if (homeVm.predicate !== 'id') {
+                    result.push('id');
+                }
+                return result;
+            }
+        }
+
+        function loadPage(page) {
+            homeVm.page = page;
+            homeVm.transition();
+        }
+
+        function transition() {
+            $state.transitionTo($state.$current, {
+                page: homeVm.page,
+                sort: homeVm.predicate + ',' + (homeVm.reverse ? 'asc' : 'desc'),
+            });
+        }
+
+        function clear() {
+            homeVm.links = null;
+            homeVm.page = 1;
+            homeVm.predicate = 'id';
+            homeVm.reverse = true;
+            homeVm.currentSearch = null;
+            homeVm.transition();
         }
 
         function initMap() {
@@ -116,15 +167,16 @@
             });
         }
 
-        function getAllAnnouncements() {
-            announcementService.getAnnouncements(homeVm.page, homeVm.itemsPerPage, homeVm.sortBy)
-                .then(function(response) {
-                    homeVm.announcements = response.data;
-                    homeVm.totalItems = response.headers('X-Total-Count');
-                })
-                .catch(function (error) {
-                    $log.error(error);
-                });
+        function loadPage(page) {
+            homeVm.page = page;
+            homeVm.transition();
+        }
+
+        function transition() {
+            $state.transitionTo($state.$current, {
+                page: homeVm.page,
+                sort: homeVm.predicate + ',' + (homeVm.reverse ? 'asc' : 'desc'),
+            });
         }
 
         function find() {
