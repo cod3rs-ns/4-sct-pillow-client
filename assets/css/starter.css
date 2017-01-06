@@ -212,3 +212,7 @@ ul.rating {
 .advertiser-additional-info .col-sm-11 {
   float: left;
 }
+
+.ann-datepicker .uib-datepicker-popup .btn-group .btn-danger{
+    display: none;
+}

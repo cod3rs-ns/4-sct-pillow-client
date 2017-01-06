@@ -49,14 +49,14 @@
                             </div>
 
                             <div class="form-group">
-                                <p class="input-group">
+                                <p class="input-group ann-datepicker">
                                     <span class="input-group-addon" id="basic-addon1"> Važi do: </span>
-                                    <input type="text" class="form-control" readonly="true" uib-datepicker-popup="{{announcementFormVm.dateFormat}}" ng-model="announcementFormVm.announcement.expirationDate"
-                                        is-open="announcementFormVm.popup.opened" datepicker-options="announcementFormVm.dateOptions"
-                                        ng-required="true" close-text="Zatvori" clear-text="Obriši" alt-input-formats="announcementFormVm.altInputFormats"
+                                    <input type="text" class="form-control" readonly="true" uib-datepicker-popup="{{announcementFormVm.datePickerConfig.dateFormat}}" ng-model="announcementFormVm.announcement.expirationDate"
+                                        is-open="announcementFormVm.datePickerConfig.popup.opened" datepicker-options="announcementFormVm.datePickerConfig.dateOptions"
+                                        ng-required="true" current-text="Danas" close-text="Zatvori" clear-text="Obriši" alt-input-formats="announcementFormVm.datePickerConfig.altInputFormats"
                                     />
                                     <span class="input-group-btn">
-                                    <button type="button" class="btn btn-default" ng-click="announcementFormVm.open()"><i class="glyphicon glyphicon-calendar"></i></button>
+                                    <button type="button" class="btn btn-default" ng-click="announcementFormVm.datePickerConfig.open()"><i class="glyphicon glyphicon-calendar"></i></button>
                                     </span>
                                 </p>
                             </div>

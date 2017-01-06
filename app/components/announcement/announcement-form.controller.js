@@ -5,9 +5,9 @@
         .module('awt-cts-client')
         .controller('AnnouncementFormController', AnnouncementFormController);
 
-    AnnouncementFormController.$inject = ['$http', '$scope', '$state', '$stateParams', '$localStorage', '$log', '_', 'ngToast', 'FileUploader', 'announcementService', 'reportingService', 'WizardHandler', 'CONFIG'];
+    AnnouncementFormController.$inject = ['$http', '$scope', '$state', '$stateParams', '$localStorage', '$log', '_', 'ngToast', 'FileUploader', 'announcementService', 'reportingService', 'WizardHandler', 'DatePickerService', 'CONFIG'];
 
-    function AnnouncementFormController($http, $scope, $state, $stateParams, $localStorage, $log, _, ngToast, FileUploader, announcementService, reportingService, WizardHandler, CONFIG) {
+    function AnnouncementFormController($http, $scope, $state, $stateParams, $localStorage, $log, _, ngToast, FileUploader, announcementService, reportingService, WizardHandler, DatePickerService, CONFIG) {
 
         var announcementFormVm = this;
 
@@ -15,12 +15,8 @@
         announcementFormVm.similars = [];
         announcementFormVm.similarsDisabled = true;
 
-        // Date picker functions
-        announcementFormVm.today = today
-        announcementFormVm.clear = clear;
-        announcementFormVm.open = open;
+        // Datepicker configuration        
         announcementFormVm.datePickerConfig = datePickerConfig;
-        announcementFormVm.getDayClass = getDayClass;
 
         announcementFormVm.submitAnnouncement = submitAnnouncement;
         announcementFormVm.chooseSimilarRealEstate = chooseSimilarRealEstate;
@@ -47,7 +43,6 @@
 
             if (announcementFormVm.state == 'addAnnouncement') {
                 announcementFormVm.announcement = createInitialAnnouncement();
-                announcementFormVm.today();
                 announcementFormVm.datePickerConfig();
                 announcementFormVm.uploaded = false;
             }
@@ -56,8 +51,6 @@
                 announcementService.getAnnouncementById($stateParams.announcementId)
                     .then(function(response) {
                         announcementFormVm.announcement = response.data;
-                        console.log(response.data);
-                        console.log(announcementFormVm.announcement);
                         _.forEach(response.data.images, function(image, index) {
                             var url = image.imagePath;
 
@@ -81,7 +74,6 @@
                                     $log.info("Wrong image url.");
                                 });
                         });
-                        console.log(announcementFormVm.announcement);
                         announcementFormVm.uploader.progress = 100;
                     })
                     .catch(function(error) {
@@ -105,73 +97,8 @@
             }
         }
 
-        function today() {
-            announcementFormVm.announcement.expirationDate = _.now();
-        };
-
-        function clear() {
-            announcementFormVm.announcement.expirationDate = null;
-        };
-
-        function open() {
-            announcementFormVm.popup.opened = true;
-        };
-
-        // FIXME @bblagojevic - refactor this function
-        function getDayClass(data) {
-            var date = data.date,
-                mode = data.mode;
-            if (mode === 'day') {
-                var dayToCheck = new Date(date).setHours(0, 0, 0, 0);
-
-                for (var i = 0; i < $scope.events.length; i++) {
-                    var currentDay = new Date(announcementFormVm.events[i].date).setHours(0, 0, 0, 0);
-
-                    if (dayToCheck === currentDay) {
-                        return announcementFormVm.events[i].status;
-                    }
-                }
-            }
-
-            return '';
-        }
-
-        // FIXME @bblagojevic - refactor this function
         function datePickerConfig() {
-            announcementFormVm.inlineOptions = {
-                minDate: new Date(),
-                showWeeks: true
-            };
-
-            announcementFormVm.dateOptions = {
-                formatYear: 'yy',
-                maxDate: new Date(2020, 5, 22),
-                minDate: new Date(),
-                startingDay: 1
-            };
-
-            announcementFormVm.formats = ['dd-MMMM-yyyy', 'yyyy/MM/dd', 'dd.MM.yyyy', 'shortDate'];
-            announcementFormVm.format = announcementFormVm.formats[0];
-            announcementFormVm.altInputFormats = ['M!/d!/yyyy'];
-
-            announcementFormVm.popup = {
-                opened: false
-            };
-
-            var tomorrow = new Date();
-            tomorrow.setDate(tomorrow.getDate() + 1);
-            var afterTomorrow = new Date();
-            afterTomorrow.setDate(tomorrow.getDate() + 1);
-            announcementFormVm.events = [
-                {
-                    date: tomorrow,
-                    status: 'full'
-                },
-                {
-                    date: afterTomorrow,
-                    status: 'partially'
-                }
-            ];
+            announcementFormVm.datePickerConfig = DatePickerService.getConfiguration();
         }
 
         function setUploaderFilters() {
@@ -306,7 +233,6 @@
                         _.remove(announcementFormVm.similars, function(realEstate) {
                             return realEstate.id == announcementFormVm.announcement.realEstate.id;
                         });
-                        console.log(announcementFormVm.similars);
                     }
 
                     if (!_.isEmpty(announcementFormVm.similars)) {
