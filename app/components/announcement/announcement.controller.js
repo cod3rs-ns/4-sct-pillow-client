@@ -129,28 +129,22 @@
             });
             var geocoder = new google.maps.Geocoder();
 
+            var position = {
+                lat: announcementVm.address.latitude,
+                lng: announcementVm.address.longitude
+            };
+
             $timeout(function () {
                 // Refresh map and find center
                 google.maps.event.trigger(map, 'resize');
-                geocodeAddress(geocoder, map);
+                map.setCenter(position);
+
+                var marker = new google.maps.Marker({
+                    map: map,
+                    position: position
+                });
+
             }, 100);
-        }
-
-        function geocodeAddress(geocoder, resultsMap) {
-            var address = announcementVm.address.city + ' ' + announcementVm.address.street + ' ' +
-                + announcementVm.address.streetNumber + ' ' + announcementVm.address.country;
-
-            geocoder.geocode({ 'address': address }, function (results, status) {
-                if (status === google.maps.GeocoderStatus.OK) {
-                    resultsMap.setCenter(results[0].geometry.location);
-                    var marker = new google.maps.Marker({
-                        map: resultsMap,
-                        position: results[0].geometry.location
-                    });
-                } else {
-                    $log.error('Geocode was not successful for the following reason: ' + status);
-                }
-            });
         }
 
         function checkIfUserAlreadyReportAnnouncement() {
