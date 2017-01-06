@@ -35,11 +35,10 @@
         function activate() {
             announcementFormVm.state = $state.current.name;
 
-            var headerToken = CONFIG.AUTH_TOKEN;
             announcementFormVm.uploader = new FileUploader({
                 url: CONFIG.SERVICE_URL + '/images/announcements/',
                 headers: {
-                    headerToken: $localStorage.token
+                    "X-Auth-Token": $localStorage.token
                 }
             });
 
@@ -57,6 +56,8 @@
                 announcementService.getAnnouncementById($stateParams.announcementId)
                     .then(function(response) {
                         announcementFormVm.announcement = response.data;
+                        console.log(response.data);
+                        console.log(announcementFormVm.announcement);
                         _.forEach(response.data.images, function(image, index) {
                             var url = image.imagePath;
 
@@ -79,18 +80,22 @@
                                 }, function errorCallback(data, status, headers, config) {
                                     $log.info("Wrong image url.");
                                 });
-                        })
-                        .catch(function (error) {
-                            $log.error(error);
                         });
-
+                        console.log(announcementFormVm.announcement);
                         announcementFormVm.uploader.progress = 100;
+                    })
+                    .catch(function(error) {
+                        $log.error(error);
                     });
             }
         }
 
         function submitAnnouncement() {
             var notUploaded = announcementFormVm.uploader.getNotUploadedItems();
+            
+            if (announcementFormVm.chosenSimilarRealEstateId != null){
+                announcementFormVm.announcement.realEstate.id = announcementFormVm.chosenSimilarRealEstateId;
+            }
 
             if (announcementFormVm.state == "updateAnnouncement" && _.isEmpty(notUploaded)) {
                 updateAnnouncement(announcementFormVm.announcement);
@@ -237,7 +242,7 @@
                         announcementId: response.data.id
                     });
                 })
-                .catch(function (error) {
+                .catch(function(error) {
                     $log.error(error);
                 });
         }
@@ -261,7 +266,7 @@
                         announcementId: response.data.id
                     });
                 })
-                .catch(function (error) {
+                .catch(function(error) {
                     $log.error(error);
                 });
         }
@@ -270,7 +275,6 @@
             // Callbacks for one image upload
             announcementFormVm.uploader.onSuccessItem = function(fileItem, response, status, headers) {
                 announcementFormVm.announcement.images.push({ id: null, imagePath: response });
-
                 $log.info('Item upload completed.', fileItem, response, status, headers);
             };
 
@@ -290,20 +294,19 @@
 
         function chooseSimilarRealEstate(id) {
             announcementFormVm.chosenSimilarRealEstateId = id;
-            announcementFormVm.announcement.realEstate.id = id;
         };
 
         function getSimilarRealEstates() {
             announcementService.getSimilarRealEstates(announcementFormVm.announcement.realEstate)
                 .then(function(response) {
                     announcementFormVm.chosenSimilarRealEstateId = null;
-                    announcementFormVm.announcement.realEstate.id = null;
                     announcementFormVm.similars = response.data;
 
                     if (announcementFormVm.state != 'addAnnouncement') {
                         _.remove(announcementFormVm.similars, function(realEstate) {
-                            return realEstate.id === announcementFormVm.announcement.realEstate.id;
+                            return realEstate.id == announcementFormVm.announcement.realEstate.id;
                         });
+                        console.log(announcementFormVm.similars);
                     }
 
                     if (!_.isEmpty(announcementFormVm.similars)) {
@@ -315,7 +318,7 @@
                         WizardHandler.wizard().goTo("Slike");
                     }
                 })
-                .catch(function (error) {
+                .catch(function(error) {
                     $log.error(error);
                 });
         };
@@ -329,7 +332,28 @@
         }
 
         function canExitFirtsStep() {
-            return !announcementFormVm.announcementForm.$invalid && !announcementFormVm.realEstateForm.$invalid;
+            var formValid = !announcementFormVm.announcementForm.$invalid && !announcementFormVm.realEstateForm.$invalid;
+            if (!formValid) {
+                ngToast.create({
+                    className: 'danger',
+                    content: '<p>Morate popuniti sva polja ispravno da biste prešli na sljedeći korak.</p>'
+                });
+                return false;
+            } else {
+                var address = announcementFormVm.announcement.realEstate.location.city + ' ' + announcementFormVm.announcement.realEstate.location.street + ' ' +
+                    + announcementFormVm.announcement.realEstate.location.streetNumber + ' ' + announcementFormVm.announcement.realEstate.location.country;
+
+                return findLocation(address)
+                    .then(function(response) {
+                        return response;
+                    }, function(response) {
+                        ngToast.create({
+                            className: 'danger',
+                            content: '<p>Adresa koju ste unijeli je nevalidna.</p>'
+                        });
+                        return response;
+                    });
+            }
         }
 
         function createInitialAnnouncement() {
@@ -348,6 +372,23 @@
                     announcements: []
                 }
             };
+        }
+
+        function findLocation(location) {
+            var deferred = $.Deferred();
+            var geocoder = new google.maps.Geocoder();
+
+            geocoder.geocode({ 'address': location }, function(results, status) {
+                if (status === google.maps.GeocoderStatus.OK) {
+                    announcementFormVm.announcement.realEstate.location.latitude = results[0].geometry.location.lat();
+                    announcementFormVm.announcement.realEstate.location.longitude = results[0].geometry.location.lng();
+                    deferred.resolve(true);
+                } else {
+                    deferred.reject(false);
+                }
+            });
+
+            return deferred.promise();
         }
     }
 })();

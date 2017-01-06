@@ -45,12 +45,11 @@
             }
         }
 
-        var headerToken = CONFIG.AUTH_TOKEN;
         // Upload images
         var uploader = companyFormVm.uploader = new FileUploader({
             url: CONFIG.SERVICE_URL + '/images/company/',
             headers: {
-                headerToken: $localStorage.token
+                "X-Auth-Token": $localStorage.token
             }
         });
 

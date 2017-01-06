@@ -27,7 +27,8 @@
             findUsers: findUsers,
             getUserRequestsByStatusPending: getUserRequestsByStatusPending,
             resolveMembershipRequest: resolveMembershipRequest,
-            updateCompany: updateCompany
+            updateCompany: updateCompany,
+            requestMembership: requestMembership
         };
 
         return service;
@@ -150,6 +151,16 @@
                     throw response.headers('X-SCT-Alert');
                 });
         }
+
+        function requestMembership(companyId) {
+            return $http.put(CONFIG.SERVICE_URL + '/companies/' + companyId + "/user-request/?confirmed=true")
+                .then(function successCallback(response) {
+                    return response;
+                }, function errorCallback(repsponse) {
+                    $log.warn(response.headers('X-SCT-Alert'));
+                    throw response.headers('X-SCT-Alert');
+                });
+        };
 
         function getUserPage(){
             return pageStatuses.userPage;

@@ -48,7 +48,7 @@ angular
                 }
             })
             .state('addAnnouncement', {
-                url: "/announcement/add",
+                url: "/announcement-add",
                 data: {
                     pageTitle: 'Dodavanje oglasa'
                 },
@@ -87,7 +87,7 @@ angular
                 }
             })
             .state('addCompany', {
-                url: "/company/add",
+                url: "/company-add",
                 data: {
                     pageTitle: 'Dodavanje agencije'
                 },

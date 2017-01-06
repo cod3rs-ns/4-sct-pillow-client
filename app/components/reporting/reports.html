@@ -30,7 +30,19 @@
                         <label><input type="radio" ng-model="reportVm.predicate" name="type" value="type" ng-click="reportVm.activate();">Tipu</label>
                     </div>
                     <div class="radio">
-                        <label><input type="radio" ng-model="reportVm.predicate" name="type" value="date" ng-click="reportVm.activate();">Datumu</label>
+                        <label><input type="radio" ng-model="reportVm.predicate" name="type" value="createdAt" ng-click="reportVm.activate();">Datumu</label>
+                    </div>
+                </div>
+                <div class="search-category">
+                    <h4>Filtriranje</h4>
+                    <div class="radio">
+                        <label><input type="radio" ng-model="reportVm.reportStatusFilter" name="type" value="pending" ng-click="reportVm.activate();">Na čekanju</label>
+                    </div>
+                    <div class="radio">
+                        <label><input type="radio" ng-model="reportVm.reportStatusFilter" name="type" value="accepted" ng-click="reportVm.activate();">Prihvaćene</label>
+                    </div>
+                    <div class="radio">
+                        <label><input type="radio" ng-model="reportVm.reportStatusFilter" name="type" value="rejected" ng-click="reportVm.activate();">Odbijene</label>
                     </div>
                 </div>
                 <!-- section for _search by author email_ -->
@@ -60,6 +72,9 @@
 
             <!-- reports container -->
             <div class="col-xs-10 col-md-10">
+                <div class="row" ng-show="reportVm.totalItems == 0">
+                    <p><strong><em>Trenutno nema prijava.</em></strong></p>
+                </div>
                 <div class="container-fluid">
                     <div class="col-xs-12 col-md-6" ng-repeat="report in reportVm.reports">
                         <div class="panel panel-default" >
@@ -69,13 +84,15 @@
                                     <span   class="glyphicon glyphicon-ok pull-right"
                                             style="color:seagreen;cursor:pointer;"
                                             ng-click="reportVm.acceptReport(report.id);"
-                                            uib-tooltip="Prihvati sugestiju" tooltip-placement="top">
+                                            uib-tooltip="Prihvati sugestiju" tooltip-placement="top"
+                                            ng-show="report.status == 'pending'">
                                     </span>
                                     <span class="pull-right">&nbsp;</span>
                                     <span   class="glyphicon glyphicon-remove pull-right" 
                                             style="color:darkred;cursor:pointer;"
                                             ng-click="reportVm.rejectReport(report.id);"
-                                            uib-tooltip="Odbij sugestiju" tooltip-placement="top">
+                                            uib-tooltip="Odbij sugestiju" tooltip-placement="top"
+                                            ng-show="report.status == 'pending'">
                                     </span>
                                 </h3>
                             </div>

@@ -17,7 +17,8 @@ function announcementService($http, $log, CONFIG) {
         extendExpirationDate: extendExpirationDate,
         searchAnnouncements: searchAnnouncements,
         alreadyReported: alreadyReported,
-        updateAnnouncement: updateAnnouncement
+        updateAnnouncement: updateAnnouncement,
+        verifyAnnouncement: verifyAnnouncement
     };
 
     return service;
@@ -201,7 +202,7 @@ function announcementService($http, $log, CONFIG) {
     /**
      * Update one announcement.
      *
-     * @param {any} announcemnt   announcement that will be updated
+     * @param {any} announcement   announcement that will be updated
      * @returns response
      */
     function updateAnnouncement(announcement) {
@@ -212,5 +213,21 @@ function announcementService($http, $log, CONFIG) {
                 $log.warn(response.headers('X-SCT-Alert'));
                 throw response.headers('X-SCT-Alert');
             });
-    }
+    };
+
+    /**
+     * Verifies announcement.
+     * 
+     * @param {integer} announcementId
+     * @returns response
+     */
+    function verifyAnnouncement(announcementId) {
+        return $http.put(CONFIG.SERVICE_URL + '/announcements/' + announcementId + '/verify')
+            .then(function successCallback(response) {
+                return response;
+            }, function errorCallback(response) {
+                $log.warn(response.headers('X-SCT-Alert'));
+                throw response.headers('X-SCT-Alert');
+            });
+    };
 }
