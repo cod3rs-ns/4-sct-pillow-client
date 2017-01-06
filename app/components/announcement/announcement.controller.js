@@ -5,9 +5,9 @@
         .module('awt-cts-client')
         .controller('AnnouncementController', AnnouncementController);
 
-    AnnouncementController.$inject = ['$stateParams', '$timeout', '$log', '$uibModal', '$document', '$localStorage', '_', 'CommentsUtil', 'MarksUtil', 'announcementService', 'commentService', 'markService', 'reportingService'];
+    AnnouncementController.$inject = ['$stateParams', '$timeout', '$log', '$uibModal', '$document', '$localStorage', '_', 'CommentsUtil', 'MarksUtil', 'announcementService', 'commentService', 'markService', 'reportingService', 'ngToast'];
 
-    function AnnouncementController($stateParams, $timeout, $log, $uibModal, $document, $localStorage, _, CommentsUtil, MarksUtil, announcementService, commentService, markService, reportingService) {
+    function AnnouncementController($stateParams, $timeout, $log, $uibModal, $document, $localStorage, _, CommentsUtil, MarksUtil, announcementService, commentService, markService, reportingService, ngToast) {
         var announcementVm = this;
 
         announcementVm.announcement = {};
@@ -34,6 +34,10 @@
             }
         };
 
+        announcementVm.$storage = $localStorage.$default({
+            role: 'guest'
+        });
+
         announcementVm.getAnnouncement = getAnnouncement;
         announcementVm.initMap = initMap;
         announcementVm.addComment = addComment;
@@ -43,6 +47,7 @@
         announcementVm.voteAnnouncement = voteAnnouncement;
         announcementVm.checkIfUserAlreadyReportAnnouncement = checkIfUserAlreadyReportAnnouncement;
         announcementVm.cancel = cancel;
+        announcementVm.verifyAnnouncement = verifyAnnouncement;
 
         activate();
 
@@ -318,6 +323,27 @@
             if (27 === event.keyCode) {
                 announcementVm.editing = undefined;
             }
-        }
+        };
+
+
+        /**
+         * Verifes announcement. 
+         */
+        function verifyAnnouncement() {
+            announcementService.verifyAnnouncement($stateParams.announcementId)
+                .then(function (response) {
+                     announcementVm.getAnnouncement($stateParams.announcementId);
+                     ngToast.create({
+                        className: 'success',
+                        content: '<strong>Oglas je uspešno verifikovan.</strong>'
+                    });
+                })
+                .catch(function (error) {
+                    ngToast.create({
+                        className: 'danger',
+                        content: '<p><strong>GREŠKA! </strong>' + error + '</p>'
+                    });
+                });
+        };
     }
 })();

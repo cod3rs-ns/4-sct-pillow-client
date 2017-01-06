@@ -20,6 +20,11 @@
         reportVm.acceptReport = acceptReport;
         reportVm.getReportsByAuthorEmail = getReportsByAuthorEmail;
 
+        /**
+         * Type of reports displayed.
+         */
+        reportVm.reportStatusFilter = 'pending';
+
         /** Pagination support */
         reportVm.loadPage = loadPage;
         reportVm.predicate = pagingParams.predicate;
@@ -38,7 +43,7 @@
                 getReportsByAuthorEmail();
             }
             else {
-                getPendingReports();
+                getReports();
             };
         };
 
@@ -59,7 +64,7 @@
                 .catch(function (error) {
                     ngToast.create({
                         className: 'danger',
-                        content: '<strong>' + error +'</strong>'
+                        content: '<p><strong>GREŠKA! </strong>' + error + '</p>'
                     });
                 });
         };
@@ -81,7 +86,7 @@
                 .catch(function (error) {
                     ngToast.create({
                         className: 'danger',
-                        content: '<strong>' + error +'</strong>'
+                        content: '<p><strong>GREŠKA! </strong>' + error + '</p>'
                     });
                 });
         };
@@ -90,8 +95,8 @@
         /**
          * Retrieves all pending reports.
          */
-        function getPendingReports() {
-            reportingService.getReportsByStatus('pending', pagingParams.page - 1, reportVm.itemsPerPage, reportVm.sort())
+        function getReports() {
+            reportingService.getReportsByStatus(reportVm.reportStatusFilter, pagingParams.page - 1, reportVm.itemsPerPage, reportVm.sort())
                 .then(function (response) {
                     reportVm.links = LinkParser.parse(response.headers('Link'));
                     reportVm.totalItems = response.headers('X-Total-Count');
@@ -99,7 +104,10 @@
                     reportVm.reports = response.data;
                 })
                 .catch(function (error) {
-                    $log.error('Unable to retrieve reports');
+                    ngToast.create({
+                        className: 'danger',
+                        content: '<p><strong>GREŠKA! </strong>' + error + '</p>'
+                    });
                 });
         }
 

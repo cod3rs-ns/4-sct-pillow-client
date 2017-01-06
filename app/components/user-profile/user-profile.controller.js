@@ -180,6 +180,7 @@
                         className: 'success',
                         content: '<p>Datum isteka oglasa produžen do: <strong>' + expString + '</strong></p>'
                     });
+                    activate();
                 })
                 .catch(function (error) {
                     ngToast.create({
