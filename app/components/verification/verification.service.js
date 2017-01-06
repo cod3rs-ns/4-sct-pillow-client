@@ -21,10 +21,8 @@
                     return response;
                 }, function errorCallback(response) {
                     $log.error("Unable to resend verification token.");
-                    // FIXME @bblagojevic - treba li ti ovaj response? :) @see user.service.js
                     $log.warn(response.headers('X-SCT-Alert'));
                     throw response.headers('X-SCT-Alert');
-                    return response;
                 });
         }
     }
