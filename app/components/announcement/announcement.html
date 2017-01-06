@@ -107,15 +107,23 @@
                 </div>
             </div>
 
-            <div uib-tooltip="Ne možete ponovo prijaviti isti oglas, sve dok se prethodna prijava ne razriješi!"
+            <div    uib-tooltip="Ne možete ponovo prijaviti isti oglas, sve dok se prethodna prijava ne razriješi!"
                     tooltip-placement="top"
                     tooltip-trigger="'mouseenter'"
-                    tooltip-enable="announcementVm.alreadyReported">
+                    tooltip-enable="announcementVm.alreadyReported"
+                    ng-show="announcementVm.announcement.verified == 'not-verified' && announcementVm.$storage.role != 'verifier'">
                 <button type="button" class="btn btn-danger btn-report" ng-disabled="announcementVm.alreadyReported" ng-click="announcementVm.reportAnnouncement()">
                     <span class="glyphicon glyphicon-thumbs-down color-white"></span>
                     Prijavi oglas
                 </button>
             </div>
+            <div ng-show="announcementVm.announcement.verified == 'not-verified' && announcementVm.$storage.role == 'verifier'">
+                <button type="button" class="btn btn-success btn-report" ng-click="announcementVm.verifyAnnouncement()">
+                    <span class="glyphicon glyphicon-thumbs-up color-white"></span>
+                    Verifikuj
+                </button>
+            </div>
+            <span ng-show="announcementVm.announcement.verified == 'verified'" class="label label-success">Verifikovan oglas</span>
         </div>
     </div>
 
