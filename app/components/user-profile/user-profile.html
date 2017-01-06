@@ -154,77 +154,119 @@
                 <div class="row" ng-show="userVm.totalItems === 0">
                     <p style="margin-left: 100px; margin-top: 20px;"><strong>Trenutno nemate oglasa.</strong></p>    
                 </div>
-                <div class="col-xs-12 col-sm-6 col-md-6" ng-repeat="announcement in userVm.announcements track by $index">
-                    <div class="well well-sm">
-                        <div class="row">
-                            <div class="col-sm-5 col-md-3">
-                                <img    ng-src={{announcement.images[0].imagePath}}
-                                        ui-sref="announcement({announcementId: announcement.id})"
-                                        class="thumbnail img-rounded img-responsive"
-                                        style="cursor: hover"/>
-                            </div>
-                            <div class="col-sm-7 col-md-9">
-                                <h4><a ui-sref="announcement({announcementId: announcement.id})">{{announcement.name}}</a></h4>
-                                <small style="position:absolute; top:0px; right: 35px;" uib-tooltip="Datum objave" tooltip-placement="top">
-                                    <cite title="{{announcement.dateAnnounced}}">
-                                        {{announcement.dateAnnounced | date:'dd-MM-yyyy'}}
-                                    </cite>
-                                </small>
-                                <i  class="glyphicon glyphicon-ok-circle"
-                                    style="position:absolute; top:0px; right: 10px; color:green; font-size: 14pt;"
-                                    uib-tooltip="Verifikovan" tooltip-placement="right"
-                                    ng-show="announcement.verified == true">
-                                </i>
-                                <span class="label label-success" ng-show="announcement.type === 'buy'">
-                                    <cite title="{{announcement.type}}"> potražnja</cite>
-                                </span>
-                                <span class="label label-warning" ng-show="announcement.type === 'rent'">
-                                    <cite title="{{announcement.type}}"> iznajmljivanje</cite>
-                                </span>
-                                <span class="label label-info" ng-show="announcement.type === 'sale'">
-                                    <cite title="{{announcement.type}}"> prodaja</cite>
-                                </span>
-                                <p style="margin-top: 5px;">
-                                    <cite title="{{announcement.realEstate.location.city + ', ' + announcement.realEstate.location.country}}">
-                                        {{announcement.realEstate.location.city + ', ' + announcement.realEstate.location.country}}
-                                        <i class="glyphicon glyphicon-map-marker" uib-tooltip="Adresa" tooltip-placement="right"></i>
-                                    </cite>
-                                </p>
-                                <p>
-                                    <i class="glyphicon glyphicon-euro" uib-tooltip="Cena" tooltip-placement="top"></i> &nbsp;<strong>{{announcement.price}}</strong>
-                                    <br />
-                                    <i class="glyphicon glyphicon-asterisk" uib-tooltip="Tip nekretnine" tooltip-placement="top"></i> &nbsp;{{announcement.realEstate.type}}
-                                    <br />
-                                    <i class="glyphicon glyphicon-time" uib-tooltip="Vreme isteka" tooltip-placement="top"></i> &nbsp;<strong class="{{announcement.expirationClass}}">{{announcement.expiredMessage}}</strong>
-                                    <br />
-                                </p>
-                                <!-- extend expiration date -->
-                                <div class="row" ng-show="userVm.loggedin">
-                                    <div class="form-group col-md-12 col-sm-12 col-xs-12">
-                                        <div class="input-group">
-                                            <span class="input-group-addon"> Produži do: </span>
-                                            <input  type="text" class="form-control"
-                                                    ng-model="announcement.expirationDate"
-                                                    uib-datepicker-popup="{{userVm.pickerConfigurations[$index].format}}"
-                                                    is-open="userVm.pickerConfigurations[$index].popup.opened" 
-                                                    datepicker-options="userVm.pickerConfigurations[$index].dateOptions"
-                                                    alt-input-formats="userVm.pickerConfigurations[$index].altInputFormats"
-                                                    ng-required="true"
-                                                    close-text="Zatvori"
-                                                    clear-text="Obriši"
-                                                    current-text="Danas"/>
-                                            <span class="input-group-btn">
-                                                <button type="button" class="btn btn-default" 
-                                                        ng-click="userVm.pickerConfigurations[$index].open();"
-                                                        uib-tooltip="Otvori kalendar" tooltip-placement="top">
-                                                    <i class="glyphicon glyphicon-calendar"></i>
-                                                </button>
-                                                <button type="button" class="btn btn-success" 
-                                                        ng-click="userVm.extendExpirationDate(announcement.id, announcement.expirationDate);"
-                                                        uib-tooltip="Produži rok" tooltip-placement="top">
-                                                    <i class="glyphicon glyphicon-chevron-right"></i>
-                                                </button>
-                                            </span>
+                <div class="col-xs-2 col-sm-2 col-md-2" style="min-height: 100%">
+                    <!-- section for sorting on click -->
+                    <div class="search-category">
+                        <h4>Sortiranje</h4>
+                        <div class="btn-group">
+                            <label  class="btn btn-default" 
+                                    ng-model="userVm.reverse" 
+                                    uib-btn-radio="true"
+                                    ng-click="userVm.activate();"
+                                    uncheckable>
+                                <span class="glyphicon glyphicon-sort-by-alphabet" aria-hidden="true"></span>
+                            </label>
+                            <label  class="btn btn-default"
+                                    ng-model="userVm.reverse"
+                                    uib-btn-radio="false"
+                                    ng-click="userVm.activate();"
+                                    uncheckable>
+                                <span class="glyphicon glyphicon-sort-by-alphabet-alt" aria-hidden="true"></span>
+                            </label>
+                        </div>
+                        <div class="radio">
+                            <label><input type="radio" ng-model="userVm.predicate" name="type" value="id" ng-click="userVm.activate();">Standardno</label>
+                        </div>
+                        <div class="radio">
+                            <label><input type="radio" ng-model="userVm.predicate" name="type" value="name" ng-click="userVm.activate();">Nazivu</label>
+                        </div>
+                        <div class="radio">
+                            <label><input type="radio" ng-model="userVm.predicate" name="type" value="price" ng-click="userVm.activate();">Ceni</label>
+                        </div>
+                        <div class="radio">
+                            <label><input type="radio" ng-model="userVm.predicate" name="type" value="type" ng-click="userVm.activate();">Tipu</label>
+                        </div>
+                        <div class="radio">
+                            <label><input type="radio" ng-model="userVm.predicate" name="type" value="dateAnnounced" ng-click="userVm.activate();">Datumu objave</label>
+                        </div>
+                        <div class="radio">
+                            <label><input type="radio" ng-model="userVm.predicate" name="type" value="expirationDate" ng-click="userVm.activate();">Datumu isticanja</label>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-xs-10 col-sm-10 col-md-10">
+                    <div class="col-xs-12 col-sm-6 col-md-6" ng-repeat="announcement in userVm.announcements track by $index">
+                        <div class="well well-sm" style="max-height: 230px;">
+                            <div class="row">
+                                <div class="col-sm-5 col-md-3">
+                                    <img    ng-src={{announcement.images[0].imagePath}}
+                                            ui-sref="announcement({announcementId: announcement.id})"
+                                            class="thumbnail img-rounded img-responsive"
+                                            style="cursor: hover"/>
+                                </div>
+                                <div class="col-sm-7 col-md-9">
+                                    <h4><a ui-sref="announcement({announcementId: announcement.id})">{{announcement.name}}</a></h4>
+                                    <small style="position:absolute; top:0px; right: 35px;" uib-tooltip="Datum objave" tooltip-placement="top">
+                                        <cite title="{{announcement.dateAnnounced}}">
+                                            {{announcement.dateAnnounced | date:'dd-MM-yyyy'}}
+                                        </cite>
+                                    </small>
+                                    <i  class="glyphicon glyphicon-ok-circle"
+                                        style="position:absolute; top:0px; right: 10px; color:green; font-size: 14pt;"
+                                        uib-tooltip="Verifikovan" tooltip-placement="right"
+                                        ng-show="announcement.verified == true">
+                                    </i>
+                                    <span class="label label-success" ng-show="announcement.type === 'buy'">
+                                        <cite title="{{announcement.type}}"> potražnja</cite>
+                                    </span>
+                                    <span class="label label-warning" ng-show="announcement.type === 'rent'">
+                                        <cite title="{{announcement.type}}"> iznajmljivanje</cite>
+                                    </span>
+                                    <span class="label label-info" ng-show="announcement.type === 'sale'">
+                                        <cite title="{{announcement.type}}"> prodaja</cite>
+                                    </span>
+                                    <p style="margin-top: 5px;">
+                                        <cite title="{{announcement.realEstate.location.city + ', ' + announcement.realEstate.location.country}}">
+                                            {{announcement.realEstate.location.city + ', ' + announcement.realEstate.location.country}}
+                                            <i class="glyphicon glyphicon-map-marker" uib-tooltip="Adresa" tooltip-placement="right"></i>
+                                        </cite>
+                                    </p>
+                                    <p>
+                                        <i class="glyphicon glyphicon-euro" uib-tooltip="Cena" tooltip-placement="top"></i> &nbsp;<strong>{{announcement.price}}</strong>
+                                        <br />
+                                        <i class="glyphicon glyphicon-asterisk" uib-tooltip="Tip nekretnine" tooltip-placement="top"></i> &nbsp;{{announcement.realEstate.type}}
+                                        <br />
+                                        <i class="glyphicon glyphicon-time" uib-tooltip="Vreme isteka" tooltip-placement="top"></i> &nbsp;<strong class="{{announcement.expirationClass}}">{{announcement.expiredMessage}}</strong>
+                                        <br />
+                                    </p>
+                                    <!-- extend expiration date -->
+                                    <div class="row" ng-show="userVm.loggedin">
+                                        <div class="form-group col-md-12 col-sm-12 col-xs-12">
+                                            <div class="input-group">
+                                                <span class="input-group-addon"> Produži do: </span>
+                                                <input  type="text" class="form-control"
+                                                        ng-model="announcement.expirationDate"
+                                                        uib-datepicker-popup="{{userVm.pickerConfigurations[$index].format}}"
+                                                        is-open="userVm.pickerConfigurations[$index].popup.opened" 
+                                                        datepicker-options="userVm.pickerConfigurations[$index].dateOptions"
+                                                        alt-input-formats="userVm.pickerConfigurations[$index].altInputFormats"
+                                                        ng-required="true"
+                                                        close-text="Zatvori"
+                                                        clear-text="Obriši"
+                                                        current-text="Danas"/>
+                                                <span class="input-group-btn">
+                                                    <button type="button" class="btn btn-default" 
+                                                            ng-click="userVm.pickerConfigurations[$index].open();"
+                                                            uib-tooltip="Otvori kalendar" tooltip-placement="top">
+                                                        <i class="glyphicon glyphicon-calendar"></i>
+                                                    </button>
+                                                    <button type="button" class="btn btn-success" 
+                                                            ng-click="userVm.extendExpirationDate(announcement.id, announcement.expirationDate);"
+                                                            uib-tooltip="Produži rok" tooltip-placement="top">
+                                                        <i class="glyphicon glyphicon-chevron-right"></i>
+                                                    </button>
+                                                </span>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
