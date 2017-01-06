@@ -5,9 +5,9 @@
         .module('awt-cts-client')
         .controller('CompanyAnnouncementsController', CompanyAnnouncementsController);
 
-    CompanyAnnouncementsController.$inject = ['$scope', '$state', '$stateParams', '$http', '$log', 'companyService', 'LinkParser', 'pagingParams', 'paginationConstants'];
+    CompanyAnnouncementsController.$inject = ['$state', '$stateParams', '$http', '$log', 'companyService', 'LinkParser', 'pagingParams', 'paginationConstants'];
 
-    function CompanyAnnouncementsController ($scope, $state, $stateParams, $http, $log, companyService, LinkParser, pagingParams, paginationConstants) {
+    function CompanyAnnouncementsController ($state, $stateParams, $http, $log, companyService, LinkParser, pagingParams, paginationConstants) {
         var vm = this;
 
         vm.loadPage = loadPage;
@@ -21,8 +21,19 @@
         activate();
 
         function activate () {
-            companyService.getAnnouncementsByCompanyId($stateParams.companyId, pagingParams.page - 1, vm.itemsPerPage, sort(),
-                onSuccess, onError);
+            companyService.getAnnouncementsByCompanyId($stateParams.companyId, pagingParams.page - 1, vm.itemsPerPage, sort())
+                .then(function (response) {
+                    var headers = response.headers;
+                    vm.links = LinkParser.parse(headers('Link'));
+                    vm.totalItems = headers('X-Total-Count');
+                    vm.queryCount = vm.totalItems;
+                    vm.announcements = response.data;
+                    vm.page = pagingParams.page;
+                    companyService.setAnnouncementPage(vm.page);
+                })
+                .catch(function (error) {
+                    $log.error(error);
+                });
 
             function sort() {
                 var result = [vm.predicate + ',' + (vm.reverse ? 'asc' : 'desc')];
@@ -30,17 +41,6 @@
                     result.push('id');
                 }
                 return result;
-            }
-            function onSuccess(data, headers) {
-                vm.links = LinkParser.parse(headers('Link'));
-                vm.totalItems = headers('X-Total-Count');
-                vm.queryCount = vm.totalItems;
-                vm.announcements = data;
-                vm.page = pagingParams.page;
-                companyService.setAnnouncementPage(vm.page);
-            }
-            function onError(error) {
-                $log.error('Error in activating company announcements!');
             }
         }
 

@@ -5,9 +5,9 @@
         .module('awt-cts-client')
         .controller('AnnouncementFormController', AnnouncementFormController);
 
-    AnnouncementFormController.$inject = ['$http', '$scope', '$state', '$stateParams', '$localStorage', '$log', '_', 'ngToast', 'FileUploader', 'announcementService', 'reportingService', 'WizardHandler', 'CONFIG'];
+    AnnouncementFormController.$inject = ['$http', '$scope', '$state', '$stateParams', '$localStorage', '$log', '_', 'ngToast', 'FileUploader', 'announcementService', 'reportingService', 'WizardHandler', 'DatePickerService', 'CONFIG'];
 
-    function AnnouncementFormController($http, $scope, $state, $stateParams, $localStorage, $log, _, ngToast, FileUploader, announcementService, reportingService, WizardHandler, CONFIG) {
+    function AnnouncementFormController($http, $scope, $state, $stateParams, $localStorage, $log, _, ngToast, FileUploader, announcementService, reportingService, WizardHandler, DatePickerService, CONFIG) {
 
         var announcementFormVm = this;
 
@@ -15,12 +15,8 @@
         announcementFormVm.similars = [];
         announcementFormVm.similarsDisabled = true;
 
-        // Date picker functions
-        announcementFormVm.today = today
-        announcementFormVm.clear = clear;
-        announcementFormVm.open = open;
+        // Datepicker configuration        
         announcementFormVm.datePickerConfig = datePickerConfig;
-        announcementFormVm.getDayClass = getDayClass;
 
         announcementFormVm.submitAnnouncement = submitAnnouncement;
         announcementFormVm.chooseSimilarRealEstate = chooseSimilarRealEstate;
@@ -47,7 +43,6 @@
 
             if (announcementFormVm.state == 'addAnnouncement') {
                 announcementFormVm.announcement = createInitialAnnouncement();
-                announcementFormVm.today();
                 announcementFormVm.datePickerConfig();
                 announcementFormVm.uploaded = false;
             }
@@ -58,11 +53,13 @@
                         announcementFormVm.announcement = response.data;
                         _.forEach(response.data.images, function(image, index) {
                             var url = image.imagePath;
+
                             $http.get(url, { responseType: "blob" })
                                 .then(function successCallback(response) {
                                     var mimetype = response.data.type;
                                     var file = new File([response.data], "Slika" + (index + 1), { type: mimetype });
                                     var dummy = new FileUploader.FileItem(announcementFormVm.uploader, {});
+
                                     dummy._file = file;
                                     dummy.progress = 100;
                                     dummy.isUploaded = true;
@@ -78,87 +75,30 @@
                                 });
                         });
                         announcementFormVm.uploader.progress = 100;
+                    })
+                    .catch(function(error) {
+                        $log.error(error);
                     });
             }
         }
 
         function submitAnnouncement() {
-            if (announcementFormVm.state == "updateAnnouncement") {
-                if (announcementFormVm.uploader.getNotUploadedItems().length == 0)
-                    updateAnnouncement(announcementFormVm.announcement);
-                else
-                    announcementFormVm.uploader.uploadAll();
+            var notUploaded = announcementFormVm.uploader.getNotUploadedItems();
+            
+            if (announcementFormVm.chosenSimilarRealEstateId != null){
+                announcementFormVm.announcement.realEstate.id = announcementFormVm.chosenSimilarRealEstateId;
+            }
+
+            if (announcementFormVm.state == "updateAnnouncement" && _.isEmpty(notUploaded)) {
+                updateAnnouncement(announcementFormVm.announcement);
             }
             else {
                 announcementFormVm.uploader.uploadAll();
             }
         }
 
-        function today() {
-            announcementFormVm.announcement.expirationDate = new Date();
-        };
-
-        function clear() {
-            announcementFormVm.announcement.expirationDate = null;
-        };
-
-        function open() {
-            announcementFormVm.popup.opened = true;
-        };
-
-        function getDayClass(data) {
-            var date = data.date,
-                mode = data.mode;
-            if (mode === 'day') {
-                var dayToCheck = new Date(date).setHours(0, 0, 0, 0);
-
-                for (var i = 0; i < $scope.events.length; i++) {
-                    var currentDay = new Date(announcementFormVm.events[i].date).setHours(0, 0, 0, 0);
-
-                    if (dayToCheck === currentDay) {
-                        return announcementFormVm.events[i].status;
-                    }
-                }
-            }
-
-            return '';
-        }
-
         function datePickerConfig() {
-            announcementFormVm.inlineOptions = {
-                minDate: new Date(),
-                showWeeks: true
-            };
-
-            announcementFormVm.dateOptions = {
-                formatYear: 'yy',
-                maxDate: new Date(2020, 5, 22),
-                minDate: new Date(),
-                startingDay: 1
-            };
-
-            announcementFormVm.formats = ['dd-MMMM-yyyy', 'yyyy/MM/dd', 'dd.MM.yyyy', 'shortDate'];
-            announcementFormVm.format = announcementFormVm.formats[0];
-            announcementFormVm.altInputFormats = ['M!/d!/yyyy'];
-
-            announcementFormVm.popup = {
-                opened: false
-            };
-
-            var tomorrow = new Date();
-            tomorrow.setDate(tomorrow.getDate() + 1);
-            var afterTomorrow = new Date();
-            afterTomorrow.setDate(tomorrow.getDate() + 1);
-            announcementFormVm.events = [
-                {
-                    date: tomorrow,
-                    status: 'full'
-                },
-                {
-                    date: afterTomorrow,
-                    status: 'partially'
-                }
-            ];
+            announcementFormVm.datePickerConfig = DatePickerService.getConfiguration();
         }
 
         function setUploaderFilters() {
@@ -201,25 +141,19 @@
         }
 
         function deleteItemFromQueue(item) {
-            if (announcementFormVm.state == "updateAnnouncement") {
-                if (item.file.realImg != undefined) {
-                    var idx = -1;
-                    _.forEach(announcementFormVm.announcement.images, function(image, index) {
-                        if (image.id == item.file.realImg.id) {
-                            idx = index;
-                        }
-                    });
-                    if (idx != -1)
-                        announcementFormVm.announcement.images.splice(idx, 1);
-                }
+            if (announcementFormVm.state == "updateAnnouncement" && !_.isUndefined(item.file.realImg)) {
+                _.remove(announcementFormVm.announcement.images, function(image) {
+                    return image.id === item.file.realImg.id;
+                })
             }
+
             item.remove();
         }
 
         function addNewAnnouncement() {
             announcementService.addAnnouncement(announcementFormVm.announcement)
                 .then(function(response) {
-                    if (announcementFormVm.similars.length > 0) {
+                    if (!_.isEmpty(announcementFormVm.similars)) {
                         var report = {
                             email: 'system',
                             content: 'Postoje slične nekretnine',
@@ -227,18 +161,23 @@
                             status: 'pending',
                             announcement: { id: response.data.id }
                         }
+                        // Create new report if announcement is referenced to existed real estate
                         reportingService.createReport(report);
                     }
+
                     $state.transitionTo("announcement", {
                         announcementId: response.data.id
                     });
+                })
+                .catch(function(error) {
+                    $log.error(error);
                 });
         }
 
         function updateAnnouncement() {
             announcementService.updateAnnouncement(announcementFormVm.announcement)
                 .then(function(response) {
-                    if (announcementFormVm.similars.length > 0) {
+                    if (!_.isEmpty(announcementFormVm.similars)) {
                         var report = {
                             email: 'system',
                             content: 'Postoje slične nekretnine',
@@ -246,11 +185,16 @@
                             status: 'pending',
                             announcement: { id: response.data.id }
                         }
+                        // Create new report if announcement is referenced to existed real estate
                         reportingService.createReport(report);
                     }
+
                     $state.transitionTo("announcement", {
                         announcementId: response.data.id
                     });
+                })
+                .catch(function(error) {
+                    $log.error(error);
                 });
         }
 
@@ -258,48 +202,50 @@
             // Callbacks for one image upload
             announcementFormVm.uploader.onSuccessItem = function(fileItem, response, status, headers) {
                 announcementFormVm.announcement.images.push({ id: null, imagePath: response });
-                $log.info('onSuccessItem', fileItem, response, status, headers);
+                $log.info('Item upload completed.', fileItem, response, status, headers);
             };
 
             announcementFormVm.uploader.onCompleteAll = function() {
                 announcementFormVm.uploaded = true;
-                if (announcementFormVm.state == 'addAnnouncement')
+
+                if (announcementFormVm.state == 'addAnnouncement') {
                     addNewAnnouncement();
-                else
+                }
+                else {
                     updateAnnouncement();
-                $log.info('onCompleteAll');
+                }
+
+                $log.info('All uploads completed.');
             };
         }
 
         function chooseSimilarRealEstate(id) {
             announcementFormVm.chosenSimilarRealEstateId = id;
-            announcementFormVm.announcement.realEstate.id = id;
         };
 
         function getSimilarRealEstates() {
             announcementService.getSimilarRealEstates(announcementFormVm.announcement.realEstate)
                 .then(function(response) {
                     announcementFormVm.chosenSimilarRealEstateId = null;
-                    announcementFormVm.announcement.realEstate.id = null;
                     announcementFormVm.similars = response.data;
-                    if (response.data.length > 0) {
-                        if (announcementFormVm.state != 'addAnnouncement') {
-                            var idx = -1;
-                            _.forEach(response.data, function(realEstate, index) {
-                                if (realEstate.id == announcementFormVm.announcement.realEstate.id)
-                                    idx = index;
-                            });
-                            if (idx != -1)
-                                announcementFormVm.similars.splice(idx, 1);
-                        }
+
+                    if (announcementFormVm.state != 'addAnnouncement') {
+                        _.remove(announcementFormVm.similars, function(realEstate) {
+                            return realEstate.id == announcementFormVm.announcement.realEstate.id;
+                        });
                     }
-                    if (announcementFormVm.similars.length > 0) {
+
+                    if (!_.isEmpty(announcementFormVm.similars)) {
                         announcementFormVm.similarsDisabled = false;
                         WizardHandler.wizard().goTo("Slične nekretnine");
-                    } else {
+                    }
+                    else {
                         announcementFormVm.similarsDisabled = true;
                         WizardHandler.wizard().goTo("Slike");
                     }
+                })
+                .catch(function(error) {
+                    $log.error(error);
                 });
         };
 
@@ -312,25 +258,63 @@
         }
 
         function canExitFirtsStep() {
-            return !announcementFormVm.announcementForm.$invalid && !announcementFormVm.realEstateForm.$invalid;
+            var formValid = !announcementFormVm.announcementForm.$invalid && !announcementFormVm.realEstateForm.$invalid;
+            if (!formValid) {
+                ngToast.create({
+                    className: 'danger',
+                    content: '<p>Morate popuniti sva polja ispravno da biste prešli na sljedeći korak.</p>'
+                });
+                return false;
+            } else {
+                var address = announcementFormVm.announcement.realEstate.location.city + ' ' + announcementFormVm.announcement.realEstate.location.street + ' ' +
+                    + announcementFormVm.announcement.realEstate.location.streetNumber + ' ' + announcementFormVm.announcement.realEstate.location.country;
+
+                return findLocation(address)
+                    .then(function(response) {
+                        return response;
+                    }, function(response) {
+                        ngToast.create({
+                            className: 'danger',
+                            content: '<p>Adresa koju ste unijeli je nevalidna.</p>'
+                        });
+                        return response;
+                    });
+            }
         }
 
         function createInitialAnnouncement() {
             return {
-                dateAnnounced: new Date(),
-                expirationDate: new Date(),
+                dateAnnounced: _.now(),
+                expirationDate: _.now(),
                 verified: false,
                 images: [],
                 description: '',
-                type: 'kupovina',
+                type: 'buy',
                 realEstate: {
                     deleted: false,
-                    type: "ostalo",
-                    heatingType: "centralno",
+                    type: 'other',
+                    heatingType: 'central',
                     location: {},
                     announcements: []
                 }
             };
+        }
+
+        function findLocation(location) {
+            var deferred = $.Deferred();
+            var geocoder = new google.maps.Geocoder();
+
+            geocoder.geocode({ 'address': location }, function(results, status) {
+                if (status === google.maps.GeocoderStatus.OK) {
+                    announcementFormVm.announcement.realEstate.location.latitude = results[0].geometry.location.lat();
+                    announcementFormVm.announcement.realEstate.location.longitude = results[0].geometry.location.lng();
+                    deferred.resolve(true);
+                } else {
+                    deferred.reject(false);
+                }
+            });
+
+            return deferred.promise();
         }
     }
 })();

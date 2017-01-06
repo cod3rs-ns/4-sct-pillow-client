@@ -5,27 +5,97 @@
         .module('awt-cts-client')
         .controller('HomeController', HomeController);
 
-    HomeController.$inject = ['$state', '$document', '$timeout', '$log', '_', 'announcementService'];
+    HomeController.$inject = ['$state', '$document', '$timeout', '$location', '$log', '_', 'announcementService', 'LinkParser', 'pagingParams', 'paginationConstants'];
 
-    function HomeController($state, $document, $timeout, $log, _, announcementService) {
+    function HomeController($state, $document, $timeout, $location, $log, _, announcementService, LinkParser, pagingParams, paginationConstants) {
         var homeVm = this;
 
         homeVm.announcements = {};
 
         // Pagination init params
-        homeVm.page = 0;
+        homeVm.loadPage = loadPage;
+        homeVm.predicate = pagingParams.predicate;
+        homeVm.reverse = pagingParams.ascending;
+        homeVm.transition = transition;
         homeVm.itemsPerPage = 10;
-        homeVm.sortBy = 'id,desc';
+        homeVm.clear = clear;
+        homeVm.sort = sort;
 
         homeVm.getAllAnnouncements = getAllAnnouncements;
+        homeVm.searchAnnouncements = searchAnnouncements;
+        homeVm.searchAnnouncementsInArea = searchAnnouncementsInArea;
         homeVm.find = find;
         homeVm.initMap = initMap;
         homeVm.showMapResult = showMapResult;
+        homeVm.redirect = redirect;
 
         activate();
 
         function activate () {
-          homeVm.getAllAnnouncements();
+            if (_.isNull(pagingParams.search)) {
+                homeVm.getAllAnnouncements();
+            }
+            else {
+                homeVm.currentSearch = pagingParams.search;
+                homeVm.search = {};
+
+                _.forEach(_.split(homeVm.currentSearch, "&"), function(param) {
+                    if (!_.isEmpty(param)) {
+                        var splitted = _.split(param, "=");
+                        homeVm.search[splitted[0]] = splitted[1];
+                    }
+                });
+
+                homeVm.searchAnnouncements(pagingParams.search);
+            }
+        }
+
+        function getAllAnnouncements() {
+            announcementService.getAnnouncements(pagingParams.page - 1, homeVm.itemsPerPage, homeVm.sort())
+                .then(function(response) {
+                    var headers = response.headers;
+
+                    homeVm.announcements = response.data;
+                    homeVm.totalItems = response.headers('X-Total-Count');
+
+                    homeVm.links = LinkParser.parse(headers('Link'));
+                    homeVm.totalItems = headers('X-Total-Count');
+                    homeVm.queryCount = homeVm.totalItems;
+                    homeVm.page = pagingParams.page;
+                })
+                .catch(function (error) {
+                    $log.error(error);
+                });
+        }
+
+        function loadPage(page) {
+            homeVm.page = page;
+            homeVm.transition();
+        }
+
+        function transition() {
+            $state.transitionTo($state.$current, {
+                page: homeVm.page,
+                sort: homeVm.predicate + ',' + (homeVm.reverse ? 'asc' : 'desc'),
+                search: homeVm.currentSearch
+            });
+        }
+
+        function clear() {
+            homeVm.links = null;
+            homeVm.page = 1;
+            homeVm.predicate = 'id';
+            homeVm.reverse = true;
+            homeVm.transition();
+        }
+
+        function sort() {
+            var result = [homeVm.predicate + ',' + (homeVm.reverse ? 'asc' : 'desc')];
+
+            if (homeVm.predicate !== 'id') {
+                result.push('id');
+            }
+            return result;
         }
 
         function initMap() {
@@ -54,12 +124,11 @@
                         map.setCenter(yourPosition);
 
                     }, function() {
-                        // handleLocationError(true, tooltip, map.getCenter());
+                        handleLocationError(true, tooltip, map.getCenter());
                     });
                 } else {
                     // Browser doesn't support Geolocation
-                    // TODO
-                    // handleLocationError(false, tooltip, map.getCenter());
+                    handleLocationError(false, tooltip, map.getCenter());
                 }
             }, 500);
 
@@ -67,35 +136,7 @@
                 var ne = map.getBounds().getNorthEast();
                 var sw = map.getBounds().getSouthWest();
 
-                announcementService.getAnnouncementsInArea(ne, sw)
-                    .then(function (response) {
-                        var announcements = response.data;
-
-                        homeVm.mapAnnouncements = announcements;
-
-                        _.forEach(response.data, function(announcement) {
-                            var location = announcement.realEstate.location;
-                            var position = {
-                              lat: location.latitude,
-                              lng: location.longitude
-                            };
-
-                            var marker = new google.maps.Marker({
-                                position: position,
-                                map: map,
-                                title: announcement.name
-                            });
-
-                            var dialog = new google.maps.InfoWindow({
-                                content: formatContent(announcement)
-                            })
-
-                            marker.addListener('click', function() {
-                                dialog.open(map, marker);
-                            });
-                        });
-
-                    });
+                homeVm.searchAnnouncementsInArea(ne, sw, map);
             });
         }
 
@@ -115,27 +156,77 @@
             });
         }
 
-        function getAllAnnouncements() {
-            announcementService.getAnnouncements(homeVm.page, homeVm.itemsPerPage, homeVm.sortBy)
-                .then(function(response) {
-                    $log.log(response);
-                    homeVm.announcements = response.data;
-                    homeVm.totalItems = response.headers('X-Total-Count');
-                });
+        function loadPage(page) {
+            homeVm.page = page;
+            homeVm.transition();
         }
 
         function find() {
             var searchTerm = "";
 
             _.forEach(homeVm.search, function(value, key) {
-                if (value !== '' && value !== undefined) {
+                if (value !== '' && value !== false && !_.isUndefined(value) && !_.isNull(value)) {
                     searchTerm += key + "=" + value + "&";
                 }
             });
 
-            announcementService.searchAnnouncements(searchTerm)
+            homeVm.currentSearch = searchTerm;
+            pagingParams.page = 1;
+            pagingParams.search = searchTerm;
+
+            homeVm.searchAnnouncements(searchTerm);
+        }
+
+        function searchAnnouncements(searchTerm) {
+            announcementService.searchAnnouncements(searchTerm, pagingParams.page - 1, homeVm.itemsPerPage, homeVm.sort())
                 .then(function(response) {
+                    var headers = response.headers;
+
                     homeVm.announcements = response.data;
+                    homeVm.totalItems = response.headers('X-Total-Count');
+
+                    homeVm.links = LinkParser.parse(headers('Link'));
+                    homeVm.totalItems = headers('X-Total-Count');
+                    homeVm.queryCount = homeVm.totalItems;
+
+                    homeVm.page = pagingParams.page;
+                })
+                .catch(function (error) {
+                    $log.error(error);
+                });
+        }
+
+        function searchAnnouncementsInArea(ne, sw, map) {
+            announcementService.getAnnouncementsInArea(ne, sw)
+                .then(function (response) {
+                    var announcements = response.data;
+
+                    homeVm.mapAnnouncements = announcements;
+
+                    _.forEach(response.data, function(announcement) {
+                        var location = announcement.realEstate.location;
+                        var position = {
+                          lat: location.latitude,
+                          lng: location.longitude
+                        };
+
+                        var marker = new google.maps.Marker({
+                            position: position,
+                            map: map,
+                            title: announcement.name
+                        });
+
+                        var dialog = new google.maps.InfoWindow({
+                            content: formatContent(announcement)
+                        })
+
+                        marker.addListener('click', function() {
+                            dialog.open(map, marker);
+                        });
+                    });
+                })
+                .catch(function (error) {
+                    $log.error(error);
                 });
         }
 
@@ -153,9 +244,20 @@
               '<div class="media-body">' +
                 '<h4 class="media-heading">' + announcement.name + '</h4>' +
                 announcement.description +
-                '<a ui-sref="announcement({announcementId: ' + announcement.id + '})" type="button" class="btn btn-primary pull-right">Prikaži detalje</a>' +
               '</div>' +
             '</div>';
         }
+
+        function redirect(id) {
+            $log.log(':)');
+            $location.path('/announcement/' + id);
+        }
+
+        function handleLocationError(browserHasGeolocation, tooltip, pos) {
+            var content = (browserHasGeolocation) ? "Ne dozvoljavate Vaše lociranje." : "Vaš pretraživač ne podržava ovu uslugu.";
+
+            tooltip.setPosition(pos);
+            tooltip.setContent(content);
+      }
     }
 })();

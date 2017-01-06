@@ -156,7 +156,7 @@
                       <div class="form-group">
                           <div class="input-group">
                               <span class="input-group-addon" id="basic-addon1"> <i class="glyphicon glyphicon-font"></i></span>
-                              <input type="text" ng-model="homeVm.search.name" placeholder="Naziv nekretnine..." class="form-control">
+                              <input type="text" ng-model="homeVm.search.name" placeholder="Naziv oglasa..." class="form-control">
                           </div>
                       </div>
                       <h5>Tip grijanja</h5>
@@ -164,13 +164,51 @@
                           <a class="reset-link pull-right" ng-click="homeVm.search.heatingType = undefined">Poništi odabir</a>
                       </div>
                       <div class="radio">
-                          <label><input type="radio" ng-model="homeVm.search.heatingType" name="heatingType" value="val1">Centralno</label>
+                          <label><input type="radio" ng-model="homeVm.search.heatingType" name="heatingType" value="central">Centralno</label>
                       </div>
                       <div class="radio">
-                          <label><input type="radio" ng-model="homeVm.search.heatingType" name="heatingType" value="val2">Daljinsko</label>
+                          <label><input type="radio" ng-model="homeVm.search.heatingType" name="heatingType" value="remote">Daljinsko</label>
                       </div>
                       <div class="radio">
-                          <label><input type="radio" ng-model="homeVm.search.heatingType" name="heatingType" value="val3">Etažno</label>
+                          <label><input type="radio" ng-model="homeVm.search.heatingType" name="heatingType" value="direct">Etažno</label>
+                      </div>
+                      <h5>Ostalo</h5>
+                      {{homeVm.search}}
+                      <div class="checkbox">
+                          <label>
+                              <input type="checkbox" ng-model="homeVm.search.intercom">
+                              Interfon
+                          </label>
+                      </div>
+                      <div class="checkbox">
+                          <label>
+                              <input type="checkbox" ng-model="homeVm.search.internet">
+                              Internet
+                          </label>
+                      </div>
+                      <div class="checkbox">
+                          <label>
+                              <input type="checkbox" ng-model="homeVm.search.phone">
+                              Telefon
+                          </label>
+                      </div>
+                      <div class="checkbox">
+                          <label>
+                              <input type="checkbox" ng-model="homeVm.search.airConditioner" value="true">
+                              Klima
+                          </label>
+                      </div>
+                      <div class="checkbox">
+                          <label>
+                              <input type="checkbox" ng-model="homeVm.search.videoSurveillance" value="true">
+                              Video nadzor
+                          </label>
+                      </div>
+                      <div class="checkbox">
+                          <label>
+                              <input type="checkbox" ng-model="homeVm.search.cableTV" value="true">
+                              Kablovska
+                          </label>
                       </div>
                   </div>
               </uib-accordion>

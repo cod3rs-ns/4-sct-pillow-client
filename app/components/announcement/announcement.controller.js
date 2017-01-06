@@ -1,13 +1,15 @@
-(function() {
+(function () {
     'use strict';
 
     angular
         .module('awt-cts-client')
         .controller('AnnouncementController', AnnouncementController);
 
-    AnnouncementController.$inject = ['$stateParams', '$timeout', '$log', '$uibModal', '$document', '$localStorage', '_', 'announcementService', 'commentService', 'markService', 'reportingService'];
+    AnnouncementController.$inject = ['$stateParams', '$timeout', '$log', '$uibModal', '$document', '$localStorage', 'ngToast', '_', 'CommentsUtil', 'MarksUtil',
+        'announcementService', 'commentService', 'markService', 'reportingService'];
 
-    function AnnouncementController($stateParams, $timeout, $log, $uibModal, $document, $localStorage, _, announcementService, commentService, markService, reportingService) {
+    function AnnouncementController($stateParams, $timeout, $log, $uibModal, $document, $localStorage, ngToast, _, CommentsUtil, MarksUtil,
+        announcementService, commentService, markService, reportingService) {
         var announcementVm = this;
 
         announcementVm.announcement = {};
@@ -34,6 +36,10 @@
             }
         };
 
+        announcementVm.$storage = $localStorage.$default({
+            role: 'guest'
+        });
+
         announcementVm.getAnnouncement = getAnnouncement;
         announcementVm.initMap = initMap;
         announcementVm.addComment = addComment;
@@ -42,6 +48,8 @@
         announcementVm.voteAnnouncer = voteAnnouncer;
         announcementVm.voteAnnouncement = voteAnnouncement;
         announcementVm.checkIfUserAlreadyReportAnnouncement = checkIfUserAlreadyReportAnnouncement;
+        announcementVm.cancel = cancel;
+        announcementVm.verifyAnnouncement = verifyAnnouncement;
 
         activate();
 
@@ -51,89 +59,66 @@
 
         function getAnnouncement(announcementId) {
             announcementService.getAnnouncementById(announcementId)
-                .then(function(response) {
+                .then(function (response) {
                     announcementVm.announcement = response.data;
                     announcementVm.address = response.data.realEstate.location;
+
                     announcementVm.isMyAdvertisement = $localStorage.user === announcementVm.announcement.author.username;
 
-                    _.forEach(response.data.images, function(image, index) {
+                    _.forEach(response.data.images, function (image, index) {
                         announcementVm.images.push({ 'id': index, 'image': image.imagePath });
                     });
 
                     announcementVm.checkIfUserAlreadyReportAnnouncement();
 
+                    // Get all comments for announcement
                     commentService.getCommentsForAnnouncement(announcementId)
-                        .then(function(response) {
-                            _.forEach(response.data, function(comment) {
-
-                                var isMy = false;
-                                if (comment.author !== null) {
-                                    var author = {
-                                        'name': comment.author.firstName + ' ' + comment.author.lastName,
-                                        'image': comment.author.imagePath
-                                    }
-
-                                    isMy = $localStorage.user === comment.author.username;
-                                    $log.log(isMy);
-                                }
-                                else {
-                                    var author = {
-                                        'name': 'Gost na sajtu',
-                                        'image': "http://megaicons.net/static/img/icons_sizes/8/178/512/user-role-guest-icon.png"
-                                    }
-                                }
-
-                                announcementVm.comments.push(
-                                    {
-                                        'id': comment.id,
-                                        'content': comment.content,
-                                        'date': comment.date,
-                                        'author': author,
-                                        'isMy': isMy
-                                    }
-                                );
+                        .then(function (response) {
+                            _.forEach(response.data, function (comment) {
+                                announcementVm.comments.push(CommentsUtil.formatComment(comment));
                             });
+                        })
+                        .catch(function (error) {
+                            $log.error(error);
                         });
 
+                    // Get all marks for announcement
                     var role = $localStorage.role;
-
                     markService.getMarksForAnnouncement(announcementId)
-                        .then(function(response) {
-                            announcementVm.votes.announcement.average = _.meanBy(response.data, function(mark) {
-                                return mark.value;
-                            }) || 0;
+                        .then(function (response) {
+                            var marks = response.data;
 
-                            $log.log(announcementVm.votes.announcement.average);
+                            announcementVm.votes.announcement.average = MarksUtil.average(marks);
+                            announcementVm.votes.announcement.count = MarksUtil.count(marks);
 
-                            announcementVm.votes.announcement.count = _.size(response.data) || 0;
-                            $log.log(announcementVm.votes.announcement.count);
-
-                            var myVote = _.find(response.data, function(o) { return o.grader.username === $localStorage.user; });
-                            var exist = _.size(myVote) !== 0;
+                            var myVote = MarksUtil.getMyVote(marks);
 
                             announcementVm.vote.announcement = myVote;
+                            announcementVm.rating.announcement = myVote.value || -1;
 
-                            announcementVm.rating.announcement = (exist) ? myVote.value : -1;
-                            announcementVm.isAnnouncementMarkEnabled = (role === 'advertiser' || role === 'verifier'); // && !exist;
+                            announcementVm.isAnnouncementMarkEnabled = (role === 'advertiser' || role === 'verifier');
+                        })
+                        .catch(function (error) {
+                            $log.error(error);
                         });
 
+                    // Get all marks for announcer
                     markService.getMarksForAnnouncer(announcementVm.announcement.author.id)
-                        .then(function(response) {
-                            announcementVm.votes.announcer.average = _.meanBy(response.data, function(mark) {
-                                return mark.value;
-                            }) || 0;
-                            $log.log(announcementVm.votes.announcer.average);
+                        .then(function (response) {
+                            var marks = response.data;
 
-                            announcementVm.votes.announcer.count = _.size(response.data) || 0;
-                            $log.log(announcementVm.votes.announcer.count);
+                            announcementVm.votes.announcer.average = MarksUtil.average(marks);
+                            announcementVm.votes.announcer.count = MarksUtil.count(marks);
 
-                            var myVote = _.find(response.data, function(o) { return o.grader.username === $localStorage.user; });
-                            var exist = _.size(myVote) !== 0;
+                            var myVote = MarksUtil.getMyVote(marks);
 
                             announcementVm.vote.announcer = myVote;
+                            announcementVm.rating.announcer = myVote.value || -1;
 
-                            announcementVm.rating.announcer = (exist) ? myVote.value : -1;
-                            announcementVm.isAnnouncerMarkEnabled = (role === 'advertiser' || role === 'verifier'); // && !exist;
+                            announcementVm.isAnnouncerMarkEnabled = (role === 'advertiser' || role === 'verifier');
+                        })
+                        .catch(function (error) {
+                            $log.error(error);
                         });
                 });
         }
@@ -144,35 +129,32 @@
             });
             var geocoder = new google.maps.Geocoder();
 
-            $timeout(function() {
+            var position = {
+                lat: announcementVm.address.latitude,
+                lng: announcementVm.address.longitude
+            };
+
+            $timeout(function () {
                 // Refresh map and find center
                 google.maps.event.trigger(map, 'resize');
-                geocodeAddress(geocoder, map);
+                map.setCenter(position);
+
+                var marker = new google.maps.Marker({
+                    map: map,
+                    position: position
+                });
+
             }, 100);
         }
 
-        function geocodeAddress(geocoder, resultsMap) {
-            var address = announcementVm.address.city + ' ' + announcementVm.address.street + ' ' +
-                + announcementVm.address.streetNumber + ' ' + announcementVm.address.country;
-
-            geocoder.geocode({ 'address': address }, function(results, status) {
-                if (status === google.maps.GeocoderStatus.OK) {
-                    resultsMap.setCenter(results[0].geometry.location);
-                    var marker = new google.maps.Marker({
-                        map: resultsMap,
-                        position: results[0].geometry.location
-                    });
-                } else {
-                    $log.error('Geocode was not successful for the following reason: ' + status);
-                }
-            });
-        }
-
         function checkIfUserAlreadyReportAnnouncement() {
-            if ($localStorage.user != null) {
+            if (!_.isNull($localStorage.user)) {
                 announcementService.alreadyReported(announcementVm.announcement.id, $localStorage.user)
-                    .then(function(response) {
+                    .then(function (response) {
                         announcementVm.alreadyReported = response.data;
+                    })
+                    .catch(function (error) {
+                        $log.error(error);
                     });
             }
         }
@@ -185,76 +167,63 @@
             comment.date = _.now();
 
             commentService.addComment(comment)
-                .then(function(response) {
+                .then(function (response) {
                     announcementVm.comment = "";
-                    var comment = response.data;
+                    var comment = CommentsUtil.formatComment(response.data);
 
-                    var author;
-                    var isMy = false;
-                    if (comment.author !== null) {
-                        author = {
-                            'name': comment.author.firstName + ' ' + comment.author.lastName,
-                            'image': comment.author.imagePath
-                        }
-                        isMy = $localStorage.user === comment.author.username;
-                    }
-                    else {
-                        author = {
-                            'name': 'Gost na sajtu',
-                            'image': "http://megaicons.net/static/img/icons_sizes/8/178/512/user-role-guest-icon.png"
-                        }
-                    }
-
-                    announcementVm.comments.push(
-                        {
-                            'id': comment.id,
-                            'content': comment.content,
-                            'date': comment.date,
-                            'author': author,
-                            'isMy': isMy
-                        });
+                    announcementVm.comments.push(comment);
+                })
+                .catch(function (error) {
+                    $log.error(error);
                 });
         }
 
         function updateComment(comment) {
-          comment.announcement = { 'id': _.toInteger($stateParams.announcementId) };
-          comment.date = _.now();
-          comment.content = announcementVm.editedComment;
+            comment.announcement = { 'id': _.toInteger($stateParams.announcementId) };
+            comment.date = _.now();
+            comment.content = announcementVm.editedComment;
 
-          delete comment.isMy;
+            delete comment.isMy;
 
-          commentService.updateComment(comment)
-              .then(function(response) {
-                  comment.isMy = true;
-                  announcementVm.editing = undefined;
-              });
+            commentService.updateComment(comment)
+                .then(function (response) {
+                    comment.isMy = true;
+                    announcementVm.editing = undefined;
+                })
+                .catch(function (error) {
+                    $log.error(error);
+                });
         }
 
         function deleteComment(id) {
             commentService.deleteComment(id)
-                .then(function(response) {
-                    _.remove(announcementVm.comments, function(comment) {
-                        return comment.id == id;
+                .then(function (response) {
+                    _.remove(announcementVm.comments, function (comment) {
+                        return comment.id === id;
                     });
+                })
+                .catch(function (error) {
+                    $log.error(error);
                 });
         }
 
         function voteAnnouncement(rating) {
             var mark = {};
 
-            if (announcementVm.vote.announcement === undefined) {
+            if (_.isEmpty(announcementVm.vote.announcement)) {
                 mark.announcement = { 'id': _.toInteger($stateParams.announcementId) };
                 mark.value = _.toInteger(rating);
 
                 markService.vote(mark)
-                    .then(function(response) {
+                    .then(function (response) {
                         announcementVm.vote.announcement = response.data;
+                        var votes = announcementVm.votes.announcement;
 
-                        var val = response.data.value;
-                        var cnt = announcementVm.votes.announcement.count;
-                        var avg = announcementVm.votes.announcement.average;
-                        announcementVm.votes.announcement.average = (avg * cnt + val) / (cnt + 1);
-                        ++announcementVm.votes.announcement.count;
+                        announcementVm.votes.announcement.average =
+                            MarksUtil.updateAverage(response.data.value, votes.count++, votes.average);
+                    })
+                    .catch(function (error) {
+                        $log.error(error);
                     });
             }
             else {
@@ -263,13 +232,15 @@
                 mark.value = _.toInteger(rating);
 
                 markService.updateVote(mark)
-                    .then(function(response) {
+                    .then(function (response) {
                         announcementVm.vote.announcement = response.data;
+                        var votes = announcementVm.votes.announcement;
 
-                        var val = response.data.value;
-                        var cnt = announcementVm.votes.announcement.count;
-                        var avg = announcementVm.votes.announcement.average;
-                        announcementVm.votes.announcement.average = (avg * cnt + val - oldVal) / (cnt);
+                        announcementVm.votes.announcement.average =
+                            MarksUtil.updateAverage(response.data.value, votes.count, votes.average, oldVal);
+                    })
+                    .catch(function (error) {
+                        $log.error(error);
                     });
             }
         }
@@ -277,19 +248,20 @@
         function voteAnnouncer(rating) {
             var mark = {};
 
-            if (announcementVm.vote.announcer === undefined) {
+            if (_.isEmpty(announcementVm.vote.announcer)) {
                 mark.gradedAnnouncer = { 'id': _.toInteger(announcementVm.announcement.author.id) };
                 mark.value = _.toInteger(rating);
 
                 markService.vote(mark)
-                    .then(function(response) {
+                    .then(function (response) {
                         announcementVm.vote.announcer = response.data;
+                        var votes = announcementVm.votes.announcer;
 
-                        var val = response.data.value;
-                        var cnt = announcementVm.votes.announcer.count;
-                        var avg = announcementVm.votes.announcer.average;
-                        announcementVm.votes.announcer.average = (avg * cnt + val) / (cnt + 1);
-                        ++announcementVm.votes.announcer.count;
+                        announcementVm.votes.announcer.average =
+                            MarksUtil.updateAverage(response.data.value, votes.count++, votes.average);
+                    })
+                    .catch(function (error) {
+                        $log.error(error);
                     });
             }
             else {
@@ -298,43 +270,81 @@
                 mark.value = _.toInteger(rating);
 
                 markService.updateVote(mark)
-                    .then(function(response) {
+                    .then(function (response) {
                         announcementVm.vote.announcer = response.data;
+                        var votes = announcementVm.votes.announcer;
 
-                        var val = response.data.value;
-                        var cnt = announcementVm.votes.announcer.count;
-                        var avg = announcementVm.votes.announcer.average;
-                        announcementVm.votes.announcer.average = (avg * cnt + val - oldVal) / (cnt);
+                        announcementVm.votes.announcer.average =
+                            MarksUtil.updateAverage(response.data.value, votes.count, votes.average, oldVal);
+                    })
+                    .catch(function (error) {
+                        $log.error(error);
                     });
             }
         }
 
-        announcementVm.reportAnnouncement = function(size, parentSelector) {
+        announcementVm.reportAnnouncement = function (size, parentSelector) {
             var modalInstance = $uibModal.open({
                 templateUrl: 'app/components/reporting/reporting-form.html',
                 controller: 'ReportingFormController',
                 controllerAs: 'reportingFormVm',
                 size: size,
                 resolve: {
-                    items: function() {
+                    items: function () {
                         return announcementVm.announcement.id;
                     },
-                    user: function() {
+                    user: function () {
                         return $localStorage.user;
                     }
                 }
             });
 
-            modalInstance.result.then(function(report) {
+            modalInstance.result.then(function (report) {
+                report.createdAt = _.now();
                 reportingService.createReport(report)
-                    .then(function(response) {
-                        if ($localStorage.user != undefined)
+                    .then(function (response) {
+                        ngToast.create({
+                            className: 'success',
+                            content: '<strong>Oglas je uspješno prijavljen.</strong>'
+                        });
+                        if (!_.isUndefined($localStorage.user))
                             announcementVm.alreadyReported = true;
                         $log.info('Report is successfully created' + response.data);
                     })
-            }, function() {
-                $log.info('Modal dismissed at: ' + new Date());
+                    .catch(function (error) {
+                        $log.error(error);
+                    });
+            }, function () {
+                $log.info('Modal dismissed at: ' + _.now());
             });
         }
+
+        function cancel(event) {
+            // If Escape is pressed
+            if (27 === event.keyCode) {
+                announcementVm.editing = undefined;
+            }
+        };
+
+
+        /**
+         * Verifes announcement.
+         */
+        function verifyAnnouncement() {
+            announcementService.verifyAnnouncement($stateParams.announcementId)
+                .then(function (response) {
+                    announcementVm.getAnnouncement($stateParams.announcementId);
+                    ngToast.create({
+                        className: 'success',
+                        content: '<strong>Oglas je uspješno verifikovan.</strong>'
+                    });
+                })
+                .catch(function (error) {
+                    ngToast.create({
+                        className: 'danger',
+                        content: '<p><strong>GREŠKA! </strong>' + error + '</p>'
+                    });
+                });
+        };
     }
 })();

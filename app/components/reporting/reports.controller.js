@@ -8,10 +8,10 @@
     ReportsController.inject = ['reportingService', '$state', 'LinkParser', 'pagingParams', 'paginationConstants', 'ngToast'];
     function ReportsController(reportingService, $state, LinkParser, pagingParams, paginationConstants, ngToast) {
         var reportVm = this;
-        
+
         /** List containing all reports */
         reportVm.reports = [];
-        
+
         /** Attribute containing email of the author for search purpose */
         reportVm.authorEmailSearch = '';
 
@@ -19,6 +19,11 @@
         reportVm.rejectReport = rejectReport;
         reportVm.acceptReport = acceptReport;
         reportVm.getReportsByAuthorEmail = getReportsByAuthorEmail;
+
+        /**
+         * Type of reports displayed.
+         */
+        reportVm.reportStatusFilter = 'pending';
 
         /** Pagination support */
         reportVm.loadPage = loadPage;
@@ -38,14 +43,13 @@
                 getReportsByAuthorEmail();
             }
             else {
-                getPendingReports();
+                getReports();
             };
         };
 
-
         /**
          * Resolves report as ACCEPTED.
-         * 
+         *
          * @param {integer} reportId    ID of report which will be resolved
          */
         function acceptReport(reportId) {
@@ -60,15 +64,14 @@
                 .catch(function (error) {
                     ngToast.create({
                         className: 'danger',
-                        content: '<strong>' + error +'</strong>'
+                        content: '<p><strong>GREŠKA! </strong>' + error + '</p>'
                     });
                 });
         };
 
-
         /**
          * Resolves report as REJECTED.
-         * 
+         *
          * @@param {integer} reportId    ID of report which will be resolved
          */
         function rejectReport(reportId) {
@@ -78,12 +81,12 @@
                         className: 'danger',
                         content: '<strong>Prijava odbijena.</strong>'
                     });
-                    reportVm.activate();    
+                    reportVm.activate();
                 })
                 .catch(function (error) {
                     ngToast.create({
                         className: 'danger',
-                        content: '<strong>' + error +'</strong>'
+                        content: '<p><strong>GREŠKA! </strong>' + error + '</p>'
                     });
                 });
         };
@@ -92,8 +95,8 @@
         /**
          * Retrieves all pending reports.
          */
-        function getPendingReports() {
-            reportingService.getReportsByStatus('pending', pagingParams.page - 1, reportVm.itemsPerPage, reportVm.sort())
+        function getReports() {
+            reportingService.getReportsByStatus(reportVm.reportStatusFilter, pagingParams.page - 1, reportVm.itemsPerPage, reportVm.sort())
                 .then(function (response) {
                     reportVm.links = LinkParser.parse(response.headers('Link'));
                     reportVm.totalItems = response.headers('X-Total-Count');
@@ -101,7 +104,10 @@
                     reportVm.reports = response.data;
                 })
                 .catch(function (error) {
-                    console.log('unable to retrieve reports');
+                    ngToast.create({
+                        className: 'danger',
+                        content: '<p><strong>GREŠKA! </strong>' + error + '</p>'
+                    });
                 });
         }
 
@@ -117,14 +123,13 @@
                     reportVm.reports = response.data;
                 })
                  .catch(function (error) {
-                    console.log('unable to retrieve reports');
+                    $log.error('Unable to retrieve reports');
                 });
         };
 
-
         /**
          * Loads provided page.
-         * 
+         *
          * @param {integer} page    page to load.
          */
         function loadPage (page) {
@@ -132,9 +137,8 @@
             reportVm.transition();
         };
 
-        
         /**
-         * Makes state transition to new page. 
+         * Makes state transition to new page.
          */
         function transition () {
             $state.transitionTo($state.$current, {
@@ -143,9 +147,8 @@
             });
         };
 
-        
         /**
-         * Resets pagination attributes. 
+         * Resets pagination attributes.
          */
         function clear () {
             reportVm.links = null;

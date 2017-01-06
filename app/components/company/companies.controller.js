@@ -5,9 +5,9 @@
         .module('awt-cts-client')
         .controller('CompaniesController', CompaniesController);
 
-    CompaniesController.$inject = ['$scope', '$state', '$http', '$log', 'companyService', 'LinkParser', 'pagingParams', 'paginationConstants'];
+    CompaniesController.$inject = ['$state', '$http', '$log', 'companyService', 'LinkParser', 'pagingParams', 'paginationConstants'];
 
-    function CompaniesController($scope, $state, $http, $log, companyService, LinkParser, pagingParams, paginationConstants) {
+    function CompaniesController($state, $http, $log, companyService, LinkParser, pagingParams, paginationConstants) {
         var vm = this;
 
         vm.loadPage = loadPage;
@@ -21,8 +21,19 @@
         activate();
 
         function activate() {
-            companyService.getCompanies(pagingParams.page - 1, vm.itemsPerPage, sort(),
-                onSuccess, onError);
+            companyService.getCompanies(pagingParams.page - 1, vm.itemsPerPage, sort())
+            .then(function(response) {
+                var headers = response.headers;
+
+                vm.links = LinkParser.parse(headers('Link'));
+                vm.totalItems = headers('X-Total-Count');
+                vm.queryCount = vm.totalItems;
+                vm.companies = response.data;
+                vm.page = pagingParams.page;
+            })
+            .catch(function (error) {
+                $log.error(error);
+            });
 
             function sort() {
                 var result = [vm.predicate + ',' + (vm.reverse ? 'asc' : 'desc')];
@@ -30,16 +41,6 @@
                     result.push('id');
                 }
                 return result;
-            }
-            function onSuccess(data, headers) {
-                vm.links = LinkParser.parse(headers('Link'));
-                vm.totalItems = headers('X-Total-Count');
-                vm.queryCount = vm.totalItems;
-                vm.companies = data;
-                vm.page = pagingParams.page;
-            }
-            function onError(error) {
-                $log.error('Error in activating CompaniesController!');
             }
         }
 

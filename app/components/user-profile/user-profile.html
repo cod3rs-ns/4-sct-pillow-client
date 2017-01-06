@@ -1,72 +1,273 @@
 <div class="container">
     <div class="profile-heading">
-        <div class="row" style="text-align: center;">
-            <div class="col-md-4">
-                <img ng-src={{userVm.user.imagePath}} alt="{{userVm.user.username + ' profile photo'}}" width="192px" height="192px" class="img-circle">
+        <div class="row">
+            <!-- separator -->
+            <div class="col-xs-0 col-sm-3 col-md-3"></div>
+            <!-- user information -->
+            <div class="col-xs-12 col-sm-6 col-md-6" ng-hide="userVm.passEditState === true || userVm.infoEditState === true">
+                <div class="well well-sm" style="background-color:#ECEFF1">
+                    <div class="row">
+                        <div class="col-sm-6 col-md-4">
+                            <!-- button for profile image change -->
+                            <label ng-if="userVm.uploader">
+                                <input  type="file" style="display: none;" accept="image/png, image/jpeg, image/gif" nv-file-select uploader="userVm.uploader"/>
+                                <span
+                                    class="glyphicon glyphicon-camera pull-right" 
+                                    style="position:absolute; cursor: pointer;"
+                                    uib-tooltip="Promeni fotografiju" tooltip-placement="left">
+                                </span>
+                            </label>
+                            <img ng-src={{userVm.user.imagePath}} alt="{{userVm.user.username + ' profile photo'}}" class="img-circle img-responsive">
+                        </div>
+                        <div class="col-sm-6 col-md-8">
+                            <h4>{{userVm.user.firstName + ' ' + userVm.user.lastName}}</h4>
+                            <span class="label label-warning" ng-show="userVm.user.type === 'verifier'">
+                                <cite title="{{userVm.user.type}}"><i class="glyphicon glyphicon-asterisk"></i> verifikator</cite>
+                            </span>
+                            <span class="label label-info" ng-show="userVm.user.type === 'advertiser'">
+                                <cite title="{{userVm.user.type}}"><i class="glyphicon glyphicon-asterisk"></i> oglašavač</cite>
+                            </span>
+                            <span class="label label-danger" ng-show="userVm.user.type === 'admin'">
+                                <cite title="{{userVm.user.type}}"><i class="glyphicon glyphicon-asterisk"></i> administrator</cite>
+                            </span>
+                            <p>
+                                <i class="glyphicon glyphicon-user" uib-tooltip="Korisničko ime" tooltip-placement="left"></i> &nbsp;<strong>{{userVm.user.username}}</strong>
+                                <br />
+                                <i class="glyphicon glyphicon-envelope" uib-tooltip="Email" tooltip-placement="left"></i> &nbsp;{{userVm.user.email}}
+                                <br />
+                                <i class="glyphicon glyphicon-phone" uib-tooltip="Telefon" tooltip-placement="left"></i> &nbsp;{{userVm.user.phoneNumber}}
+                                <br />
+                                <i ng-show="userVm.user.companyVerified === 'accepted'"class="glyphicon glyphicon-home" uib-tooltip="Kompanija" tooltip-placement="left"></i> <a ng-show="userVm.user.companyVerified === 'accepted'" ui-sref="company.members({companyId: userVm.user.company.id})">&nbsp;{{userVm.user.company.name}}</a>
+                            </p>
+                            <!-- info edit switch button -->
+                            <span 
+                                class="glyphicon glyphicon-pencil pull-right" 
+                                style="font-size: 16pt; cursor: pointer;"
+                                ng-click="userVm.initEditInfoState();"
+                                ng-show="userVm.loggedin"
+                                uib-tooltip="Promeni informacije" tooltip-placement="top">
+                            </span>
+                            <span class="pull-right">&nbsp;</span>
+                            <!-- password edit switch button -->
+                            <span 
+                                class="glyphicon glyphicon-lock pull-right" 
+                                style="font-size: 16pt; cursor: pointer;"
+                                ng-click="userVm.initEditPasswordState();"
+                                ng-show="userVm.loggedin"
+                                uib-tooltip="Promeni šifru" tooltip-placement="top">
+                            </span>
+                        </div>
+                    </div>
+                </div>
             </div>
-            <div class="col-md-8">
-                <span 
-                    class="glyphicon glyphicon-pencil pull-right" 
-                    style="font-size: 16pt;"
-                    ng-show="userVm.loggedin">
-                </span>
-                <h3>{{userVm.user.firstName + ' ' + userVm.user.lastName}}</h3>
-                <h5><strong>{{userVm.user.username}}</strong></h5>
-                <h6 ng-show="userVm.user.type === 'verifier'">verifikator</h6>
-                <h6 ng-show="userVm.user.type === 'advertiser'">oglašavač</h6>
-                <h6>{{userVm.user.email}}</h6>
-                <p>{{userVm.user.phoneNumber}}</p>
+            <!-- edit state views -->
+            <div class="col-xs-12 col-sm-6 col-md-6">
+                <!-- form for changing personal info without password -->
+                <form role="form" class="registration-form" name="passwordForm" novalidate ng-show="userVm.passEditState === true">
+                    <p style="text-align: center;"> Unesite novu lozinku </p>
+                    <!-- new password field -->
+                    <div class="form-group" ng-class="{ 'has-error' : passwordForm.password.$invalid && passwordForm.password.$dirty }">
+                        <div class="input-group">
+                            <span class="input-group-addon" > <i class="glyphicon glyphicon-lock"></i></span>
+                            <input type="password" ng-model="userVm.newPassword" name="password" placeholder="Šifra..." class="form-control" id="edit-password" required ng-minlength="6">
+                            <span ng-show="passwordForm.password.$invalid && passwordForm.password.$dirty" class="glyphicon glyphicon-remove form-control-feedback"></span>
+                        </div>
+                        <p ng-show="passwordForm.password.$error.required && passwordForm.password.$dirty" class="help-block" style="color: red; font-size: 10pt; margin:0px;">Šifra je obavezna.</p>
+                        <p ng-show="passwordForm.password.$error.minlength && passwordForm.password.$dirty && !passwordForm.password.$error.required" class="help-block" style="color: red; font-size: 10pt; margin:0px;">Šifra mora sadržati bar 6 karaktera.</p>
+                    </div>
+                    <!-- password confirmation field -->
+                    <div class="form-group" ng-class="{ 'has-error' : (passwordForm.passwordRetyped.$invalid || userVm.passwordRetyped != userVm.newPassword) && passwordForm.passwordRetyped.$dirty }">
+                        <div class="input-group">
+                            <span class="input-group-addon"> <i class="glyphicon glyphicon-lock"></i></span>
+                            <input type="password" ng-model="userVm.passwordRetyped" name="passwordRetyped"
+                                placeholder="Ponovite šifru..." class="form-control" id="sign-up-re-password" required>
+                            <span ng-show="(passwordForm.passwordRetyped.$invalid || userVm.passwordRetyped != userVm.newPassword)  && passwordForm.passwordRetyped.$dirty" class="glyphicon glyphicon-remove form-control-feedback"></span>
+                        </div>
+                        <p ng-show="(passwordForm.passwordRetyped.$invalid || userVm.passwordRetyped != userVm.newPassword) && passwordForm.passwordRetyped.$dirty" class="help-block" style="color: red; font-size: 10pt; margin:0px;">Šifra se ne poklapa.</p>
+                    </div>
+                    <!-- form control buttons -->
+                    <button id="cancel-pass-button" 
+                            ng-click="userVm.cancelEditPassword();"
+                            class="btn btn-default">Poništi
+                    </button>
+                    <button id="save-pass-button"
+                            ng-click="userVm.changePassword();" 
+                            ng-disabled="passwordForm.$invalid || userVm.passwordRetyped != userVm.newPassword"
+                            class="btn btn-success">Sačuvaj
+                    </button>
+                </form>
+                
+                <!-- form for changing personal info without password -->
+                <form role="form" class="registration-form" name="editForm" novalidate ng-show="userVm.infoEditState">
+                    <p style="text-align: center;"> Unesite nove podatke </p>
+                    <!-- first name field -->
+                    <div class="form-group" ng-class="{ 'has-error' : editForm.firstName.$invalid && editForm.firstName.$dirty }">
+                        <div class="input-group">
+                            <span class="input-group-addon"> <i class="glyphicon glyphicon-user"></i></span>
+                            <input type="text" ng-model="userVm.editUser.firstName" name="firstName" placeholder="Ime..." class="form-control" id="form-first-name" required>
+                            <span ng-show="editForm.firstName.$invalid && editForm.firstName.$dirty" class="glyphicon glyphicon-remove form-control-feedback"></span>
+                        </div>
+                        <p ng-show="editForm.firstName.$invalid && editForm.firstName.$dirty" class="help-block" style="color: red; font-size: 10pt; margin:0px;">Ime je obavezno.</p>
+                    </div>
+                    <!-- last name field -->
+                    <div class="form-group" ng-class="{ 'has-error' : editForm.lastName.$invalid && editForm.lastName.$dirty }">
+                        <div class="input-group">
+                            <span class="input-group-addon"> <i class="glyphicon glyphicon-user"></i></span>
+                            <input type="text" ng-model="userVm.editUser.lastName" name="lastName" placeholder="Prezime..." class="form-control" id="form-last-name" required>
+                            <span ng-show="editForm.lastName.$invalid && editForm.lastName.$dirty" class="glyphicon glyphicon-remove form-control-feedback"></span>
+                        </div>
+                        <p ng-show="editForm.lastName.$invalid && editForm.lastName.$dirty" class="help-block" style="color: red; font-size: 10pt; margin:0px;">Prezime je obavezno.</p>
+                    </div>
+                    <!-- phone number field -->
+                    <div class="form-group">
+                        <div class="input-group" ng-class="{'has-error': editForm.phone.$invalid && editForm.phone.$dirty}">
+                            <span class="input-group-addon"> <i class="glyphicon glyphicon-earphone"></i></span>
+                            <input type="text" ng-model="userVm.editUser.phoneNumber" name="phone" placeholder="Kontakt telefon..." class="form-control" id="form-phone" required>
+                            <span ng-show="editForm.phone.$invalid && editForm.phone.$dirty" class="glyphicon glyphicon-remove form-control-feedback"></span>
+                        </div>
+                        <span ng-show="editForm.phone.$invalid && editForm.phone.$dirty" class="help-block" style="color: red; font-size: 10pt; margin:0px;">Telefon je obavezan.</span>
+                    </div>
+                    
+                    <!-- form control buttons -->
+                    <button id="cancel-edit-button" 
+                            ng-click="userVm.cancelEditInfo();"
+                            class="btn btn-default">Poništi
+                    </button>
+                    <button id="save-edit-button" 
+                            ng-click="userVm.changeInfo();"
+                            ng-disabled="editForm.$invalid"
+                            class="btn btn-success">Sačuvaj
+                    </button>
+                </form>
             </div>
         </div>
     </div>
 
     <!-- User's announcement preview and extend Expiration date logic -->
-    <uib-tabset active="active" ng-show="userVm.user.type === 'advertiser'">
+    <uib-tabset active="active" ng-show="userVm.user.type === 'advertiser'" type="pills">
         <uib-tab index="0" >
             <uib-tab-heading>
-                Aktivni oglasi &nbsp;<span class="badge alert-info"> {{userVm.announcements.length}}</span>
+                Aktivni oglasi &nbsp;<span class="badge alert-info"> {{userVm.totalItems}}</span>
             </uib-tab-heading>
-            <div class="container">
-                <div class="col-xs-12 col-md-6 announcement-home-outside" ng-repeat="announcement in userVm.announcements track by $index">
-                    <div class="row announcement-home-inside">
-                        <div class="col-md-4 col-xs-4">
-                            <img    ng-src={{announcement.images[0].imagePath}}
-                                    ui-sref="announcement({announcementId: announcement.id})"
-                                    width="150px" height="150px"
-                                    class="thumbnail"
-                                    style="cursor: hover"/>
+            <hr/>
+            <div class="container" style="padding-top: 10px; padding-left: 0px;">
+                <div class="row" ng-show="userVm.totalItems === 0">
+                    <p style="margin-left: 100px; margin-top: 20px;"><strong>Trenutno nemate oglasa.</strong></p>    
+                </div>
+                <div class="col-xs-2 col-sm-2 col-md-2" style="min-height: 100%">
+                    <!-- section for sorting on click -->
+                    <div class="search-category">
+                        <h4>Sortiranje</h4>
+                        <div class="btn-group">
+                            <label  class="btn btn-default" 
+                                    ng-model="userVm.reverse" 
+                                    uib-btn-radio="true"
+                                    ng-click="userVm.activate();"
+                                    uncheckable>
+                                <span class="glyphicon glyphicon-sort-by-alphabet" aria-hidden="true"></span>
+                            </label>
+                            <label  class="btn btn-default"
+                                    ng-model="userVm.reverse"
+                                    uib-btn-radio="false"
+                                    ng-click="userVm.activate();"
+                                    uncheckable>
+                                <span class="glyphicon glyphicon-sort-by-alphabet-alt" aria-hidden="true"></span>
+                            </label>
                         </div>
-                        <div class="col-md-8 col-xs-8">
-                            <a style="font-size: 150%;" ui-sref="announcement({announcementId: announcement.id})">{{announcement.realEstate.name}}</a>
-                            <p> {{announcement.realEstate.location.city + ', ' + announcement.realEstate.location.country}}</p>
-                            <p> objavljen: {{announcement.dateAnnounced | date:'dd-MM-yyyy' }}</p>
-                            <p class="{{announcement.expirationClass}}"><span style="color: black">Vreme isticanja: </span><strong>{{announcement.expiredMessage}}</strong></p>
-                            <div class="row" ng-show="userVm.loggedin">
-                                <div class="form-group pull-right col-md-10 col-xs-10">
-                                    <div class="input-group">
-                                        <span class="input-group-addon"> Produži do: </span>
-                                        <input  type="text" class="form-control"
-                                                ng-model="announcement.expirationDate"
-                                                uib-datepicker-popup="{{userVm.pickerConfigurations[$index].format}}"
-                                                is-open="userVm.pickerConfigurations[$index].popup.opened" 
-                                                datepicker-options="userVm.pickerConfigurations[$index].dateOptions"
-                                                alt-input-formats="userVm.pickerConfigurations[$index].altInputFormats"
-                                                ng-required="true"
-                                                close-text="Zatvori"
-                                                clear-text="Obriši"
-                                                current-text="Danas"/>
-                                        <span class="input-group-btn">
-                                            <button type="button" class="btn btn-default" 
-                                                    ng-click="userVm.pickerConfigurations[$index].open();"
-                                                    uib-tooltip="Otvori kalendar" tooltip-placement="top">
-                                                <i class="glyphicon glyphicon-calendar"></i>
-                                            </button>
-                                            <button type="button" class="btn btn-success" 
-                                                    ng-click="userVm.extendExpirationDate(announcement.id, announcement.expirationDate);"
-                                                    uib-tooltip="Produži rok" tooltip-placement="top">
-                                                <i class="glyphicon glyphicon-chevron-right"></i>
-                                            </button>
-                                        </span>
+                        <div class="radio">
+                            <label><input type="radio" ng-model="userVm.predicate" name="type" value="id" ng-click="userVm.activate();">Standardno</label>
+                        </div>
+                        <div class="radio">
+                            <label><input type="radio" ng-model="userVm.predicate" name="type" value="name" ng-click="userVm.activate();">Nazivu</label>
+                        </div>
+                        <div class="radio">
+                            <label><input type="radio" ng-model="userVm.predicate" name="type" value="price" ng-click="userVm.activate();">Ceni</label>
+                        </div>
+                        <div class="radio">
+                            <label><input type="radio" ng-model="userVm.predicate" name="type" value="type" ng-click="userVm.activate();">Tipu</label>
+                        </div>
+                        <div class="radio">
+                            <label><input type="radio" ng-model="userVm.predicate" name="type" value="dateAnnounced" ng-click="userVm.activate();">Datumu objave</label>
+                        </div>
+                        <div class="radio">
+                            <label><input type="radio" ng-model="userVm.predicate" name="type" value="expirationDate" ng-click="userVm.activate();">Datumu isticanja</label>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-xs-10 col-sm-10 col-md-10">
+                    <div class="col-xs-12 col-sm-6 col-md-6" ng-repeat="announcement in userVm.announcements track by $index">
+                        <div class="well well-sm" style="max-height: 230px;">
+                            <div class="row">
+                                <div class="col-sm-5 col-md-3">
+                                    <img    ng-src={{announcement.images[0].imagePath}}
+                                            ui-sref="announcement({announcementId: announcement.id})"
+                                            class="thumbnail img-rounded img-responsive"
+                                            style="cursor: hover"/>
+                                </div>
+                                <div class="col-sm-7 col-md-9">
+                                    <h4><a ui-sref="announcement({announcementId: announcement.id})">{{announcement.name}}</a></h4>
+                                    <small style="position:absolute; top:0px; right: 35px;" uib-tooltip="Datum objave" tooltip-placement="top">
+                                        <cite title="{{announcement.dateAnnounced}}">
+                                            {{announcement.dateAnnounced | date:'dd-MM-yyyy'}}
+                                        </cite>
+                                    </small>
+                                    <i  class="glyphicon glyphicon-ok-circle"
+                                        style="position:absolute; top:0px; right: 10px; color:green; font-size: 14pt;"
+                                        uib-tooltip="Verifikovan" tooltip-placement="right"
+                                        ng-show="announcement.verified == true">
+                                    </i>
+                                    <span class="label label-success" ng-show="announcement.type === 'buy'">
+                                        <cite title="{{announcement.type}}"> potražnja</cite>
+                                    </span>
+                                    <span class="label label-warning" ng-show="announcement.type === 'rent'">
+                                        <cite title="{{announcement.type}}"> iznajmljivanje</cite>
+                                    </span>
+                                    <span class="label label-info" ng-show="announcement.type === 'sale'">
+                                        <cite title="{{announcement.type}}"> prodaja</cite>
+                                    </span>
+                                    <p style="margin-top: 5px;">
+                                        <cite title="{{announcement.realEstate.location.city + ', ' + announcement.realEstate.location.country}}">
+                                            {{announcement.realEstate.location.city + ', ' + announcement.realEstate.location.country}}
+                                            <i class="glyphicon glyphicon-map-marker" uib-tooltip="Adresa" tooltip-placement="right"></i>
+                                        </cite>
+                                    </p>
+                                    <p>
+                                        <i class="glyphicon glyphicon-euro" uib-tooltip="Cena" tooltip-placement="top"></i> &nbsp;<strong>{{announcement.price}}</strong>
+                                        <br />
+                                        <i class="glyphicon glyphicon-asterisk" uib-tooltip="Tip nekretnine" tooltip-placement="top"></i> &nbsp;{{announcement.realEstate.type}}
+                                        <br />
+                                        <i class="glyphicon glyphicon-time" uib-tooltip="Vreme isteka" tooltip-placement="top"></i> &nbsp;<strong class="{{announcement.expirationClass}}">{{announcement.expiredMessage}}</strong>
+                                        <br />
+                                    </p>
+                                    <!-- extend expiration date -->
+                                    <div class="row" ng-show="userVm.loggedin">
+                                        <div class="form-group col-md-12 col-sm-12 col-xs-12">
+                                            <div class="input-group">
+                                                <span class="input-group-addon"> Produži do: </span>
+                                                <input  type="text" class="form-control"
+                                                        ng-model="announcement.expirationDate"
+                                                        uib-datepicker-popup="{{userVm.pickerConfigurations[$index].format}}"
+                                                        is-open="userVm.pickerConfigurations[$index].popup.opened" 
+                                                        datepicker-options="userVm.pickerConfigurations[$index].dateOptions"
+                                                        alt-input-formats="userVm.pickerConfigurations[$index].altInputFormats"
+                                                        ng-required="true"
+                                                        close-text="Zatvori"
+                                                        clear-text="Obriši"
+                                                        current-text="Danas"/>
+                                                <span class="input-group-btn">
+                                                    <button type="button" class="btn btn-default" 
+                                                            ng-click="userVm.pickerConfigurations[$index].open();"
+                                                            uib-tooltip="Otvori kalendar" tooltip-placement="top">
+                                                        <i class="glyphicon glyphicon-calendar"></i>
+                                                    </button>
+                                                    <button type="button" class="btn btn-success" 
+                                                            ng-click="userVm.extendExpirationDate(announcement.id, announcement.expirationDate);"
+                                                            uib-tooltip="Produži rok" tooltip-placement="top">
+                                                        <i class="glyphicon glyphicon-chevron-right"></i>
+                                                    </button>
+                                                </span>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -74,22 +275,38 @@
                     </div>
                 </div>
             </div>
+            <!-- pagination -->
+            <div class="text-center">
+                <ul     style="text-align: center;"
+                        uib-pagination class="pagination-sm"
+                        total-items="userVm.totalItems"
+                        items-per-page="userVm.itemsPerPage"
+                        ng-model="userVm.page" 
+                        ng-change="userVm.transition()">
+                </ul>
+            </div>
         </uib-tab>
 
         <!-- Users membership requests logic -->
-        <uib-tab index="1" ng-show="userVm.loggedin">
+        <uib-tab index="1" ng-show="userVm.loggedin && userVm.user.company != null">
             <uib-tab-heading>
                 Zahtevi &nbsp;<span class="badge alert-info"> {{userVm.usersRequests.length}}</span>
             </uib-tab-heading>
-            <div class="container">
+            <hr/>
+            <div class="container" style="padding-top: 10px; padding-left: 0px;"
                 <div class="row" ng-show="userVm.usersRequests.length === 0">
-                    <p style="margin-left: 100px; margin-top: 20px;"><em>Trenutno nema aktivnih zahteva.</em></p>    
+                    <p style="margin-left: 100px; margin-top: 20px;"><strong>Trenutno nema aktivnih zahteva.</strong></p>    
                 </div>
                 <div class="row" ng-repeat="user in userVm.usersRequests">
                     <p class="company-request">
                         <img ng-src="{{user.imagePath}}" alt="{{user.firstName + user.lastName}}" width="36px" height="36px" class="img-rounded">
                         <!-- TODO provide link to user profile -->
-                        <a href="#">{{user.firstName + ' ' + user.lastName}}</a> {{ ' (' + user.email + ')'}}
+                        <a ui-sref="profile({username: user.username})">{{user.firstName + ' ' + user.lastName}}</a>
+                        <small style="font-size: 80%;">
+                            <em>
+                                &nbsp;{{user.email}}
+                            </em>
+                        </small>
                         <span   class="glyphicon glyphicon-ok pull-right"
                                 style="color:seagreen;cursor:pointer;"
                                 ng-click="userVm.acceptRequest(user.id);"></span>

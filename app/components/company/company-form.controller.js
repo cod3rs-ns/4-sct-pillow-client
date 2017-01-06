@@ -33,10 +33,14 @@
             }
             else {
                 companyFormVm.submitBtnName = 'Izmeni agenciju';
+
                 companyService.getCompanyById($stateParams.companyId)
                     .then(function (response) {
                         companyFormVm.company = response.data;
                         companyFormVm.imageSource = response.data.imagePath;
+                    })
+                    .catch(function (error) {
+                        $log.error(error);
                     });
             }
         }
@@ -68,12 +72,16 @@
 
         uploader.onSuccessItem = function (fileItem, response, status, headers) {
             companyFormVm.company.imagePath = response;
+
             if (companyFormVm.state == 'addCompany') {
                 companyFormVm.company.users = [companyFormVm.selectedUser];
                 companyService.createCompany(companyFormVm.company)
                     .then(function (response) {
                         $state.transitionTo("company", {
                             companyId: response.data.id
+                        })
+                        .catch(function (error) {
+                            $log.error(error);
                         });
                     });
             }
@@ -87,6 +95,9 @@
                 .then(function (response) {
                     $state.transitionTo("company", {
                         companyId: response.data.id
+                    })
+                    .catch(function (error) {
+                        $log.error(error);
                     });
                 });
         }
@@ -109,7 +120,6 @@
         }
 
         function clearFile() {
-            $log.info("Clear");
             companyFormVm.btnName = "Pretraži";
             companyFormVm.clearHide = false;
             companyFormVm.fileName = "";
@@ -122,6 +132,9 @@
             return companyService.findUsers(splitted[0], splitted[1] || "")
                 .then(function (response) {
                     return response.data;
+                })
+                .catch(function (error) {
+                    $log.error(error);
                 });
         };
 
@@ -131,7 +144,7 @@
         };
 
         function submitForm() {
-            if (uploader.queue.length == 0 && companyFormVm.state == 'updateCompany') {
+            if (_.isEmpty(uploader.queue) && companyFormVm.state == 'updateCompany') {
                 companyFormVm.update();
             } else {
                 uploader.uploadItem(uploader.queue[0]);

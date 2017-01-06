@@ -4,7 +4,7 @@
   "authors": [
     "Stefan Ristanović <st.keky@gmail.com>",
     "Bojan Blagojević",
-    "Dragutin Marjanović",
+    "Dragutin Marjanović <dmarjanovic94@gmail.com>",
     "Aleksa Zrnić"
   ],
   "description": "Joint project for courses AWT and CTS",
@@ -38,7 +38,8 @@
     "angular-wizard": "^0.10.0",
     "ngToast": "ngtoast#^2.0.0",
     "moment": "^2.17.1",
-    "angular-trix": "^1.0.2"
+    "angular-trix": "^1.0.2",
+    "angular-messages": "^1.6.1"
   },
   "resolutions": {
     "angular": "^1.6.1",

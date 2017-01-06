@@ -1,27 +1,36 @@
 <div class="container">
     <div class="row">
-        <div class="col-md-6 announcement-home-outside" ng-repeat="announcement in vm.announcements">
-            <div class="row announcement-home-inside">
+        <div class="col-md-6 comapny-home-outside" ng-repeat="announcement in vm.announcements">
+            <div class="row company-home-inside">
                 <div class="col-xs-4">
-                    <img ng-src="{{announcement.images[0].imagePath}}" width="100%" class="thumbnail" />
+                    <img ng-src="{{announcement.images[0].imagePath}}" class="thumbnail" />
                 </div>
-                <div class="col-xs-8">
-                    <h4>{{announcement.name}}</h4>
+                <div class="col-xs-8" style="height:10em;">
+                    <h3 style="margin-top:0px;">{{announcement.name}}</h3>
+
                     <div class="row">
-                        <a ui-sref="announcement({announcementId: announcement.id})" type="button" style="margin-right:5px;" class="btn btn-default pull-right">Detalji</a>
-                    </div>
-                    <div class="row">
-                        <div class="col-xs-1"><span class="glyphicon glyphicon-eur" style="color:#5bc0de;"></span></div>
-                        <div class="col-xs-10 col-mf-offset-1">
-                            <p>{{announcement.price}}</p>
+                        <div class="col-xs-12 col-md-6">
+                            <div class="home-info-header">
+                                <span class="glyphicon glyphicon-map-marker" aria-hidden="true"></span>
+                                <p>Lokacija</p>
+                            </div>
+                            <div class="home-info-body">
+                                <small>{{announcement.realEstate.location.city + ' (' + announcement.realEstate.location.cityRegion
+                                    + ')' + ', ' + announcement.realEstate.location.country}}</small>
+                            </div>
+                        </div>
+                        <div class="col-xs-12 col-md-6">
+                            <div class="home-info-header">
+                                <span class="glyphicon glyphicon-eur" aria-hidden="true"></span>
+                                <p>Cijena</p>
+                            </div>
+                            <div class="home-info-body">
+                                <small>{{announcement.price}}</small>
+                            </div>
                         </div>
                     </div>
-                    <div class="row">
-                        <div class="col-xs-1"><span class="glyphicon glyphicon-earphone" style="color:#5bc0de;"></span></div>
-                        <div class="col-xs-10 col-mf-offset-1">
-                            <p>{{announcement.phoneNumber}}</p>
-                        </div>
-                    </div>
+
+                    <a ui-sref="announcement({announcementId: announcement.id})" type="button" class="btn btn-primary btn-sm pull-right" style="position:absolute; bottom:0px; right:1em;">Prikaži detalje</a>
                 </div>
             </div>
         </div>

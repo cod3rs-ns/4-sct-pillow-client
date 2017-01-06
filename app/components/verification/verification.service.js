@@ -1,12 +1,13 @@
-(function () {
+(function() {
     'use strict';
+
     angular
         .module('awt-cts-client')
-        .factory('VerificationTokenService', VerificationTokenService);
+        .service('verificationTokenService', verificationTokenService);
 
-    VerificationTokenService.$inject = ['$http', '$resource', '$log', 'CONFIG'];
+    verificationTokenService.$inject = ['$http', '$resource', '$log', 'CONFIG'];
 
-    function VerificationTokenService($http, $resource, $log, CONFIG) {
+    function verificationTokenService($http, $resource, $log, CONFIG) {
 
         var service = {
             resendToken: resendToken
@@ -19,8 +20,9 @@
                 .then(function successCallback(response) {
                     return response;
                 }, function errorCallback(response) {
-                    $log.error("Unable to resend verification token.")
-                    return response;
+                    $log.error("Unable to resend verification token.");
+                    $log.warn(response.headers('X-SCT-Alert'));
+                    throw response.headers('X-SCT-Alert');
                 });
         }
     }

@@ -2,9 +2,9 @@ angular
     .module('awt-cts-client')
     .service('announcementService', announcementService);
 
-announcementService.$inject = ['$http', 'CONFIG', '$log'];
+announcementService.$inject = ['$http', '$log', 'CONFIG'];
 
-function announcementService($http, CONFIG, $log) {
+function announcementService($http, $log, CONFIG) {
     var service = {
         getAnnouncements: getAnnouncements,
         getAnnouncementById: getAnnouncementById,
@@ -17,30 +17,40 @@ function announcementService($http, CONFIG, $log) {
         extendExpirationDate: extendExpirationDate,
         searchAnnouncements: searchAnnouncements,
         alreadyReported: alreadyReported,
-        updateAnnouncement: updateAnnouncement
+        updateAnnouncement: updateAnnouncement,
+        verifyAnnouncement: verifyAnnouncement
     };
 
     return service;
 
     function getAnnouncements(page, size, sort) {
         return $http.get(CONFIG.SERVICE_URL + '/announcements/deleted/false?page=' + page + '&size=' + size + '&sort=' + sort)
-            .then(function (response) {
+            .then(function successCallback(response) {
                 return response;
+            }, function errorCallback(response) {
+                $log.warn(response.headers('X-SCT-Alert'));
+                throw response.headers('X-SCT-Alert');
             });
     };
 
     function getAnnouncementById(id) {
         return $http.get(CONFIG.SERVICE_URL + '/announcements/' + id)
-            .then(function (response) {
+            .then(function successCallback(response) {
                 return response;
+            }, function errorCallback(response) {
+                $log.warn(response.headers('X-SCT-Alert'));
+                throw response.headers('X-SCT-Alert');
             });
     };
 
 
     function addAnnouncement(announcement) {
         return $http.post(CONFIG.SERVICE_URL + '/announcements', announcement)
-            .then(function (response) {
+            .then(function successCallback(response) {
                 return response;
+            }, function errorCallback(repsponse) {
+                $log.warn(response.headers('X-SCT-Alert'));
+                throw response.headers('X-SCT-Alert');
             });
     };
 
@@ -56,15 +66,21 @@ function announcementService($http, CONFIG, $log) {
                     number: realEstate.location.streetNumber
                 }
             })
-            .then(function (response) {
+            .then(function successCallback(response) {
                 return response;
+            }, function errorCallback(response) {
+                $log.warn(response.headers('X-SCT-Alert'));
+                throw response.headers('X-SCT-Alert');
             });
     };
 
     function getRealEstateImage(id) {
         return $http.get(CONFIG.SERVICE_URL + '/real-estates/' + id + '/image')
-            .then(function (response) {
+            .then(function successCallback(response) {
                 return response;
+            }, function errorCallback(response) {
+                $log.warn(response.headers('X-SCT-Alert'));
+                throw response.headers('X-SCT-Alert');
             });
     };
 
@@ -80,8 +96,8 @@ function announcementService($http, CONFIG, $log) {
             .then(function successCallback(response) {
                 return response;
             }, function errorCallback(response) {
-                $log.warn("Unable to retrieve announcements for provided userId.");
-                return response;
+                $log.warn(response.headers('X-SCT-Alert'));
+                throw response.headers('X-SCT-Alert');
             });
     };
 
@@ -90,15 +106,19 @@ function announcementService($http, CONFIG, $log) {
      *
      * @param {integer} authorId    ID of the announcements author
      * @param {boolean} deleted     announcement's status - is deleted
+     * @param {integer} page        page to retrieve from repository
+     * @param {integer} size        page size
+     * @param {string}  sort        sort attributes
      * @returns response
      */
-    function getAnnouncementsByAuthorAndStatus(authorId, deleted) {
-        return $http.get(CONFIG.SERVICE_URL + '/announcements/user/' + authorId + '/' + deleted + '?page=0')
+
+    function getAnnouncementsByAuthorAndStatus(authorId, deleted, page, size, sort) {
+        return $http.get(CONFIG.SERVICE_URL + '/announcements/user/' + authorId + '/' + deleted + '?page=' + page + '&size=' + size + '&sort=' + sort)
             .then(function successCallback(response) {
                 return response;
             }, function errorCallback(response) {
-                $log.warn("Unable to retrieve announcements for provided userId.");
-                return response;
+                $log.warn(response.headers('X-SCT-Alert'));
+                throw response.headers('X-SCT-Alert');
             });
     };
 
@@ -115,8 +135,8 @@ function announcementService($http, CONFIG, $log) {
             .then(function successCallback(response) {
                 return response;
             }, function errorCallback(response) {
-                $log.warn("Unable to retrieve announcements for provided area.");
-                return response;
+                $log.warn(response.headers('X-SCT-Alert'));
+                throw response.headers('X-SCT-Alert');
             });
     };
 
@@ -145,13 +165,14 @@ function announcementService($http, CONFIG, $log) {
      * @param {string} searchTerm   HTTP format of parameters for search -> key1=value1&key2=value2 ...
      * @returns list of found announcements
      */
-    function searchAnnouncements(searchTerm) {
-        return $http.get(CONFIG.SERVICE_URL + '/announcements/search?' + searchTerm)
-            .then(function onSuccess(response) {
+    function searchAnnouncements(searchTerm, page, size, sort) {
+        return $http.get(CONFIG.SERVICE_URL + '/announcements/search?' + searchTerm + 'page=' + page + '&size=' + size + '&sort=' + sort)
+            .then(function successCallback(response) {
                 return response;
             },
-            function onError(response) {
-                return response;
+            function errorCallback(response) {
+                $log.warn(response.headers('X-SCT-Alert'));
+                throw response.headers('X-SCT-Alert');
             });
     };
 
@@ -172,7 +193,8 @@ function announcementService($http, CONFIG, $log) {
             .then(function successCallback(response) {
                 return response;
             }, function errorCallback(response) {
-                $log.warn("Operation unsuccessful");
+                $log.warn(response.headers('X-SCT-Alert'));
+                throw response.headers('X-SCT-Alert');
             });
     };
 
@@ -180,7 +202,7 @@ function announcementService($http, CONFIG, $log) {
     /**
      * Update one announcement.
      *
-     * @param {any} announcemnt   announcement that will be updated
+     * @param {any} announcement   announcement that will be updated
      * @returns response
      */
     function updateAnnouncement(announcement) {
@@ -188,7 +210,24 @@ function announcementService($http, CONFIG, $log) {
             .then(function successCallback(response) {
                 return response;
             }, function errorCallback(response) {
-                $log.warn("Updating announcemnt unsuccessful");
+                $log.warn(response.headers('X-SCT-Alert'));
+                throw response.headers('X-SCT-Alert');
             });
-    }
+    };
+
+    /**
+     * Verifies announcement.
+     * 
+     * @param {integer} announcementId
+     * @returns response
+     */
+    function verifyAnnouncement(announcementId) {
+        return $http.put(CONFIG.SERVICE_URL + '/announcements/' + announcementId + '/verify')
+            .then(function successCallback(response) {
+                return response;
+            }, function errorCallback(response) {
+                $log.warn(response.headers('X-SCT-Alert'));
+                throw response.headers('X-SCT-Alert');
+            });
+    };
 }

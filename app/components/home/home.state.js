@@ -9,26 +9,24 @@
 
     function stateConfig($stateProvider) {
         $stateProvider
-        .state('real-estates', {
-            url: '/real-estate?page&sort&search',
+        .state('home', {
+            url: "/home?search&page&sort",
             data: {
-                pageTitle: 'RealEstates'
+                pageTitle: 'Početna'
             },
             views: {
                 'content@': {
-                    templateUrl: 'app/components/real-estate/real-estates.html',
-                    controller: 'RealEstateController',
-                    controllerAs: 'vm'
+                    templateUrl: "app/components/home/home.html",
+                    controller: "HomeController",
+                    controllerAs: "homeVm"
                 }
             },
             params: {
                 page: {
-                    value: '1',
-                    squash: true
+                    value: '1'
                 },
                 sort: {
-                    value: 'id,asc',
-                    squash: true
+                    value: 'id,asc'
                 },
                 search: null
             },

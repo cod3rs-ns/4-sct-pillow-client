@@ -14,54 +14,26 @@ angular
     ])
     .factory('_', ['$window',
         function ($window) {
-            // place lodash include before angular
+            // place lodash include before Angular
             return $window._;
         }
     ])
     .constant(
-    'CONFIG', {
-        'SERVICE_URL': 'http://localhost:8091/api',
-        'AUTH_TOKEN': 'X-Auth-Token'
-    }
+        'CONFIG', {
+            'SERVICE_URL': 'http://localhost:8091/api',
+            'AUTH_TOKEN': 'X-Auth-Token'
+        }
     )
-    .config(function ($stateProvider, $urlRouterProvider, $httpProvider) {
+    .config(function ($stateProvider, $urlRouterProvider, $httpProvider, $locationProvider) {
 
-        // http://stackoverflow.com/questions/39931983/angularjs-possible-unhandled-rejection-when-using-ui-router
-
-        // $qProvider.errorOnUnhandledRejections(false);
-
+        // For excluding exclamation from url
+        $locationProvider.hashPrefix('');
 
         // For any unmatched url, redirect to /home
-        $urlRouterProvider.otherwise("/home");
+        $urlRouterProvider.otherwise("/page-not-found");
 
         // States setup
         $stateProvider
-            .state('home', {
-                url: "/home",
-                data: {
-                    pageTitle: 'Početna'
-                },
-                views: {
-                    'content@': {
-                        templateUrl: "app/components/home/home.html",
-                        controller: "HomeController",
-                        controllerAs: "homeVm"
-                    }
-                }
-            })
-            .state('about', {
-                url: "/about",
-                data: {
-                    pageTitle: 'Početna'
-                },
-                views: {
-                    'content@': {
-                        templateUrl: "app/components/about/about.html",
-                        controller: "AboutController",
-                        controllerAs: "aboutVm"
-                    }
-                }
-            })
             .state('announcement', {
                 url: "/announcement/:announcementId",
                 data: {
@@ -76,7 +48,7 @@ angular
                 }
             })
             .state('addAnnouncement', {
-                url: "/addAnnouncement",
+                url: "/announcement-add",
                 data: {
                     pageTitle: 'Dodavanje oglasa'
                 },
@@ -89,7 +61,7 @@ angular
                 }
             })
             .state('updateAnnouncement', {
-                url: "/updateAnnouncement/:announcementId",
+                url: "/announcement/update/:announcementId",
                 data: {
                     pageTitle: 'Izmjena oglasa'
                 },
@@ -115,7 +87,7 @@ angular
                 }
             })
             .state('addCompany', {
-                url: "/addCompany",
+                url: "/company-add",
                 data: {
                     pageTitle: 'Dodavanje agencije'
                 },
@@ -128,7 +100,7 @@ angular
                 }
             })
             .state('updateCompany', {
-                url: "/updateCompany/:companyId",
+                url: "/company/update/:companyId",
                 data: {
                     pageTitle: 'Izmena agencije'
                 },
@@ -137,19 +109,6 @@ angular
                         templateUrl: "app/components/company/company-form.html",
                         controller: "CompanyFormController",
                         controllerAs: "companyFormVm"
-                    }
-                }
-            })
-            .state('profile', {
-                url: "/profile/:username",
-                data: {
-                    pageTitle: 'Profil korisnika'
-                },
-                views: {
-                    'content@': {
-                        templateUrl: "app/components/user-profile/user-profile.html",
-                        controller: "UserProfileController",
-                        controllerAs: "userVm"
                     }
                 }
             })
@@ -193,9 +152,25 @@ angular
                         controllerAs: "verificationTokenVm"
                     }
                 }
+            })
+            .state('unauthorized', {
+                url: '/unauthorized',
+                views: {
+                    'content@': {
+                        templateUrl: "app/components/error-templates/401.html",
+                    }
+                }
+            })
+            .state('forbidden', {
+                url: '/forbidden',
+                views: {
+                    'content@': {
+                        templateUrl: "app/components/error-templates/403.html",
+                    }
+                }
             });
 
-        $httpProvider.interceptors.push(['$q', '$location', '$localStorage', function ($q, $location, $localStorage) {
+        $httpProvider.interceptors.push(['$q', '$location', '$localStorage', '_', function ($q, $location, $localStorage, _) {
             return {
                 // Set Header to Request if user is logged
                 'request': function (config) {
@@ -206,12 +181,14 @@ angular
                     }
                     return config;
                 },
+
                 // When try to get Unauthorized or Forbidden page
                 'responseError': function (response) {
                     // If you get Unauthorized on login page you should just write message
                     if ("/login" !== $location.path()) {
                         if (response.status === 401 || response.status === 403) {
-                            $location.path('/');
+                            console.log(_.kebabCase(response.data.error));
+                            $location.path('/' + _.kebabCase(response.data.error));
                         }
 
                         return $q.reject(response);
