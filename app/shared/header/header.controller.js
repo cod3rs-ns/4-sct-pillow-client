@@ -20,7 +20,7 @@
         function logout() {
             $localStorage.$reset();
             $localStorage.role = 'guest';
-            $location.path('/');
+            $location.path('/login');
         }
     }
 })();

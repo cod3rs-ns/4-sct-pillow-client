@@ -30,7 +30,7 @@ angular
         $locationProvider.hashPrefix('');
 
         // For any unmatched url, redirect to /home
-        $urlRouterProvider.otherwise("/home");
+        $urlRouterProvider.otherwise("/page-not-found");
 
         // States setup
         $stateProvider
@@ -152,9 +152,25 @@ angular
                         controllerAs: "verificationTokenVm"
                     }
                 }
+            })
+            .state('unauthorized', {
+                url: '/unauthorized',
+                views: {
+                    'content@': {
+                        templateUrl: "app/components/error-templates/401.html",
+                    }
+                }
+            })
+            .state('forbidden', {
+                url: '/forbidden',
+                views: {
+                    'content@': {
+                        templateUrl: "app/components/error-templates/403.html",
+                    }
+                }
             });
 
-        $httpProvider.interceptors.push(['$q', '$location', '$localStorage', function ($q, $location, $localStorage) {
+        $httpProvider.interceptors.push(['$q', '$location', '$localStorage', '_', function ($q, $location, $localStorage, _) {
             return {
                 // Set Header to Request if user is logged
                 'request': function (config) {
@@ -168,11 +184,11 @@ angular
 
                 // When try to get Unauthorized or Forbidden page
                 'responseError': function (response) {
-
                     // If you get Unauthorized on login page you should just write message
                     if ("/login" !== $location.path()) {
                         if (response.status === 401 || response.status === 403) {
-                            $location.path('/');
+                            console.log(_.kebabCase(response.data.error));
+                            $location.path('/' + _.kebabCase(response.data.error));
                         }
 
                         return $q.reject(response);
