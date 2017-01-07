@@ -1,137 +1,142 @@
 <!DOCTYPE html>
 <html lang="en" ng-app="awt-cts-client">
-  <head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
-    <meta name="description" content="">
-    <meta name="author" content="">
-    <link rel="icon" href="favicon.png">
 
-    <title>AWT CTS project</title>
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+  <meta name="description" content="">
+  <meta name="author" content="">
+  <link rel="icon" href="favicon.png">
 
-    <!-- Bootstrap core CSS -->
-    <link href="assets/libs/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
+  <title>AWT CTS project</title>
 
-    <!-- Font awesome library-->
-    <link href="/assets/libs/components-font-awesome/css/font-awesome.min.css" rel="stylesheet">
-    <!-- Angular wizard CSS -->
-    <link href="assets/libs/angular-wizard/dist/angular-wizard.min.css" rel="stylesheet">
-    <!-- ngToast CSS -->
-    <link rel="stylesheet" href="assets/libs/ngToast/dist/ngToast.min.css">
-    <!-- Custom styles for this template -->
-    <link href="assets/css/starter.css" rel="stylesheet">
-    <link href="assets/css/login.css" rel="stylesheet">
-    <link href="assets/css/company.css" rel="stylesheet">
-    <link href="assets/css/dialog.css" rel="stylesheet">
+  <!-- Bootstrap core CSS -->
+  <link href="assets/libs/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
 
-    <!-- Angular dependencies -->
-    <script src="assets/libs/angular/angular.min.js"></script>
-    <script src="assets/libs/angular-ui-router/release/angular-ui-router.min.js"></script>
-    <script src="assets/libs/angular-aria/angular-aria.min.js"></script>
-    <script src="assets/libs/angular-bootstrap/ui-bootstrap-tpls.js"></script>
-    <script src="assets/libs/angular-resource/angular-resource.min.js"></script>
-    <script src="assets/libs/angular-sanitize/angular-sanitize.min.js"></script>
-    <script src="assets/libs/angular-animate/angular-animate.min.js"></script>
-    <script src="assets/libs/angular-messages/angular-messages.min.js"></script>
+  <!-- Font awesome library-->
+  <link href="/assets/libs/components-font-awesome/css/font-awesome.min.css" rel="stylesheet">
+  <!-- Angular wizard CSS -->
+  <link href="assets/libs/angular-wizard/dist/angular-wizard.min.css" rel="stylesheet">
+  <!-- ngToast CSS -->
+  <link rel="stylesheet" href="assets/libs/ngToast/dist/ngToast.min.css">
+  <!-- Custom styles for this template -->
+  <link href="assets/css/starter.css" rel="stylesheet">
+  <link href="assets/css/login.css" rel="stylesheet">
+  <link href="assets/css/company.css" rel="stylesheet">
+  <link href="assets/css/dialog.css" rel="stylesheet">
+
+  <!-- Angular dependencies -->
+  <script src="assets/libs/angular/angular.min.js"></script>
+  <script src="assets/libs/angular-ui-router/release/angular-ui-router.min.js"></script>
+  <script src="assets/libs/angular-aria/angular-aria.min.js"></script>
+  <script src="assets/libs/angular-bootstrap/ui-bootstrap-tpls.js"></script>
+  <script src="assets/libs/angular-resource/angular-resource.min.js"></script>
+  <script src="assets/libs/angular-sanitize/angular-sanitize.min.js"></script>
+  <script src="assets/libs/angular-animate/angular-animate.min.js"></script>
+  <script src="assets/libs/angular-messages/angular-messages.min.js"></script>
 
 
-    <script src="assets/libs/es5-shim/es5-sham.min.js"></script>
-    <script src="assets/libs/es5-shim/es5-shim.min.js"></script>
-    <script src="app/utils/file-upload/console-sham.js"></script>
+  <script src="assets/libs/es5-shim/es5-sham.min.js"></script>
+  <script src="assets/libs/es5-shim/es5-shim.min.js"></script>
+  <script src="app/utils/file-upload/console-sham.js"></script>
 
-    <!-- Angular JWT Helper -->
-    <script src="assets/libs/angular-jwt/dist/angular-jwt.js"></script>
-    <!-- ngStorage -->
-    <script src="assets/libs/ngstorage/ngStorage.min.js"></script>
-    <!-- Angular file upload library dependency - image upload feature -->
-    <script src="assets/libs/angular-file-upload/dist/angular-file-upload.js"></script>
-    <!-- Lodash library dependency -->
-    <script src="assets/libs/lodash/dist/lodash.min.js"></script>
-    <!-- Wizard library dependency -->
-    <script src="assets/libs/angular-wizard/dist/angular-wizard.min.js"></script>
-    <!-- ngToast library for displaying notifications -->
-    <script src="assets/libs/ngToast/dist/ngToast.min.js"></script>
-    <!-- Google maps -->
-    <script
-        src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCdjbELyCAaiDk6Q9CI2Fr6Lj8m1o5lRp4">
+  <!-- Angular JWT Helper -->
+  <script src="assets/libs/angular-jwt/dist/angular-jwt.js"></script>
+  <!-- ngStorage -->
+  <script src="assets/libs/ngstorage/ngStorage.min.js"></script>
+  <!-- Angular file upload library dependency - image upload feature -->
+  <script src="assets/libs/angular-file-upload/dist/angular-file-upload.js"></script>
+  <!-- Lodash library dependency -->
+  <script src="assets/libs/lodash/dist/lodash.min.js"></script>
+  <!-- Wizard library dependency -->
+  <script src="assets/libs/angular-wizard/dist/angular-wizard.min.js"></script>
+  <!-- ngToast library for displaying notifications -->
+  <script src="assets/libs/ngToast/dist/ngToast.min.js"></script>
+  <!-- sockets -->
+  <script src="assets/libs/sockjs/sockjs.min.js"></script>
+  <script src="assets/libs/stomp-websocket/lib/stomp.min.js"></script>
+  <script src="assets/libs/ng-stomp/dist/ng-stomp.min.js"></script>
+
+  <link rel="stylesheet" href="assets/libs/angular-ui-notification/dist/angular-ui-notification.min.css">
+  <script src="assets/libs/angular-ui-notification/dist/angular-ui-notification.min.js"></script>
+  
+  <!-- Google maps -->
+  <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCdjbELyCAaiDk6Q9CI2Fr6Lj8m1o5lRp4">
     </script>
-    <!-- Moment.js library for date manipulation with locale additions -->
-    <script src="assets/libs/moment/min/moment-with-locales.min.js"></script>
-    <!-- angularTrix.js library for styling text -->
-    <script src="assets/libs/angular-trix/dist/angular-trix.min.js"></script>
-    <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/trix/0.9.2/trix.css">
-    <script src="//cdnjs.cloudflare.com/ajax/libs/trix/0.9.2/trix.js"></script>
+  <!-- Moment.js library for date manipulation with locale additions -->
+  <script src="assets/libs/moment/min/moment-with-locales.min.js"></script>
+  <!-- angularTrix.js library for styling text -->
+  <script src="assets/libs/angular-trix/dist/angular-trix.min.js"></script>
+  <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/trix/0.9.2/trix.css">
+  <script src="//cdnjs.cloudflare.com/ajax/libs/trix/0.9.2/trix.js"></script>
 
 
-    <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
-    <!--[if lt IE 9]>
+  <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+  <!--[if lt IE 9]>
       <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
       <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
     <![endif]-->
-  </head>
+</head>
 
-  <body>
-    <header id="header"
-            ng-include="'app/shared/header/header.html'"
-            ng-controller="HeaderController as headerVm">
-    </header>
-    <toast style="margin-top: 54px;"></toast>
-    <section id="main" ui-view="content"></section>
-    <footer id="footer"
-            ng-include="'app/shared/footer/footer.html'"
-            ng-controller="FooterController as footerVm">
-    </footer>
+<body>
+  <header id="header" ng-include="'app/shared/header/header.html'" ng-controller="HeaderController as headerVm">
+  </header>
+  <toast style="margin-top: 54px;"></toast>
+  <section id="main" ui-view="content"></section>
+  <footer id="footer" ng-include="'app/shared/footer/footer.html'" ng-controller="FooterController as footerVm">
+  </footer>
 
-    <!-- ======================= Angular  components ======================= -->
-    <script src="app/app.module.js"></script>
-    <script src="app/app.route.js"></script>
-    <script src="app/components/home/home.controller.js"></script>
-    <script src="app/components/home/home.state.js"></script>
-    <script src="app/components/user-profile/user-profile.controller.js"></script>
-    <script src="app/components/user-profile/user.service.js"></script>
-    <script src="app/components/user-profile/user-profile.state.js"></script>
-    <script src="app/components/signing/signing.controller.js"></script>
-    <script src="app/components/signing/signing.service.js"></script>
-    <script src="app/components/announcement/announcement.controller.js"></script>
-    <script src="app/components/announcement/comment.service.js"></script>
-    <script src="app/components/announcement/mark.service.js"></script>
-    <script src="app/components/announcement/rating.directive.js"></script>
-    <script src="app/shared/header/header.controller.js"></script>
-    <script src="app/shared/footer/footer.controller.js"></script>
-    <script src="app/utils/link-parser.util.js"></script>
-    <script src="app/utils/pagination.constants.js"></script>
-    <script src="app/utils/pagination.util.js"></script>
-    <script src="app/utils/date-picker.util.js"></script>
-    <script src="app/utils/comments.util.js"></script>
-    <script src="app/utils/marks.util.js"></script>
-    <script src="app/config/uib-pagination.config.js"></script>
-    <script src="app/components/company/company.controller.js"></script>
-    <script src="app/components/company/company.service.js"></script>
-    <script src="app/components/company/company.substates.js"></script>
-    <script src="app/components/company/company-members.controller.js"></script>
-    <script src="app/components/company/company-announcements.controller.js"></script>
-    <script src="app/components/company/companies.controller.js"></script>
-    <script src="app/components/company/company-form.controller.js"></script>
-    <script src="app/components/verification/verification.controller.js"></script>
-    <script src="app/components/verification/verification.service.js"></script>
-    <script src="app/components/reporting/reporting-form.controller.js"></script>
-    <script src="app/components/reporting/reporting.service.js"></script>
-    <script src="app/components/reporting/reporter-unique.service.js"></script>
-    <script src="app/components/reporting/reports.controller.js"></script>
-    <script src="app/components/reporting/reports.state.js"></script>
+  <!-- ======================= Angular  components ======================= -->
+  <script src="app/app.module.js"></script>
+  <script src="app/app.route.js"></script>
+  <script src="app/components/home/home.controller.js"></script>
+  <script src="app/components/home/home.state.js"></script>
+  <script src="app/components/user-profile/user-profile.controller.js"></script>
+  <script src="app/components/user-profile/user.service.js"></script>
+  <script src="app/components/user-profile/user-profile.state.js"></script>
+  <script src="app/components/signing/signing.controller.js"></script>
+  <script src="app/components/signing/signing.service.js"></script>
+  <script src="app/components/announcement/announcement.controller.js"></script>
+  <script src="app/components/announcement/comment.service.js"></script>
+  <script src="app/components/announcement/mark.service.js"></script>
+  <script src="app/components/announcement/rating.directive.js"></script>
+  <script src="app/shared/header/header.controller.js"></script>
+  <script src="app/shared/footer/footer.controller.js"></script>
+  <script src="app/utils/link-parser.util.js"></script>
+  <script src="app/utils/pagination.constants.js"></script>
+  <script src="app/utils/pagination.util.js"></script>
+  <script src="app/utils/date-picker.util.js"></script>
+  <script src="app/utils/comments.util.js"></script>
+  <script src="app/utils/marks.util.js"></script>
+  <script src="app/config/uib-pagination.config.js"></script>
+  <script src="app/components/company/company.controller.js"></script>
+  <script src="app/components/company/company.service.js"></script>
+  <script src="app/components/company/company.substates.js"></script>
+  <script src="app/components/company/company-members.controller.js"></script>
+  <script src="app/components/company/company-announcements.controller.js"></script>
+  <script src="app/components/company/companies.controller.js"></script>
+  <script src="app/components/company/company-form.controller.js"></script>
+  <script src="app/components/verification/verification.controller.js"></script>
+  <script src="app/components/verification/verification.service.js"></script>
+  <script src="app/components/reporting/reporting-form.controller.js"></script>
+  <script src="app/components/reporting/reporting.service.js"></script>
+  <script src="app/components/reporting/reporter-unique.service.js"></script>
+  <script src="app/components/reporting/reports.controller.js"></script>
+  <script src="app/components/reporting/reports.state.js"></script>
 
-    <!-- Angular directive for file upload -->
-    <script src="app/utils/file-upload/upload-file.directive.js"></script>
-    <script src="app/components/signing/field-unique.directive.js"></script>
+  <!-- Angular directive for file upload -->
+  <script src="app/utils/file-upload/upload-file.directive.js"></script>
+  <script src="app/components/signing/field-unique.directive.js"></script>
 
-    <script src="app/components/announcement/announcement-form.controller.js"></script>
-    <script src="app/components/announcement/announcement.service.js"></script>
+  <script src="app/components/announcement/announcement-form.controller.js"></script>
+  <script src="app/components/announcement/announcement.service.js"></script>
 
-    <!-- Placed at the end of the document so the pages load faster -->
-    <script src="assets/libs/jquery/jquery.min.js"></script>
-    <script src="assets/libs/bootstrap/dist/js/bootstrap.min.js"></script>
-    <script src="assets/libs/jquery-backstretch/jquery.backstretch.min.js"></script>
-  </body>
+  <!-- Placed at the end of the document so the pages load faster -->
+  <script src="assets/libs/jquery/jquery.min.js"></script>
+  <script src="assets/libs/bootstrap/dist/js/bootstrap.min.js"></script>
+  <script src="assets/libs/jquery-backstretch/jquery.backstretch.min.js"></script>
+</body>
+
 </html>
