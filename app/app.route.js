@@ -10,7 +10,9 @@ angular
         'angular-jwt',
         'mgo-angular-wizard',
         'ngToast',
-        'angularTrix'
+        'angularTrix',
+        'ngStomp',
+        'ui-notification'
     ])
     .factory('_', ['$window',
         function ($window) {

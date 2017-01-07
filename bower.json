@@ -33,13 +33,17 @@
     "es5-shim": "^4.5.9",
     "angular-jwt": "^0.1.8",
     "ngstorage": "^0.3.11",
-    "lodash": "^4.17.3",
+    "lodash": "^4.17.4",
     "angular-bootstrap-toggle": "^0.1.2",
     "angular-wizard": "^0.10.0",
-    "ngToast": "ngtoast#^2.0.0",
     "moment": "^2.17.1",
     "angular-trix": "^1.0.2",
-    "angular-messages": "^1.6.1"
+    "angular-messages": "^1.6.1",
+    "sockjs": "^0.3.4",
+    "ng-stomp": "^0.3.0",
+    "stomp-websocket": "^2.3.4",
+    "ngToast": "ngtoast#^2.0.0",
+    "angular-ui-notification": "^0.3.5"
   },
   "resolutions": {
     "angular": "^1.6.1",
