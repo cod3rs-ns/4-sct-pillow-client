@@ -38,7 +38,7 @@
                                 <br />
                                 <i class="glyphicon glyphicon-phone" uib-tooltip="Telefon" tooltip-placement="left"></i> <span id="user-phone"> &nbsp;{{userVm.user.phoneNumber}} </span>
                                 <br />
-                                <i ng-show="userVm.user.companyVerified === 'accepted'"class="glyphicon glyphicon-home" uib-tooltip="Kompanija" tooltip-placement="left"></i> <a ng-show="userVm.user.companyVerified === 'accepted'" ui-sref="company.members({companyId: userVm.user.company.id})">&nbsp;{{userVm.user.company.name}}</a>
+                                <i ng-show="userVm.user.companyVerified === 'accepted'"class="glyphicon glyphicon-home" uib-tooltip="Kompanija" tooltip-placement="left"></i> <a id="user-company" ng-show="userVm.user.companyVerified === 'accepted'" ui-sref="company.members({companyId: userVm.user.company.id})">&nbsp;{{userVm.user.company.name}}</a>
                             </p>
                             <!-- info edit switch button -->
                             <span 
@@ -248,6 +248,7 @@
                                             <div class="input-group">
                                                 <span class="input-group-addon"> Produži do: </span>
                                                 <input  type="text" class="form-control"
+                                                        id="extending-date"
                                                         ng-model="announcement.expirationDate"
                                                         uib-datepicker-popup="{{userVm.pickerConfigurations[$index].format}}"
                                                         is-open="userVm.pickerConfigurations[$index].popup.opened" 
@@ -264,6 +265,7 @@
                                                         <i class="glyphicon glyphicon-calendar"></i>
                                                     </button>
                                                     <button type="button" class="btn btn-success" 
+                                                            id="extend-expiration-date-btn"
                                                             ng-click="userVm.extendExpirationDate(announcement.id, announcement.expirationDate);"
                                                             uib-tooltip="Produži rok" tooltip-placement="top">
                                                         <i class="glyphicon glyphicon-chevron-right"></i>
@@ -292,7 +294,7 @@
 
         <!-- Users membership requests logic -->
         <uib-tab index="1" ng-show="userVm.loggedin && userVm.user.company != null">
-            <uib-tab-heading>
+            <uib-tab-heading id="company-membership-requests">
                 Zahtevi &nbsp;<span class="badge alert-info"> {{userVm.usersRequests.length}}</span>
             </uib-tab-heading>
             <hr/>
@@ -310,10 +312,12 @@
                                 &nbsp;{{user.email}}
                             </em>
                         </small>
-                        <span   class="glyphicon glyphicon-ok pull-right"
+                        <span   id="accept-request"
+                                class="glyphicon glyphicon-ok pull-right"
                                 style="color:seagreen;cursor:pointer;"
                                 ng-click="userVm.acceptRequest(user.id);"></span>
-                        <span   class="glyphicon glyphicon-remove pull-right" 
+                        <span   id="deny-request"
+                                class="glyphicon glyphicon-remove pull-right" 
                                 style="color:darkred;cursor:pointer;"
                                 ng-click="userVm.rejectRequest(user.id);"></span>
                     </p>

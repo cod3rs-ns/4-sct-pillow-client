@@ -176,17 +176,11 @@
             };
             announcementService.extendExpirationDate(annId, map)
                 .then(function (response) {
-                    ngToast.create({
-                        className: 'success',
-                        content: '<p>Datum isteka oglasa produžen do: <strong>' + expString + '</strong></p>'
-                    });
+                    Notification.success('<p id="exp-date-message">Datum isteka oglasa produžen do: <strong>' + expString + '</strong></p>');
                     activate();
                 })
                 .catch(function (error) {
-                    ngToast.create({
-                        className: 'danger',
-                        content: '<p><strong>GREŠKA! </strong>' + error + '</p>'
-                    });
+                    Notification.error('<p id="exp-date-error-msg"><strong>GREŠKA! </strong>' + error + '</p>');
                 });
         };
 
