@@ -189,6 +189,7 @@ ul.rating {
   border-radius: 4px;
   text-align: center;
   padding: 10px 2px;
+  height: 120px !important;
 }
 
 .average-rating > p {
@@ -215,4 +216,23 @@ ul.rating {
 
 .ann-datepicker .uib-datepicker-popup .btn-group .btn-danger{
     display: none;
+}
+
+.count-votes .row ul.rating li {
+  margin: -6px;
+  padding: -2px;
+  font-size: 6pt;
+}
+
+.count-votes .row .vote-no {
+  float: left;
+  font-weight: bold;
+  font-size: 8pt;
+  margin-top: 4px;
+  width: 16px !important;
+  margin-left: 10px !important;
+}
+
+.count-votes .row .star-rating {
+  float: left;
 }
