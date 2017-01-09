@@ -5,9 +5,9 @@
         .module('awt-cts-client')
         .controller('UserProfileController', UserProfileController);
 
-    UserProfileController.$inject = ['companyService', 'announcementService', 'ngToast', 'DatePickerService', '_', 'userService', '$stateParams', '$localStorage', '$state', '$log', 'LinkParser', 'pagingParams', 'paginationConstants', 'FileUploader', 'CONFIG'];
+    UserProfileController.$inject = ['companyService', 'announcementService', 'ngToast', 'DatePickerService', '_', 'userService', '$stateParams', '$localStorage', '$state', '$log', 'LinkParser', 'pagingParams', 'paginationConstants', 'FileUploader', 'Notification', 'CONFIG'];
 
-    function UserProfileController(companyService, announcementService, ngToast, DatePickerService, _, userService, $stateParams, $localStorage, $state, $log, LinkParser, pagingParams, paginationConstants, FileUploader, CONFIG) {
+    function UserProfileController(companyService, announcementService, ngToast, DatePickerService, _, userService, $stateParams, $localStorage, $state, $log, LinkParser, pagingParams, paginationConstants, FileUploader, Notification, CONFIG) {
         var userVm = this;
         /** User for whom Profile page is displayed */
         userVm.user = {};
@@ -234,10 +234,7 @@
             userVm.user.password = userVm.newPassword;
             userService.updateUser(userVm.user)
                 .then(function (response) {
-                    ngToast.create({
-                        className: 'success',
-                        content: '<strong>Uspešno ste promenili lozinku!</strong>'
-                    });
+                    Notification.success('<strong id="pass-changed">Uspešno ste promenili lozinku!</strong>');
                     userVm.passEditState = false;
                 })
                 .catch(function (error) {
