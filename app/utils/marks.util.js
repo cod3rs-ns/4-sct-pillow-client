@@ -5,15 +5,16 @@
         .module('awt-cts-client')
         .factory('MarksUtil', MarksUtil);
 
-    MarksUtil.$inject = ['$localStorage', '_'];
+    MarksUtil.$inject = ['$localStorage', '$log', '_'];
 
-    function MarksUtil($localStorage, _) {
+    function MarksUtil($localStorage, $log, _) {
 
         var util = {
             average: average,
             updateAverage: updateAverage,
             count: count,
-            getMyVote: getMyVote
+            getMyVote: getMyVote,
+            groupByCount: groupByCount
         };
 
         return util;
@@ -39,6 +40,12 @@
             });
 
             return vote || {};
+        }
+
+        function groupByCount(group, value, oldValue = 0) {
+            if (oldValue && !_.isUndefined(group[oldValue])) --group[oldValue];
+            group[value] = (_.isUndefined(group[value])) ? 1 : group[value] + 1;
+            return group;
         }
     }
 })();

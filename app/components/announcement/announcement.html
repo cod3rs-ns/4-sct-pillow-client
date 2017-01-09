@@ -1,3 +1,8 @@
+<span ng-init="val5 = 5;"></span>
+<span ng-init="val4 = 4;"></span>
+<span ng-init="val3 = 3;"></span>
+<span ng-init="val2 = 2;"></span>
+<span ng-init="val1 = 1;"></span>
 <div class="container" id="announcement" style="margin-top: 10px;">
     <div class="row">
         <div class="col-md-9">
@@ -7,10 +12,32 @@
                   <small class="pull-right">Datum objavljivanja: {{announcementVm.announcement.dateAnnounced | date:'dd. MM. yyyy.' }} godine</small></h4>
             </div>
             <div class="row">
-                <div class="col-xs-12 col-md-1" style="padding: 0px;" >
-                    <div class="average-rating">
+                <div class="col-xs-12 col-md-1" style="padding: 0px;" ng-mouseleave="announcementVm.hoverOut('announcement')" ng-mouseover="announcementVm.hoverIn('announcement')">
+                    <div class="average-rating" ng-show="announcementVm.averageRating.announcement">
                         <p>{{announcementVm.votes.announcement.average | number: 1}}</p>
                         <span class="glyphicon glyphicon-star" aria-hidden="true"></span>
+                    </div>
+                    <div class="average-rating count-votes" ng-show="!announcementVm.averageRating.announcement">
+                        <div class="row">
+                            <div class="vote-no">{{announcementVm.votesAnnouncementGrouped[5] || 0}}</div>
+                            <div star-rating class="star-rating" ng-model="val5" readonly="true" max="5"></div>
+                        </div>
+                        <div class="row">
+                            <div class="vote-no">{{announcementVm.votesAnnouncementGrouped[4] || 0}}</div>
+                            <div star-rating class="star-rating" ng-model="val4" readonly="true" max="5"></div>
+                        </div>
+                        <div class="row">
+                            <div class="vote-no">{{announcementVm.votesAnnouncementGrouped[3] || 0}}</div>
+                            <div star-rating class="star-rating" ng-model="val3" readonly="true" max="5"></div>
+                        </div>
+                        <div class="row">
+                            <div class="vote-no">{{announcementVm.votesAnnouncementGrouped[2] || 0}}</div>
+                            <div star-rating class="star-rating" ng-model="val2" readonly="true" max="5"></div>
+                        </div>
+                        <div class="row">
+                            <div class="vote-no">{{announcementVm.votesAnnouncementGrouped[1] || 0}}</div>
+                            <div star-rating class="star-rating" ng-model="val1" readonly="true" max="5"></div>
+                        </div>
                     </div>
                 </div>
                 <div class="col-xs-12 col-md-11">
@@ -87,9 +114,33 @@
                 <span ng-if="announcementVm.announcement.author.companyVerified" class="label label-success">Verifikovan</span>
                 <span ng-if="!announcementVm.announcement.author.companyVerified" class="label label-warning">Nije verifikovan</span>
 
-                <div class="average-rating">
-                    <p>{{announcementVm.votes.announcer.average | number: 1}}</p>
-                    <span class="glyphicon glyphicon-star" aria-hidden="true"></span>
+                <div style="text-align: center;" ng-mouseleave="announcementVm.hoverOut('announcer')" ng-mouseover="announcementVm.hoverIn('announcer')">
+                    <div class="average-rating" ng-show="announcementVm.averageRating.announcer">
+                        <p>{{announcementVm.votes.announcer.average | number: 1}}</p>
+                        <span class="glyphicon glyphicon-star" aria-hidden="true"></span>
+                    </div>
+                    <div class="average-rating count-votes" style="margin-left: 35%;" ng-show="!announcementVm.averageRating.announcer">
+                        <div class="row">
+                            <div class="vote-no">{{announcementVm.votesAnnouncerGrouped[5] || 0}}</div>
+                            <div star-rating class="star-rating" ng-model="val5" readonly="true" max="5"></div>
+                        </div>
+                        <div class="row">
+                            <div class="vote-no">{{announcementVm.votesAnnouncerGrouped[4] || 0}}</div>
+                            <div star-rating class="star-rating" ng-model="val4" readonly="true" max="5"></div>
+                        </div>
+                        <div class="row">
+                            <div class="vote-no">{{announcementVm.votesAnnouncerGrouped[3] || 0}}</div>
+                            <div star-rating class="star-rating" ng-model="val3" readonly="true" max="5"></div>
+                        </div>
+                        <div class="row">
+                            <div class="vote-no">{{announcementVm.votesAnnouncerGrouped[2] || 0}}</div>
+                            <div star-rating class="star-rating" ng-model="val2" readonly="true" max="5"></div>
+                        </div>
+                        <div class="row">
+                            <div class="vote-no">{{announcementVm.votesAnnouncerGrouped[1] || 0}}</div>
+                            <div star-rating class="star-rating" ng-model="val1" readonly="true" max="5"></div>
+                        </div>
+                    </div>
                 </div>
                 <span ng-if="announcementVm.isAnnouncerMarkEnabled">
                     Vaša ocjena:

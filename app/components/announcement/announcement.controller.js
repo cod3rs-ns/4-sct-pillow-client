@@ -35,6 +35,10 @@
                 'count': 0
             }
         };
+        announcementVm.averageRating = {
+            'announcement': true,
+            'announcer': true
+        }
 
         announcementVm.$storage = $localStorage.$default({
             role: 'guest'
@@ -50,6 +54,8 @@
         announcementVm.checkIfUserAlreadyReportAnnouncement = checkIfUserAlreadyReportAnnouncement;
         announcementVm.cancel = cancel;
         announcementVm.verifyAnnouncement = verifyAnnouncement;
+        announcementVm.hoverIn = hoverIn;
+        announcementVm.hoverOut = hoverOut;
 
         activate();
 
@@ -91,6 +97,10 @@
                             announcementVm.votes.announcement.average = MarksUtil.average(marks);
                             announcementVm.votes.announcement.count = MarksUtil.count(marks);
 
+                            announcementVm.votesAnnouncementGrouped = _.countBy(marks, function(mark) {
+                              return mark.value;
+                            }) || {};
+
                             var myVote = MarksUtil.getMyVote(marks);
 
                             announcementVm.vote.announcement = myVote;
@@ -109,6 +119,10 @@
 
                             announcementVm.votes.announcer.average = MarksUtil.average(marks);
                             announcementVm.votes.announcer.count = MarksUtil.count(marks);
+
+                            announcementVm.votesAnnouncerGrouped = _.countBy(marks, function(mark) {
+                              return mark.value;
+                            }) || {};
 
                             var myVote = MarksUtil.getMyVote(marks);
 
@@ -218,9 +232,13 @@
                     .then(function (response) {
                         announcementVm.vote.announcement = response.data;
                         var votes = announcementVm.votes.announcement;
+                        var value = response.data.value;
 
                         announcementVm.votes.announcement.average =
-                            MarksUtil.updateAverage(response.data.value, votes.count++, votes.average);
+                            MarksUtil.updateAverage(value, votes.count++, votes.average);
+
+                        announcementVm.votesAnnouncementGrouped =
+                            MarksUtil.groupByCount(announcementVm.votesAnnouncementGrouped, value);
                     })
                     .catch(function (error) {
                         $log.error(error);
@@ -235,9 +253,13 @@
                     .then(function (response) {
                         announcementVm.vote.announcement = response.data;
                         var votes = announcementVm.votes.announcement;
+                        var value = response.data.value;
 
                         announcementVm.votes.announcement.average =
-                            MarksUtil.updateAverage(response.data.value, votes.count, votes.average, oldVal);
+                            MarksUtil.updateAverage(value, votes.count, votes.average, oldVal);
+
+                        announcementVm.votesAnnouncementGrouped =
+                            MarksUtil.groupByCount(announcementVm.votesAnnouncementGrouped, value, oldVal);
                     })
                     .catch(function (error) {
                         $log.error(error);
@@ -256,9 +278,13 @@
                     .then(function (response) {
                         announcementVm.vote.announcer = response.data;
                         var votes = announcementVm.votes.announcer;
+                        var value = response.data.value;
 
                         announcementVm.votes.announcer.average =
-                            MarksUtil.updateAverage(response.data.value, votes.count++, votes.average);
+                            MarksUtil.updateAverage(value, votes.count++, votes.average);
+
+                        announcementVm.votesAnnouncerGrouped =
+                            MarksUtil.groupByCount(announcementVm.votesAnnouncerGrouped, value);
                     })
                     .catch(function (error) {
                         $log.error(error);
@@ -273,9 +299,13 @@
                     .then(function (response) {
                         announcementVm.vote.announcer = response.data;
                         var votes = announcementVm.votes.announcer;
+                        var value = response.data.value;
 
                         announcementVm.votes.announcer.average =
-                            MarksUtil.updateAverage(response.data.value, votes.count, votes.average, oldVal);
+                            MarksUtil.updateAverage(value, votes.count, votes.average, oldVal);
+
+                        announcementVm.votesAnnouncerGrouped =
+                            MarksUtil.groupByCount(announcementVm.votesAnnouncerGrouped, value, oldVal);
                     })
                     .catch(function (error) {
                         $log.error(error);
@@ -345,6 +375,14 @@
                         content: '<p><strong>GREŠKA! </strong>' + error + '</p>'
                     });
                 });
+        };
+
+        function hoverIn(key) {
+            announcementVm.averageRating[key] = false;
+        };
+
+        function hoverOut(key) {
+            announcementVm.averageRating[key] = true;
         };
     }
 })();
