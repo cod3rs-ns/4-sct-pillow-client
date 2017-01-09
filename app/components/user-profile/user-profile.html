@@ -10,8 +10,9 @@
                         <div class="col-sm-6 col-md-4">
                             <!-- button for profile image change -->
                             <label ng-if="userVm.uploader">
-                                <input  type="file" style="display: none;" accept="image/png, image/jpeg, image/gif" nv-file-select uploader="userVm.uploader"/>
+                                <input id="input-file-path" type="file" style="display: none;" accept="image/png, image/jpeg, image/gif" nv-file-select uploader="userVm.uploader"/>
                                 <span
+                                    id="change-image"
                                     class="glyphicon glyphicon-camera pull-right" 
                                     style="position:absolute; cursor: pointer;"
                                     uib-tooltip="Promeni fotografiju" tooltip-placement="left">
@@ -20,7 +21,7 @@
                             <img ng-src={{userVm.user.imagePath}} alt="{{userVm.user.username + ' profile photo'}}" class="img-circle img-responsive">
                         </div>
                         <div class="col-sm-6 col-md-8">
-                            <h4>{{userVm.user.firstName + ' ' + userVm.user.lastName}}</h4>
+                            <h4 id="user-name">{{userVm.user.firstName + ' ' + userVm.user.lastName}}</h4>
                             <span class="label label-warning" ng-show="userVm.user.type === 'verifier'">
                                 <cite title="{{userVm.user.type}}"><i class="glyphicon glyphicon-asterisk"></i> verifikator</cite>
                             </span>
@@ -31,13 +32,13 @@
                                 <cite title="{{userVm.user.type}}"><i class="glyphicon glyphicon-asterisk"></i> administrator</cite>
                             </span>
                             <p>
-                                <i class="glyphicon glyphicon-user" uib-tooltip="Korisničko ime" tooltip-placement="left"></i> &nbsp;<strong>{{userVm.user.username}}</strong>
+                                <i class="glyphicon glyphicon-user" uib-tooltip="Korisničko ime" tooltip-placement="left" id="user-username"></i> &nbsp;<strong>{{userVm.user.username}}</strong>
                                 <br />
-                                <i class="glyphicon glyphicon-envelope" uib-tooltip="Email" tooltip-placement="left"></i> &nbsp;{{userVm.user.email}}
+                                <i class="glyphicon glyphicon-envelope" uib-tooltip="Email" tooltip-placement="left" id="user-email"></i> &nbsp;{{userVm.user.email}}
                                 <br />
-                                <i class="glyphicon glyphicon-phone" uib-tooltip="Telefon" tooltip-placement="left"></i> &nbsp;{{userVm.user.phoneNumber}}
+                                <i class="glyphicon glyphicon-phone" uib-tooltip="Telefon" tooltip-placement="left"></i> <span id="user-phone"> &nbsp;{{userVm.user.phoneNumber}} </span>
                                 <br />
-                                <i ng-show="userVm.user.companyVerified === 'accepted'"class="glyphicon glyphicon-home" uib-tooltip="Kompanija" tooltip-placement="left"></i> <a ng-show="userVm.user.companyVerified === 'accepted'" ui-sref="company.members({companyId: userVm.user.company.id})">&nbsp;{{userVm.user.company.name}}</a>
+                                <i ng-show="userVm.user.companyVerified === 'accepted'"class="glyphicon glyphicon-home" uib-tooltip="Kompanija" tooltip-placement="left"></i> <a id="user-company" ng-show="userVm.user.companyVerified === 'accepted'" ui-sref="company.members({companyId: userVm.user.company.id})">&nbsp;{{userVm.user.company.name}}</a>
                             </p>
                             <!-- info edit switch button -->
                             <span 
@@ -45,7 +46,8 @@
                                 style="font-size: 16pt; cursor: pointer;"
                                 ng-click="userVm.initEditInfoState();"
                                 ng-show="userVm.loggedin"
-                                uib-tooltip="Promeni informacije" tooltip-placement="top">
+                                uib-tooltip="Promeni informacije" tooltip-placement="top"
+                                id="edit-profile">
                             </span>
                             <span class="pull-right">&nbsp;</span>
                             <!-- password edit switch button -->
@@ -54,7 +56,8 @@
                                 style="font-size: 16pt; cursor: pointer;"
                                 ng-click="userVm.initEditPasswordState();"
                                 ng-show="userVm.loggedin"
-                                uib-tooltip="Promeni šifru" tooltip-placement="top">
+                                uib-tooltip="Promeni šifru" tooltip-placement="top"
+                                id="change-pass">
                             </span>
                         </div>
                     </div>
@@ -80,7 +83,7 @@
                         <div class="input-group">
                             <span class="input-group-addon"> <i class="glyphicon glyphicon-lock"></i></span>
                             <input type="password" ng-model="userVm.passwordRetyped" name="passwordRetyped"
-                                placeholder="Ponovite šifru..." class="form-control" id="sign-up-re-password" required>
+                                placeholder="Ponovite šifru..." class="form-control" id="edit-re-password" required>
                             <span ng-show="(passwordForm.passwordRetyped.$invalid || userVm.passwordRetyped != userVm.newPassword)  && passwordForm.passwordRetyped.$dirty" class="glyphicon glyphicon-remove form-control-feedback"></span>
                         </div>
                         <p ng-show="(passwordForm.passwordRetyped.$invalid || userVm.passwordRetyped != userVm.newPassword) && passwordForm.passwordRetyped.$dirty" class="help-block" style="color: red; font-size: 10pt; margin:0px;">Šifra se ne poklapa.</p>
@@ -98,7 +101,7 @@
                 </form>
                 
                 <!-- form for changing personal info without password -->
-                <form role="form" class="registration-form" name="editForm" novalidate ng-show="userVm.infoEditState">
+                <form role="form" id="form-edit-personal-data" class="registration-form" name="editForm" novalidate ng-show="userVm.infoEditState">
                     <p style="text-align: center;"> Unesite nove podatke </p>
                     <!-- first name field -->
                     <div class="form-group" ng-class="{ 'has-error' : editForm.firstName.$invalid && editForm.firstName.$dirty }">
@@ -245,6 +248,7 @@
                                             <div class="input-group">
                                                 <span class="input-group-addon"> Produži do: </span>
                                                 <input  type="text" class="form-control"
+                                                        id="extending-date"
                                                         ng-model="announcement.expirationDate"
                                                         uib-datepicker-popup="{{userVm.pickerConfigurations[$index].format}}"
                                                         is-open="userVm.pickerConfigurations[$index].popup.opened" 
@@ -261,6 +265,7 @@
                                                         <i class="glyphicon glyphicon-calendar"></i>
                                                     </button>
                                                     <button type="button" class="btn btn-success" 
+                                                            id="extend-expiration-date-btn"
                                                             ng-click="userVm.extendExpirationDate(announcement.id, announcement.expirationDate);"
                                                             uib-tooltip="Produži rok" tooltip-placement="top">
                                                         <i class="glyphicon glyphicon-chevron-right"></i>
@@ -289,7 +294,7 @@
 
         <!-- Users membership requests logic -->
         <uib-tab index="1" ng-show="userVm.loggedin && userVm.user.company != null">
-            <uib-tab-heading>
+            <uib-tab-heading id="company-membership-requests">
                 Zahtevi &nbsp;<span class="badge alert-info"> {{userVm.usersRequests.length}}</span>
             </uib-tab-heading>
             <hr/>
@@ -307,10 +312,12 @@
                                 &nbsp;{{user.email}}
                             </em>
                         </small>
-                        <span   class="glyphicon glyphicon-ok pull-right"
+                        <span   id="accept-request"
+                                class="glyphicon glyphicon-ok pull-right"
                                 style="color:seagreen;cursor:pointer;"
                                 ng-click="userVm.acceptRequest(user.id);"></span>
-                        <span   class="glyphicon glyphicon-remove pull-right" 
+                        <span   id="deny-request"
+                                class="glyphicon glyphicon-remove pull-right" 
                                 style="color:darkred;cursor:pointer;"
                                 ng-click="userVm.rejectRequest(user.id);"></span>
                     </p>
