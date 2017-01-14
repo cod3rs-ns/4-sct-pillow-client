@@ -32,9 +32,9 @@
       </ul>
       <ul class="nav navbar-nav navbar-right" ng-if="!(headerVm.$storage.role === 'guest')">
         <li class="dropdown">
-          <a ui-sref="companies" class="dropdown-toggle" data-toggle="dropdown">Ulogovan kao <b>{{headerVm.$storage.user}}</b> ({{headerVm.$storage.role}})<b class="caret"></b></a>
+          <a id="user-menu" ui-sref="companies" class="dropdown-toggle" data-toggle="dropdown">Ulogovan kao <b>{{headerVm.$storage.user}}</b> ({{headerVm.$storage.role}})<b class="caret"></b></a>
           <ul class="dropdown-menu">
-            <li><a ui-sref="profile({username:headerVm.$storage.user})">Pogledaj profil</a></li>
+            <li><a id="profile-link" ui-sref="profile({username:headerVm.$storage.user})">Pogledaj profil</a></li>
             <li><a id="logout-link" ng-click="headerVm.logout()">Odjavi se</a></li>
           </ul>
         </li>
