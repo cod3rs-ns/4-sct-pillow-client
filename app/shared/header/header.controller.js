@@ -10,7 +10,7 @@
     function HeaderController($localStorage, $location) {
         var headerVm = this;
 
-        headerVm.projectName = "AWT CTS project";
+        headerVm.projectName = "Pillow.ba";
         headerVm.$storage = $localStorage.$default({
           role: 'guest'
         });

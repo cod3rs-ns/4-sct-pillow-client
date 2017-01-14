@@ -27,11 +27,13 @@
         homeVm.find = find;
         homeVm.initMap = initMap;
         homeVm.showMapResult = showMapResult;
-        homeVm.redirect = redirect;
 
         activate();
 
         function activate () {
+
+            homeVm.paginationView = true;
+
             if (_.isNull(pagingParams.search)) {
                 homeVm.getAllAnnouncements();
             }
@@ -173,6 +175,7 @@
             homeVm.currentSearch = searchTerm;
             pagingParams.page = 1;
             pagingParams.search = searchTerm;
+            homeVm.paginationView = true;
 
             homeVm.searchAnnouncements(searchTerm);
         }
@@ -190,6 +193,8 @@
                     homeVm.queryCount = homeVm.totalItems;
 
                     homeVm.page = pagingParams.page;
+
+                    homeVm.transition();
                 })
                 .catch(function (error) {
                     $log.error(error);
@@ -232,6 +237,7 @@
 
         function showMapResult() {
             homeVm.announcements = homeVm.mapAnnouncements;
+            homeVm.paginationView = false;
         }
 
         function formatContent(announcement) {
@@ -246,11 +252,6 @@
                 announcement.description +
               '</div>' +
             '</div>';
-        }
-
-        function redirect(id) {
-            $log.log(':)');
-            $location.path('/announcement/' + id);
         }
 
         function handleLocationError(browserHasGeolocation, tooltip, pos) {
