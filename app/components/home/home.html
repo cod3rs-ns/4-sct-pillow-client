@@ -93,7 +93,7 @@
                               <input type="text" ng-model="homeVm.search.streetNumber" placeholder="Broj..." class="form-control">
                           </div>
                       </div>
-                      <button class="btn btn-primary" data-toggle="modal" ng-click="homeVm.initMap();" data-target="#searchLocationMap">Odaberite na mapi</button>
+                      <button class="btn btn-primary" style="width: 100%;" data-toggle="modal" ng-click="homeVm.initMap();" data-target="#searchLocationMap">Odaberite na mapi</button>
                   </div>
               </uib-accordion>
 
@@ -173,7 +173,6 @@
                           <label><input type="radio" ng-model="homeVm.search.heatingType" name="heatingType" value="direct">Etažno</label>
                       </div>
                       <h5>Ostalo</h5>
-                      {{homeVm.search}}
                       <div class="checkbox">
                           <label>
                               <input type="checkbox" ng-model="homeVm.search.intercom">
@@ -254,7 +253,11 @@
                       </div>
                   </div>
               </div>
-              <ul style="text-align: center;" uib-pagination class="pagination-sm" total-items="homeVm.totalItems" items-per-page="homeVm.itemsPerPage" ng-model="homeVm.page" ng-change="homeVm.transition()"></ul>
+              <div class="row">
+                  <div class="col-sm-12" style="text-align: center;">
+                      <ul ng-show="homeVm.paginationView" uib-pagination class="pagination-sm" total-items="homeVm.totalItems" items-per-page="homeVm.itemsPerPage" ng-model="homeVm.page" ng-change="homeVm.transition()"></ul>
+                  </div>
+              </div>
           </div>
       </div>
 </div>
