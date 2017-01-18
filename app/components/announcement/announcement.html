@@ -81,6 +81,59 @@
                 </div>
             </div>
             <hr/>
+            <div class="row">
+                <div>{{re}}</div>
+                <div class="col-md-2 col-sm-6">
+                    <span class="glyphicon glyphicon-modal-window"></span>
+                    Klima uređaj
+                    <p class="announcement-info">
+                      <span ng-show="announcementVm.announcement.realEstate.airConditioner == '1'" class="glyphicon glyphicon-ok" aria-hidden="true"></span>
+                      <span ng-hide="announcementVm.announcement.realEstate.airConditioner == '1'" class="glyphicon glyphicon-remove" aria-hidden="true"></span>
+                    </p>
+                </div>
+                <div class="col-md-2 col-sm-6">
+                    <span class="glyphicon glyphicon-blackboard"></span>
+                    Kablovska TV
+                    <p class="announcement-info">
+                      <span ng-show="announcementVm.announcement.realEstate.cabletv == '1'" class="glyphicon glyphicon-ok" aria-hidden="true"></span>
+                      <span ng-hide="announcementVm.announcement.realEstate.cabletv == '1'" class="glyphicon glyphicon-remove" aria-hidden="true"></span>
+                    </p>
+                </div>
+                <div class="col-md-2 col-sm-6">
+                    <span class="glyphicon glyphicon glyphicon-list-alt"></span>
+                    Interfon
+                    <p class="announcement-info">
+                      <span ng-show="announcementVm.announcement.realEstate.intercom == '1'" class="glyphicon glyphicon-ok" aria-hidden="true"></span>
+                      <span ng-hide="announcementVm.announcement.realEstate.intercom == '1'" class="glyphicon glyphicon-remove" aria-hidden="true"></span>
+                    </p>
+                </div>
+                <div class="col-md-2 col-sm-6">
+                    <span class="glyphicon glyphicon-signal"></span>
+                    Internet
+                    <p class="announcement-info">
+                      {{re.internet}}
+                      <span ng-show="announcementVm.announcement.realEstate.internet == '1'" class="glyphicon glyphicon-ok" aria-hidden="true"></span>
+                      <span ng-hide="announcementVm.announcement.realEstate.internet == '1'" class="glyphicon glyphicon-remove" aria-hidden="true"></span>
+                    </p>
+                </div>
+                <div class="col-md-2 col-sm-6">
+                    <span class="glyphicon glyphicon glyphicon-phone-alt"></span>
+                    Telefon
+                    <p class="announcement-info">
+                      <span ng-show="announcementVm.announcement.realEstate.phone == '1'" class="glyphicon glyphicon-ok" aria-hidden="true"></span>
+                      <span ng-hide="announcementVm.announcement.realEstate.phone == '1'" class="glyphicon glyphicon-remove" aria-hidden="true"></span>
+                    </p>
+                </div>
+                <div class="col-md-2 col-sm-6">
+                    <span class="glyphicon glyphicon-facetime-video"></span>
+                    Video nadzor
+                    <p class="announcement-info">
+                      <span ng-show="announcementVm.announcement.realEstate.videoSurveillance == '1'" class="glyphicon glyphicon-ok" aria-hidden="true"></span>
+                      <span ng-hide="announcementVm.announcement.realEstate.videoSurveillance == '1'" class="glyphicon glyphicon-remove" aria-hidden="true"></span>
+                    </p>
+                </div>
+            </div>
+            <hr/>
             <div>
               <uib-tabset type="pills">
                   <uib-tab heading="Galerija slika">

@@ -224,7 +224,7 @@
                           <img ng-src="{{announcement.images[0].imagePath}}" class="thumbnail"/>
                       </div>
                       <div class="col-sm-12 col-md-8">
-                          <h4><span class="label label-primary">{{announcement.type}}</span><small class="pull-right">{{announcement.dateAnnounced | date:'dd. MM. yyyy.' }} godine</small></h4>
+                          <h4><span class="label label-primary">{{homeVm.translateType(announcement.type)}}</span><small class="pull-right">{{announcement.dateAnnounced | date:'dd. MM. yyyy.' }} godine</small></h4>
 
                           <h3>{{announcement.name}}</h3>
 

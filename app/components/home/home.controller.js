@@ -5,9 +5,9 @@
         .module('awt-cts-client')
         .controller('HomeController', HomeController);
 
-    HomeController.$inject = ['$state', '$document', '$timeout', '$location', '$log', '_', 'announcementService', 'LinkParser', 'pagingParams', 'paginationConstants'];
+    HomeController.$inject = ['$state', '$document', '$timeout', '$location', '$log', '_', 'LanguageUtil', 'announcementService', 'LinkParser', 'pagingParams', 'paginationConstants'];
 
-    function HomeController($state, $document, $timeout, $location, $log, _, announcementService, LinkParser, pagingParams, paginationConstants) {
+    function HomeController($state, $document, $timeout, $location, $log, _, LanguageUtil, announcementService, LinkParser, pagingParams, paginationConstants) {
         var homeVm = this;
 
         homeVm.announcements = {};
@@ -27,6 +27,7 @@
         homeVm.find = find;
         homeVm.initMap = initMap;
         homeVm.showMapResult = showMapResult;
+        homeVm.translateType = translateType;
 
         activate();
 
@@ -259,6 +260,10 @@
 
             tooltip.setPosition(pos);
             tooltip.setContent(content);
-      }
+        }
+
+        function translateType(type) {
+            return LanguageUtil.translateAdvertisementType(type);
+        }
     }
 })();
