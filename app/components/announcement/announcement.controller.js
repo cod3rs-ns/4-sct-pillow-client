@@ -6,10 +6,10 @@
         .controller('AnnouncementController', AnnouncementController);
 
     AnnouncementController.$inject = ['$stateParams', '$timeout', '$log', '$uibModal', '$document', '$localStorage', 'ngToast', '_', 'CommentsUtil', 'MarksUtil',
-        'announcementService', 'commentService', 'markService', 'reportingService'];
+        'LanguageUtil', 'announcementService', 'commentService', 'markService', 'reportingService'];
 
     function AnnouncementController($stateParams, $timeout, $log, $uibModal, $document, $localStorage, ngToast, _, CommentsUtil, MarksUtil,
-        announcementService, commentService, markService, reportingService) {
+        LanguageUtil, announcementService, commentService, markService, reportingService) {
         var announcementVm = this;
 
         announcementVm.announcement = {};
@@ -67,6 +67,17 @@
             announcementService.getAnnouncementById(announcementId)
                 .then(function (response) {
                     announcementVm.announcement = response.data;
+
+                    // Do translations
+                    var type = announcementVm.announcement.realEstate.heatingType;
+                    announcementVm.announcement.realEstate.heatingType = LanguageUtil.translateHeatingType(type);
+
+                    type = announcementVm.announcement.type;
+                    announcementVm.announcement.type = LanguageUtil.translateAdvertisementType(type);
+
+                    type = announcementVm.announcement.realEstate.type;
+                    announcementVm.announcement.realEstate.type = LanguageUtil.translateRealEstateType(type);
+
                     announcementVm.address = response.data.realEstate.location;
 
                     announcementVm.isMyAdvertisement = $localStorage.user === announcementVm.announcement.author.username;
