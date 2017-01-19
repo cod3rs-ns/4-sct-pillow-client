@@ -150,7 +150,7 @@
               </uib-tabset>
             </div>
             <h4>Detaljan opis oglasa</h4>
-            <p>{{announcementVm.announcement.description}}</p>
+            <div ng-bind-html="announcementVm.announcement.description"></div>
         </div>
         <div class="col-md-3" style="text-align: center;">
             <div class="advertiser-info" style="margin-bottom: 10px;"
