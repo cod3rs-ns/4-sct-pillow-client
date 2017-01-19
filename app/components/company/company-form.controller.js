@@ -26,13 +26,13 @@
             companyFormVm.state = $state.current.name;
 
             if (companyFormVm.state == 'addCompany') {
-                companyFormVm.company = {};
-                companyFormVm.fileName = "";
                 companyFormVm.imageSource = "http://www.genaw.com/linda/translucent_supplies/translucent_mask3.png";
                 companyFormVm.submitBtnName = 'Dodaj agenciju';
             }
             else {
+                companyFormVm.selectedUser =  { username : "default" };
                 companyFormVm.submitBtnName = 'Izmeni agenciju';
+                companyFormVm.fileName = " ";
 
                 companyService.getCompanyById($stateParams.companyId)
                     .then(function (response) {
