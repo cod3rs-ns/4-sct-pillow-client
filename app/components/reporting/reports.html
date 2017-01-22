@@ -30,19 +30,20 @@
                         <label><input type="radio" ng-model="reportVm.predicate" name="type" value="type" ng-click="reportVm.activate();">Tipu</label>
                     </div>
                     <div class="radio">
-                        <label><input type="radio" ng-model="reportVm.predicate" name="type" value="createdAt" ng-click="reportVm.activate();">Datumu</label>
+                        <label><input type="radio" id="date-sort" ng-model="reportVm.predicate" 
+                        name="type" value="createdAt" ng-click="reportVm.activate();">Datumu</label>
                     </div>
                 </div>
                 <div class="search-category">
                     <h4>Filtriranje</h4>
                     <div class="radio">
-                        <label><input type="radio" ng-model="reportVm.reportStatusFilter" name="type" value="pending" ng-click="reportVm.activate();">Na čekanju</label>
+                        <label><input type="radio" ng-model="reportVm.reportStatusFilter" name="type" value="pending" ng-click="reportVm.activate();" id="pending-search">Na čekanju</label>
                     </div>
                     <div class="radio">
-                        <label><input type="radio" ng-model="reportVm.reportStatusFilter" name="type" value="accepted" ng-click="reportVm.activate();">Prihvaćene</label>
+                        <label><input type="radio" ng-model="reportVm.reportStatusFilter" name="type" value="accepted" ng-click="reportVm.activate();" id="accepted-search">Prihvaćene</label>
                     </div>
                     <div class="radio">
-                        <label><input type="radio" ng-model="reportVm.reportStatusFilter" name="type" value="rejected" ng-click="reportVm.activate();">Odbijene</label>
+                        <label><input type="radio" ng-model="reportVm.reportStatusFilter" name="type" value="rejected" ng-click="reportVm.activate();" id="rejected-search">Odbijene</label>
                     </div>
                 </div>
                 <!-- section for _search by author email_ -->
@@ -51,7 +52,7 @@
                     <div class="form-group">
                         <div class="input-group">
                             <span class="input-group-addon" id="basic-addon1"> <i class="glyphicon glyphicon-user"></i></span>
-                            <input type="text" ng-model="reportVm.authorEmailSearch" placeholder="E-mail dopisnika" class="form-control">
+                            <input type="text" ng-model="reportVm.authorEmailSearch" id="reporter-query" placeholder="E-mail dopisnika" class="form-control">
                         </div>
                     </div>
                     <div class="row">
@@ -64,7 +65,7 @@
                     </div>
                 </div>
                 <!-- button has two actions assigned to it -->
-                <button class="btn btn-success pull-right" style="margin-top: 10px;"
+                <button class="btn btn-success pull-right" style="margin-top: 10px;" id="search-btn"
                         ng-click="reportVm.clear(); reportVm.getReportsByAuthorEmail();">
                         Pretraži
                 </button>
@@ -75,20 +76,22 @@
                 <div class="row" ng-show="reportVm.totalItems == 0">
                     <p><strong><em>Trenutno nema prijava.</em></strong></p>
                 </div>
-                <div class="container-fluid">
+                <div class="container-fluid" id="pendingReports">
                     <div class="col-xs-12 col-md-6" ng-repeat="report in reportVm.reports">
-                        <div class="panel panel-default" >
+                        <div class="panel panel-default" id="{{report.id}}">
                             <div class="panel-heading">
                                 <h3 class="panel-title">
                                     <strong>{{'Prijava br. ' + report.id}}</strong>
                                     <span   class="glyphicon glyphicon-ok pull-right"
+                                            id = "accept-report-{{report.id}}"
                                             style="color:seagreen;cursor:pointer;"
                                             ng-click="reportVm.acceptReport(report.id);"
                                             uib-tooltip="Prihvati sugestiju" tooltip-placement="top"
                                             ng-show="report.status == 'pending'">
                                     </span>
                                     <span class="pull-right">&nbsp;</span>
-                                    <span   class="glyphicon glyphicon-remove pull-right" 
+                                    <span   class="glyphicon glyphicon-remove pull-right"
+                                            id = "reject-report-{{report.id}}"
                                             style="color:darkred;cursor:pointer;"
                                             ng-click="reportVm.rejectReport(report.id);"
                                             uib-tooltip="Odbij sugestiju" tooltip-placement="top"
@@ -100,7 +103,7 @@
                                 <div>
                                     <p> 
                                         <span class="label label-default">autor</span>
-                                        <em>{{report.email}}</em>
+                                        <em id="reporter-email">{{report.email}}</em>
                                     </p>
                                     <p> 
                                         <span class="label label-default">oglas</span>
@@ -112,7 +115,7 @@
                             </div>
                             <div class="panel-footer container-fluid">
                                 <span class="label label-primary">{{report.type}}</span>
-                                <span class="pull-right"><em>2. januar 2017.</em></span>
+                                <span class="pull-right"><em id="report-date">{{report.createdAt | date: 'dd.MM.yyyy'}}</em></span>
                             </div>
                         </div>
                     </div>

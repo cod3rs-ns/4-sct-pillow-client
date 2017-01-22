@@ -22,7 +22,6 @@
               .then(function successCallback(response) {
                   return response;
               }, function errorCallback(response) {
-                  $log.warn(response.headers('X-SCT-Alert'));
                   throw response.headers('X-SCT-Alert');
               });
         };
@@ -32,7 +31,6 @@
               .then(function successCallback(response) {
                   return response;
               }, function errorCallback(response) {
-                  $log.warn(response.headers('X-SCT-Alert'));
                   throw response.headers('X-SCT-Alert');
               });
         };
@@ -42,7 +40,6 @@
               .then(function successCallback(response) {
                   return response;
               }, function errorCallback(response) {
-                  $log.warn(response.headers('X-SCT-Alert'));
                   throw response.headers('X-SCT-Alert');
               });
         };
@@ -52,7 +49,6 @@
               .then(function successCallback(response) {
                   return response;
               }, function errorCallback(repsponse) {
-                  $log.warn(response.headers('X-SCT-Alert'));
                   throw response.headers('X-SCT-Alert');
               });
         };
