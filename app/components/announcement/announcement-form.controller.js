@@ -5,9 +5,9 @@
         .module('awt-cts-client')
         .controller('AnnouncementFormController', AnnouncementFormController);
 
-    AnnouncementFormController.$inject = ['$http', '$scope', '$state', '$stateParams', '$localStorage', '$log', '_', 'ngToast', 'FileUploader', 'announcementService', 'reportingService', 'WizardHandler', 'DatePickerService', 'CONFIG'];
+    AnnouncementFormController.$inject = ['$http', '$scope', '$state', '$stateParams', '$localStorage', '$log', '_', 'FileUploader', 'Notification', 'announcementService', 'reportingService', 'WizardHandler', 'DatePickerService', 'CONFIG'];
 
-    function AnnouncementFormController($http, $scope, $state, $stateParams, $localStorage, $log, _, ngToast, FileUploader, announcementService, reportingService, WizardHandler, DatePickerService, CONFIG) {
+    function AnnouncementFormController($http, $scope, $state, $stateParams, $localStorage, $log, _, FileUploader, Notification,  announcementService, reportingService, WizardHandler, DatePickerService, CONFIG) {
 
         var announcementFormVm = this;
 
@@ -15,7 +15,7 @@
         announcementFormVm.similars = [];
         announcementFormVm.similarsDisabled = true;
 
-        // Datepicker configuration        
+        // Datepicker configuration
         announcementFormVm.datePickerConfig = datePickerConfig;
 
         announcementFormVm.submitAnnouncement = submitAnnouncement;
@@ -84,7 +84,7 @@
 
         function submitAnnouncement() {
             var notUploaded = announcementFormVm.uploader.getNotUploadedItems();
-            
+
             if (announcementFormVm.chosenSimilarRealEstateId != null){
                 announcementFormVm.announcement.realEstate.id = announcementFormVm.chosenSimilarRealEstateId;
             }
@@ -116,10 +116,7 @@
                 fn: function(item) {
                     var retVal = item.size <= 5242880; // 5 MB
                     if (!retVal) {
-                        ngToast.create({
-                            className: 'danger',
-                            content: '<p>Veličina fajla mora biti manja od <strong>5MB</strong>.</p>'
-                        });
+                      Notification.error({ message: '<p class="danger" id="wrong-file-size">Veličina fajla mora biti manja od <strong>5MB</strong>.</p>' });
                     }
                     return retVal;
                 }
@@ -130,10 +127,7 @@
                 fn: function(item) {
                     var retVal = announcementFormVm.uploader.queue.length == 4; // 4 images per announcement
                     if (retVal) {
-                        ngToast.create({
-                            className: 'danger',
-                            content: '<p>Ne možete postaviti više od <strong>4</strong> slike.</p>'
-                        });
+                        Notification.error({ message: '<p class="danger" id="wrong-number-image">Ne možete postaviti više od <strong>4</strong> slike.</p>' });
                     }
                     return !retVal;
                 }
@@ -260,23 +254,17 @@
         function canExitFirtsStep() {
             var formValid = !announcementFormVm.announcementForm.$invalid && !announcementFormVm.realEstateForm.$invalid;
             if (!formValid) {
-                ngToast.create({
-                    className: 'danger',
-                    content: '<p>Morate popuniti sva polja ispravno da biste prešli na sljedeći korak.</p>'
-                });
+                Notification.error({ message: '<p class="danger" id="required-fields">Morate popuniti sva polja ispravno da biste prešli na sljedeći korak.</p>' });
                 return false;
             } else {
                 var address = announcementFormVm.announcement.realEstate.location.city + ' ' + announcementFormVm.announcement.realEstate.location.street + ' ' +
-                    + announcementFormVm.announcement.realEstate.location.streetNumber + ' ' + announcementFormVm.announcement.realEstate.location.country;
+                    announcementFormVm.announcement.realEstate.location.country;
 
                 return findLocation(address)
                     .then(function(response) {
                         return response;
                     }, function(response) {
-                        ngToast.create({
-                            className: 'danger',
-                            content: '<p>Adresa koju ste unijeli je nevalidna.</p>'
-                        });
+                        Notification.error({ message: '<p class="danger" id="wrong-address">Adresa koju ste unijeli je nevalidna.</p>' });
                         return response;
                     });
             }
