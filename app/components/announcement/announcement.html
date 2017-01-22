@@ -167,7 +167,7 @@
                 <span ng-if="announcementVm.announcement.author.companyVerified" class="label label-success">Verifikovan</span>
                 <span ng-if="!announcementVm.announcement.author.companyVerified" class="label label-warning">Nije verifikovan</span>
 
-                <div style="text-align: center;" id="list-rate-ann" ng-mouseleave="announcementVm.hoverOut('announcer')" ng-mouseover="announcementVm.hoverIn('announcer')">
+                <div style="text-align: center;" id="list-rate-announcer" ng-mouseleave="announcementVm.hoverOut('announcer')" ng-mouseover="announcementVm.hoverIn('announcer')">
                     <div class="average-rating" ng-show="announcementVm.averageRating.announcer">
                         <p>{{announcementVm.votes.announcer.average | number: 1}}</p>
                         <span class="glyphicon glyphicon-star" aria-hidden="true"></span>
