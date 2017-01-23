@@ -6,10 +6,10 @@
         .controller('AnnouncementController', AnnouncementController);
 
     AnnouncementController.$inject = ['$stateParams', '$timeout', '$log', '$uibModal', '$document', '$localStorage', 'ngToast', '_', 'CommentsUtil', 'MarksUtil',
-        'LanguageUtil', 'announcementService', 'commentService', 'markService', 'reportingService'];
+        'LanguageUtil', 'announcementService', 'commentService', 'markService', 'reportingService', 'Notification'];
 
     function AnnouncementController($stateParams, $timeout, $log, $uibModal, $document, $localStorage, ngToast, _, CommentsUtil, MarksUtil,
-        LanguageUtil, announcementService, commentService, markService, reportingService) {
+        LanguageUtil, announcementService, commentService, markService, reportingService, Notification) {
         var announcementVm = this;
 
         announcementVm.announcement = {};
@@ -344,10 +344,7 @@
                 report.createdAt = _.now();
                 reportingService.createReport(report)
                     .then(function (response) {
-                        ngToast.create({
-                            className: 'success',
-                            content: '<strong>Oglas je uspješno prijavljen.</strong>'
-                        });
+                        Notification.success({ message: '<p id="success-reported">Oglas je uspješno prijavljen.</p>' });
                         if (!_.isUndefined($localStorage.user))
                             announcementVm.alreadyReported = true;
                         $log.info('Report is successfully created' + response.data);

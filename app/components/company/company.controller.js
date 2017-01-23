@@ -86,19 +86,21 @@
         }
 
         function findUser() {
-            userService.getUser($localStorage.user)
-                .then(function (response) {
-                    companyVm.loggedUser = response.data;
-                    if (companyVm.loggedUser.company == null) {
-                        companyVm.disableMembership = false;
-                    }
-                    else {
-                        companyVm.disableMembership = companyVm.loggedUser.company.id == companyVm.company.id;
-                    }
-                })
-                .catch(function (error) {
-                    $log.error(error);
-                });
+            if ($localStorage.user) {
+                userService.getUser($localStorage.user)
+                    .then(function (response) {
+                        companyVm.loggedUser = response.data;
+                        if (companyVm.loggedUser.company == null) {
+                            companyVm.disableMembership = false;
+                        }
+                        else {
+                            companyVm.disableMembership = companyVm.loggedUser.company.id == companyVm.company.id;
+                        }
+                    })
+                    .catch(function (error) {
+                        $log.error(error);
+                    });
+            }
         }
 
     }

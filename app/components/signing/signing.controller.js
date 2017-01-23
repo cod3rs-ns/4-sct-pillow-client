@@ -68,7 +68,7 @@
             signingService.register(user)
                 .then(function(response) {
                     connect(response.data.email);
-                    Notification.success('Uspješno ste se registrovali');
+                    Notification.success('<p id="success-registration">Uspješno ste se registrovali</p>');
                     signingVm.registrationUser = {};
                 })
                 .catch(function(error) {

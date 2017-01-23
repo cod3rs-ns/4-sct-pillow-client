@@ -134,10 +134,7 @@
             companyService.resolveMembershipRequest(userId, true)
                 .then(function (response) {
                     activate();
-                    ngToast.create({
-                        className: 'success',
-                        content: '<strong>Korisnikov zahtev prihvaćen.</strong>'
-                    });
+                    Notification.success('<strong id="mem-req-accept">Korisnikov zahtev prihvaćen.</strong>');
                 })
                 .catch(function (error) {
                     $log.error(error);
@@ -152,10 +149,7 @@
             companyService.resolveMembershipRequest(userId, false)
                 .then(function (response) {
                     activate();
-                    ngToast.create({
-                        className: 'danger',
-                        content: '<strong>Korisnikov zahtev odbijen.</strong>'
-                    });
+                    Notification.success('<strong id="mem-req-reject">Korisnikov zahtev odbijen.</strong>');
                 })
                 .catch(function (error) {
                     $log.error(error);
@@ -248,10 +242,7 @@
             userVm.user.phoneNumber = userVm.editUser.phoneNumber;
             userService.updateUser(userVm.user)
                 .then(function (response) {
-                    ngToast.create({
-                        className: 'success',
-                        content: '<strong>Uspešno ste ažurirali informacije!</strong>'
-                    });
+                    Notification.success('<strong id="success-updated-inf">Uspešno ste ažurirali informacije.</strong>');
                     userVm.infoEditState = false;
                 })
                 .catch(function (error) {
@@ -349,10 +340,7 @@
             userVm.user.imagePath = response;
             userService.updateUser(userVm.user)
                 .then(function (response) {
-                    ngToast.create({
-                        className: 'success',
-                        content: '<strong>Uspešno ste promenili profilnu sliku!</strong>'
-                    });
+                    Notification.success('<strong id="img-success">Uspešno ste promenili profilnu sliku!</strong>');
                 })
                 .catch(function (error) {
                     ngToast.create({
