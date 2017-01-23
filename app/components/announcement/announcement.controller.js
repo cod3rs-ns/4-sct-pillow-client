@@ -372,10 +372,7 @@
             announcementService.verifyAnnouncement($stateParams.announcementId)
                 .then(function (response) {
                     announcementVm.getAnnouncement($stateParams.announcementId);
-                    ngToast.create({
-                        className: 'success',
-                        content: '<strong>Oglas je uspješno verifikovan.</strong>'
-                    });
+                    Notification.success('<p id="success-verify"><strong>Oglas je uspješno verifikovan.</strong></p>');
                 })
                 .catch(function (error) {
                     ngToast.create({
