@@ -16,7 +16,6 @@
         <li ng-if="headerVm.$storage.role != 'admin'"><a ui-sref="companies">Agencije</a></li>
         <li ng-if="headerVm.$storage.role === 'admin'"><a ui-sref="announcements">Svi oglasi</a></li>
         <li ng-if="headerVm.$storage.role === 'advertiser'"><a id="add-announcement" ui-sref="addAnnouncement">Dodaj oglas</a></li>
-        <li ng-if="headerVm.$storage.role === 'advertiser'"><a ui-sref="announcement">Moji oglasi</a></li>
         <li ng-if="headerVm.$storage.role === 'admin' || headerVm.$storage.role === 'verifier'"><a ui-sref="reports">Prijave</a></li>
         <li class="dropdown" ng-if="!(headerVm.$storage.role === 'guest')">
           <a ui-sref="companies" class="dropdown-toggle" data-toggle="dropdown" ng-if="headerVm.$storage.role === 'admin'">Agencije<b class="caret" ng-if="headerVm.$storage.role === 'admin'"></b></a>

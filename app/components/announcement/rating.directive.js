@@ -5,7 +5,7 @@ angular
     function starRating() {
         return {
             restrict : 'A',
-                template : '<ul class="rating"><li ng-repeat="star in stars" ng-class="star" ng-click="toggle($index)"><span class="glyphicon glyphicon-star" aria-hidden="true"></span></li></ul>',
+            template : '<ul class="rating"><li ng-repeat="star in stars" ng-class="star" ng-click="toggle($index)"><span class="glyphicon glyphicon-star" aria-hidden="true"></span></li></ul>',
             scope : {
                 ratingValue : '=ngModel',
                 max : '=',

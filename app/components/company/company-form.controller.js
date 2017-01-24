@@ -5,9 +5,9 @@
         .module('awt-cts-client')
         .controller('CompanyFormController', CompanyFormController);
 
-    CompanyFormController.$inject = ['$scope', '$state', '$stateParams', '$log', '$localStorage', '_', 'companyService', 'FileUploader', 'CONFIG'];
+    CompanyFormController.$inject = ['$scope', '$state', '$stateParams', '$log', '$localStorage', '$location', '_', 'companyService', 'FileUploader', 'CONFIG'];
 
-    function CompanyFormController($scope, $state, $stateParams, $log, $localStorage, _, companyService, FileUploader, CONFIG) {
+    function CompanyFormController($scope, $state, $stateParams, $log, $localStorage, $location, _, companyService, FileUploader, CONFIG) {
 
         var companyFormVm = this;
 
@@ -21,17 +21,21 @@
         activate();
 
         function activate() {
+            if ($localStorage.role !== 'admin') {
+                $location.path('/unauthorized');
+            }
+
             companyFormVm.btnName = "Pretraži"
             companyFormVm.clearHide = false;
             companyFormVm.state = $state.current.name;
 
-            if (companyFormVm.state == 'addCompany') {
-                companyFormVm.imageSource = "http://www.genaw.com/linda/translucent_supplies/translucent_mask3.png";
+            if (companyFormVm.state === 'addCompany') {
+                companyFormVm.imageSource = "assets/img/company_logo.png";
                 companyFormVm.submitBtnName = 'Dodaj agenciju';
             }
             else {
                 companyFormVm.selectedUser =  { username : "default" };
-                companyFormVm.submitBtnName = 'Izmeni agenciju';
+                companyFormVm.submitBtnName = 'Izmijeni agenciju';
                 companyFormVm.fileName = " ";
 
                 companyService.getCompanyById($stateParams.companyId)
@@ -73,7 +77,7 @@
         uploader.onSuccessItem = function (fileItem, response, status, headers) {
             companyFormVm.company.imagePath = response;
 
-            if (companyFormVm.state == 'addCompany') {
+            if (companyFormVm.state === 'addCompany') {
                 companyFormVm.company.users = [companyFormVm.selectedUser];
                 companyService.createCompany(companyFormVm.company)
                     .then(function (response) {
@@ -123,7 +127,7 @@
             companyFormVm.btnName = "Pretraži";
             companyFormVm.clearHide = false;
             companyFormVm.fileName = "";
-            companyFormVm.imageSource = "http://www.genaw.com/linda/translucent_supplies/translucent_mask3.png";
+            companyFormVm.imageSource = "assets/img/company_logo.png";
             uploader.queue = [];
         }
 
@@ -144,7 +148,7 @@
         };
 
         function submitForm() {
-            if (_.isEmpty(uploader.queue) && companyFormVm.state == 'updateCompany') {
+            if (_.isEmpty(uploader.queue) && companyFormVm.state === 'updateCompany') {
                 companyFormVm.update();
             } else {
                 uploader.uploadItem(uploader.queue[0]);

@@ -227,6 +227,7 @@
                           <h4><span class="label label-primary" id="ann-type-disp">{{homeVm.translateType(announcement.type)}}</span><small class="pull-right">{{announcement.dateAnnounced | date:'dd. MM. yyyy.' }} godine</small></h4>
 
                           <h3>{{announcement.name}}</h3>
+                          <h6><i class="glyphicon glyphicon-time" uib-tooltip="Vreme isteka" tooltip-placement="top"></i> &nbsp;<strong class="{{announcement.expirationClass}}">{{announcement.expiredMessage}}</strong></h6>
 
                           <div class="row">
                               <div class="col-xs-12 col-md-6">

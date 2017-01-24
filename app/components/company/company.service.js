@@ -142,7 +142,7 @@
         };
 
 
-        function updateCompany(company){
+        function updateCompany(company) {
             return $http.put(CONFIG.SERVICE_URL + '/companies', company)
                 .then(function successCallback(response) {
                     return response;
@@ -162,7 +162,7 @@
                 });
         };
 
-        function getUserPage(){
+        function getUserPage() {
             return pageStatuses.userPage;
         }
 

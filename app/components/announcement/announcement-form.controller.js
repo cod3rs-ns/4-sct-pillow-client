@@ -5,9 +5,9 @@
         .module('awt-cts-client')
         .controller('AnnouncementFormController', AnnouncementFormController);
 
-    AnnouncementFormController.$inject = ['$http', '$scope', '$state', '$stateParams', '$localStorage', '$log', '_', 'FileUploader', 'Notification', 'announcementService', 'reportingService', 'WizardHandler', 'DatePickerService', 'CONFIG'];
+    AnnouncementFormController.$inject = ['$state', '$stateParams', '$localStorage', '$location', '$log', '_', 'FileUploader', 'Notification', 'announcementService', 'reportingService', 'WizardHandler', 'DatePickerService', 'CONFIG'];
 
-    function AnnouncementFormController($http, $scope, $state, $stateParams, $localStorage, $log, _, FileUploader, Notification,  announcementService, reportingService, WizardHandler, DatePickerService, CONFIG) {
+    function AnnouncementFormController($state, $stateParams, $localStorage, $location, $log, _, FileUploader, Notification,  announcementService, reportingService, WizardHandler, DatePickerService, CONFIG) {
 
         var announcementFormVm = this;
 
@@ -29,6 +29,10 @@
         activate();
 
         function activate() {
+            if ($localStorage.role !== 'advertiser') {
+                $location.path('/unauthorized');
+            }
+
             announcementFormVm.state = $state.current.name;
 
             announcementFormVm.uploader = new FileUploader({
@@ -41,7 +45,7 @@
             setUploaderFilters();
             createUploaderCallbacks();
 
-            if (announcementFormVm.state == 'addAnnouncement') {
+            if (announcementFormVm.state === 'addAnnouncement') {
                 announcementFormVm.announcement = createInitialAnnouncement();
                 announcementFormVm.datePickerConfig();
                 announcementFormVm.uploaded = false;
@@ -52,27 +56,13 @@
                     .then(function(response) {
                         announcementFormVm.announcement = response.data;
                         _.forEach(response.data.images, function(image, index) {
-                            var url = image.imagePath;
-
-                            $http.get(url, { responseType: "blob" })
-                                .then(function successCallback(response) {
-                                    var mimetype = response.data.type;
-                                    var file = new File([response.data], "Slika" + (index + 1), { type: mimetype });
-                                    var dummy = new FileUploader.FileItem(announcementFormVm.uploader, {});
-
-                                    dummy._file = file;
-                                    dummy.progress = 100;
-                                    dummy.isUploaded = true;
-                                    dummy.isSuccess = true;
-                                    dummy.file = {
-                                        size: response.data.size,
-                                        name: 'Slika' + (index + 1),
-                                        realImg: image
-                                    };
-                                    announcementFormVm.uploader.queue.push(dummy);
-                                }, function errorCallback(data, status, headers, config) {
-                                    $log.info("Wrong image url.");
-                                });
+                            announcementService.dummyImageUpload(image, index, announcementFormVm.uploader)
+                              .then(function(response) {
+                                  $log.info('Dummy upload completed...');
+                              })
+                              .catch(function(error) {
+                                  $log.error(error);
+                              });
                         });
                         announcementFormVm.uploader.progress = 100;
                     })
@@ -85,11 +75,11 @@
         function submitAnnouncement() {
             var notUploaded = announcementFormVm.uploader.getNotUploadedItems();
 
-            if (announcementFormVm.chosenSimilarRealEstateId != null){
+            if (!_.isNull(announcementFormVm.chosenSimilarRealEstateId)) {
                 announcementFormVm.announcement.realEstate.id = announcementFormVm.chosenSimilarRealEstateId;
             }
 
-            if (announcementFormVm.state == "updateAnnouncement" && _.isEmpty(notUploaded)) {
+            if (announcementFormVm.state === "updateAnnouncement" && _.isEmpty(notUploaded)) {
                 updateAnnouncement(announcementFormVm.announcement);
             }
             else {
@@ -196,20 +186,17 @@
             // Callbacks for one image upload
             announcementFormVm.uploader.onSuccessItem = function(fileItem, response, status, headers) {
                 announcementFormVm.announcement.images.push({ id: null, imagePath: response });
-                $log.info('Item upload completed.', fileItem, response, status, headers);
             };
 
             announcementFormVm.uploader.onCompleteAll = function() {
                 announcementFormVm.uploaded = true;
 
-                if (announcementFormVm.state == 'addAnnouncement') {
+                if (announcementFormVm.state === 'addAnnouncement') {
                     addNewAnnouncement();
                 }
                 else {
                     updateAnnouncement();
                 }
-
-                $log.info('All uploads completed.');
             };
         }
 
@@ -223,7 +210,7 @@
                     announcementFormVm.chosenSimilarRealEstateId = null;
                     announcementFormVm.similars = response.data;
 
-                    if (announcementFormVm.state != 'addAnnouncement') {
+                    if (announcementFormVm.state !== 'addAnnouncement') {
                         _.remove(announcementFormVm.similars, function(realEstate) {
                             return realEstate.id == announcementFormVm.announcement.realEstate.id;
                         });

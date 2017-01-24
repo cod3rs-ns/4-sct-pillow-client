@@ -5,10 +5,10 @@
         .module('awt-cts-client')
         .controller('AnnouncementController', AnnouncementController);
 
-    AnnouncementController.$inject = ['$stateParams', '$timeout', '$log', '$uibModal', '$document', '$localStorage', 'ngToast', '_', 'CommentsUtil', 'MarksUtil',
+    AnnouncementController.$inject = ['$stateParams', '$timeout', '$log', '$uibModal', '$document', '$localStorage', '_', 'CommentsUtil', 'MarksUtil',
         'LanguageUtil', 'announcementService', 'commentService', 'markService', 'reportingService', 'Notification'];
 
-    function AnnouncementController($stateParams, $timeout, $log, $uibModal, $document, $localStorage, ngToast, _, CommentsUtil, MarksUtil,
+    function AnnouncementController($stateParams, $timeout, $log, $uibModal, $document, $localStorage, _, CommentsUtil, MarksUtil,
         LanguageUtil, announcementService, commentService, markService, reportingService, Notification) {
         var announcementVm = this;
 
@@ -375,10 +375,7 @@
                     Notification.success('<p id="success-verify"><strong>Oglas je uspješno verifikovan.</strong></p>');
                 })
                 .catch(function (error) {
-                    ngToast.create({
-                        className: 'danger',
-                        content: '<p><strong>GREŠKA! </strong>' + error + '</p>'
-                    });
+                    Notification.error('<p><strong>GREŠKA! </strong>' + error + '</p>');
                 });
         };
 
