@@ -5,9 +5,9 @@
         .module('awt-cts-client')
         .controller('VerificationTokenController', VerificationTokenController);
 
-    VerificationTokenController.$inject = ['$state', '$http', '$log', 'verificationTokenService'];
+    VerificationTokenController.$inject = ['$state', '$log', 'verificationTokenService'];
 
-    function VerificationTokenController($state, $http, $log, verificationTokenService) {
+    function VerificationTokenController($state, $log, verificationTokenService) {
         var verificationTokenVm = this;
 
         verificationTokenVm.username = "";

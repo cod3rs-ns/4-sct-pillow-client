@@ -5,9 +5,9 @@
         .module('awt-cts-client')
         .service('verificationTokenService', verificationTokenService);
 
-    verificationTokenService.$inject = ['$http', '$resource', '$log', 'CONFIG'];
+    verificationTokenService.$inject = ['$http', '$log', 'CONFIG'];
 
-    function verificationTokenService($http, $resource, $log, CONFIG) {
+    function verificationTokenService($http, $log, CONFIG) {
 
         var service = {
             resendToken: resendToken
@@ -21,7 +21,6 @@
                     return response;
                 }, function errorCallback(response) {
                     $log.error("Unable to resend verification token.");
-                    $log.warn(response.headers('X-SCT-Alert'));
                     throw response.headers('X-SCT-Alert');
                 });
         }
