@@ -5,9 +5,9 @@
         .module('awt-cts-client')
         .controller('HomeController', HomeController);
 
-    HomeController.$inject = ['$state', '$document', '$timeout', '$location', '$log', '_', 'LanguageUtil', 'announcementService', 'LinkParser', 'pagingParams', 'paginationConstants'];
+    HomeController.$inject = ['$state', '$timeout', '$location', '$log', '_', 'LanguageUtil', 'announcementService', 'LinkParser', 'pagingParams', 'paginationConstants'];
 
-    function HomeController($state, $document, $timeout, $location, $log, _, LanguageUtil, announcementService, LinkParser, pagingParams, paginationConstants) {
+    function HomeController($state, $timeout, $location, $log, _, LanguageUtil, announcementService, LinkParser, pagingParams, paginationConstants) {
         var homeVm = this;
 
         homeVm.announcements = {};
@@ -59,6 +59,9 @@
                     var headers = response.headers;
 
                     homeVm.announcements = response.data;
+                    _.forEach(homeVm.announcements, function(announcement) {
+                        formatAnnouncement(announcement);
+                    });
                     homeVm.totalItems = response.headers('X-Total-Count');
 
                     homeVm.links = LinkParser.parse(headers('Link'));
@@ -187,6 +190,9 @@
                     var headers = response.headers;
 
                     homeVm.announcements = response.data;
+                    _.forEach(homeVm.announcements, function(announcement) {
+                        formatAnnouncement(announcement);
+                    });
                     homeVm.totalItems = response.headers('X-Total-Count');
 
                     homeVm.links = LinkParser.parse(headers('Link'));
@@ -210,6 +216,9 @@
                     homeVm.mapAnnouncements = announcements;
 
                     _.forEach(response.data, function(announcement) {
+
+                        formatAnnouncement(announcement);
+
                         var location = announcement.realEstate.location;
                         var position = {
                           lat: location.latitude,
@@ -264,6 +273,21 @@
 
         function translateType(type) {
             return LanguageUtil.translateAdvertisementType(type);
+        }
+
+        function formatAnnouncement(announcement) {
+            var momentExpDate = moment(new Date(announcement.expirationDate));
+            announcement.expiredMessage = momentExpDate.fromNow();
+            if (momentExpDate.isAfter(moment())) {
+                announcement.expirationClass = 'color-success';
+                // check if expiration date is close (by 7 days)
+                if (moment(new Date(announcement.expirationDate)).subtract(7, 'days').isBefore(moment())) {
+                    announcement.expirationClass = 'color-warning';
+                };
+            }
+            else {
+                announcement.expirationClass = 'color-danger';
+            };
         }
     }
 })();

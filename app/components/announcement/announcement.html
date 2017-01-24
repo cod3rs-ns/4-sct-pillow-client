@@ -51,9 +51,9 @@
                     </h1>
                     <h6>{{announcementVm.address.city + ' (' + announcementVm.address.cityRegion + ')' + ', ' + announcementVm.address.country}}</h6>
 
-                    <span ng-if="announcementVm.isAnnouncementMarkEnabled">
+                    <span ng-if="!announcementVm.isMyAdvertisement && announcementVm.isAnnouncementMarkEnabled">
                         Vaša ocjena:
-                        <div id="announcement-rate-update" class="star-rating" style="margin-left: -6px" ng-model="announcementVm.rating.announcement" readonly="!announcementVm.isAnnouncementMarkEnabled" data-max="5" star-rating on-rating-select="announcementVm.voteAnnouncement(rating)"></div>
+                        <div id="announcement-rate-update" class="star-rating" style="margin-left: -6px" ng-model="announcementVm.rating.announcement" data-max="5" star-rating on-rating-select="announcementVm.voteAnnouncement(rating)"></div>
                     </span>
                 </div>
             </div>
@@ -137,9 +137,9 @@
             <div>
               <uib-tabset type="pills">
                   <uib-tab heading="Galerija slika">
-                    <div uib-carousel active="active" interval="5000" no-wrap="false" style="margin-top: 10px;">
+                    <div uib-carousel active="active" interval="5000" no-wrap="false" style="height:400px; margin-top: 10px;">
                       <div uib-slide ng-repeat="slide in announcementVm.images track by slide.id" index="slide.id">
-                        <img ng-src="{{slide.image}}" style="margin:auto; width:100%;">
+                        <img ng-src="{{slide.image}}" style="height:400px; margin:auto; width:100%;">
                       </div>
                     </div>
                   </uib-tab>
@@ -195,9 +195,9 @@
                         </div>
                     </div>
                 </div>
-                <span ng-if="announcementVm.isAnnouncerMarkEnabled">
+                <span ng-if="!announcementVm.isMyAdvertisement && announcementVm.isAnnouncerMarkEnabled">
                     Vaša ocjena:
-                    <div star-rating class="star-rating" id="announcer-rate-update" ng-model="announcementVm.rating.announcer" readonly="!announcementVm.isAnnouncerMarkEnabled" max="5" on-rating-select="announcementVm.voteAnnouncer(rating)"></div>
+                    <div star-rating class="star-rating" id="announcer-rate-update" ng-model="announcementVm.rating.announcer" max="5" on-rating-select="announcementVm.voteAnnouncer(rating)"></div>
                 </span>
 
                 <!-- Dodatne informacije -->
@@ -232,8 +232,7 @@
         </div>
     </div>
 
-    <h3 ng-show="announcementVm.comments.length == 0">Niko još nije ostavio komentar... Budite prvi... </h3>
-    <h2 ng-show="announcementVm.comments.length > 0">Komentari</h2>
+    <h3 ng-show="announcementVm.comments.length > 0">Komentari</h3>
 
     <div class="row" style="margin-top: 20px;" ng-repeat="comment in announcementVm.comments">
         <div class="media">
@@ -272,7 +271,7 @@
 
     <h2>Napišite Vaše mišljenje</h2>
     <textarea id="comment" class="form-control" rows="5" ng-model="announcementVm.comment"></textarea>
-    <button type="button" id="add-comment" class="btn btn-primary pull-right" 
+    <button type="button" id="add-comment" class="btn btn-primary pull-right"
         style="margin-top: 10px;" ng-click="announcementVm.addComment();">
         Ostavi komentar
     </button>

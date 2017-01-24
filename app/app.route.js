@@ -189,7 +189,6 @@ angular
                     // If you get Unauthorized on login page you should just write message
                     if ("/login" !== $location.path()) {
                         if (response.status === 401 || response.status === 403) {
-                            console.log(_.kebabCase(response.data.error));
                             $location.path('/' + _.kebabCase(response.data.error));
                         }
 

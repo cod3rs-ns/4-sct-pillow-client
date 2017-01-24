@@ -28,7 +28,7 @@
                   return "administrator";
             }
 
-            return "";
+            return "gost";
         };
 
         function translateAdvertisementType(type) {
@@ -41,7 +41,7 @@
                   return "Kupovina";
             }
 
-            return "";
+            return "Ostalo";
         };
 
         function translateRealEstateType(type) {
@@ -54,7 +54,7 @@
                   return "stan";
             }
 
-            return "";
+            return "ostalo";
         };
 
         function translateHeatingType(type) {
@@ -67,7 +67,7 @@
                   return "etažno";
             }
 
-            return "";
+            return "ostalo";
         };
     }
 })();

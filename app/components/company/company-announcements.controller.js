@@ -5,9 +5,9 @@
         .module('awt-cts-client')
         .controller('CompanyAnnouncementsController', CompanyAnnouncementsController);
 
-    CompanyAnnouncementsController.$inject = ['$state', '$stateParams', '$http', '$log', 'companyService', 'LinkParser', 'pagingParams', 'paginationConstants'];
+    CompanyAnnouncementsController.$inject = ['$state', '$stateParams', '$log', 'companyService', 'LinkParser', 'pagingParams', 'paginationConstants'];
 
-    function CompanyAnnouncementsController ($state, $stateParams, $http, $log, companyService, LinkParser, pagingParams, paginationConstants) {
+    function CompanyAnnouncementsController ($state, $stateParams, $log, companyService, LinkParser, pagingParams, paginationConstants) {
         var vm = this;
 
         vm.loadPage = loadPage;
