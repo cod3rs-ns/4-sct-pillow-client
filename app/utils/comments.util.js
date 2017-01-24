@@ -29,7 +29,7 @@
             else {
                 var author = {
                     'name': 'Gost na sajtu',
-                    'image': "http://megaicons.net/static/img/icons_sizes/8/178/512/user-role-guest-icon.png"
+                    'image': "assets/img/guest.png"
                 }
             }
 

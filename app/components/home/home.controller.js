@@ -45,7 +45,13 @@
                 _.forEach(_.split(homeVm.currentSearch, "&"), function(param) {
                     if (!_.isEmpty(param)) {
                         var splitted = _.split(param, "=");
-                        homeVm.search[splitted[0]] = splitted[1];
+
+                        var value = _.parseInt(splitted[1]);
+                        if (_.isNaN(value)) {
+                            value = splitted[1];
+                        }
+                        
+                        homeVm.search[splitted[0]] = value;
                     }
                 });
 
@@ -251,15 +257,11 @@
         }
 
         function formatContent(announcement) {
-            return '<div class="media">' +
-              '<div class="media-left">' +
-                '<a href="#">' +
-                  '<img class="media-object" src="' + 'http://avatarbox.net/avatars/img11/we_love_house_avatar_picture_68917.jpg' + '" alt="...">' +
-                '</a>' +
-              '</div>' +
+            return '<div class="media" style="width: 200px! important;">' +
               '<div class="media-body">' +
                 '<h4 class="media-heading">' + announcement.name + '</h4>' +
-                announcement.description +
+                '<p>' + announcement.description + '</p>' +
+                '<h6>' + announcement.price + ' RSD </h6>'
               '</div>' +
             '</div>';
         }

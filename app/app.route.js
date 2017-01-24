@@ -170,6 +170,14 @@ angular
                         templateUrl: "app/components/error-templates/403.html",
                     }
                 }
+            })
+            .state('pageNotFound', {
+                url: '/page-not-found',
+                views: {
+                    'content@': {
+                        templateUrl: "app/components/error-templates/404.html",
+                    }
+                }
             });
 
         $httpProvider.interceptors.push(['$q', '$location', '$localStorage', '_', function ($q, $location, $localStorage, _) {

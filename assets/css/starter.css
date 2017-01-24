@@ -21,15 +21,17 @@ body {
 
 .announcement-home-inside > .col-md-4 {
   margin-top: 16px;
+  margin-bottom: 16px;
 }
 
 .announcement-home-inside > .col-md-8 {
   margin-top: 16px;
+  margin-bottom: 16px;
 }
 
 .announcement-home-inside img {
   width: 256px;
-  height: 192px;
+  height: 208px;
 }
 
 .color-success {

@@ -5,9 +5,9 @@
         .module('awt-cts-client')
         .controller('SigningController', SigningController);
 
-    SigningController.$inject = ['$scope', '$http', '$window', '$location', '$localStorage', 'ngToast', '$log', '_', 'jwtHelper', 'signingService', 'Notification', 'CONFIG'];
+    SigningController.$inject = ['$scope', '$http', '$window', '$location', '$localStorage', '$log', '_', 'jwtHelper', 'signingService', 'Notification', 'CONFIG'];
 
-    function SigningController($scope, $http, $window, $location, $localStorage, ngToast, $log, _, jwtHelper, signingService, Notification, CONFIG) {
+    function SigningController($scope, $http, $window, $location, $localStorage, $log, _, jwtHelper, signingService, Notification, CONFIG) {
         var signingVm = this;
 
         // Variable binders
