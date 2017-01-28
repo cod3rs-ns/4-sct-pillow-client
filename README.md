@@ -11,7 +11,7 @@ Predmetni projekat iz predmeta Konstrukcija i testiranje softvera i Napredne veb
 
 ###
 
-Aktivna verzija **v1.5**
+Aktivna verzija **v1.6**
 
 ## Struktura projekta
 
