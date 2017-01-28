@@ -5,9 +5,9 @@
         .module('awt-cts-client')
         .controller('CompanyMembersController', CompanyMembersController);
 
-    CompanyMembersController.$inject = ['$state', '$stateParams', '$http', '$log', 'companyService', 'LinkParser', 'pagingParams', 'paginationConstants'];
+    CompanyMembersController.$inject = ['$state', '$stateParams', '$log', '_', 'companyService', 'LinkParser', 'LanguageUtil', 'pagingParams', 'paginationConstants'];
 
-    function CompanyMembersController ($state, $stateParams, $http, $log, companyService, LinkParser, pagingParams, paginationConstants) {
+    function CompanyMembersController ($state, $stateParams, $log, _, companyService, LinkParser, LanguageUtil, pagingParams, paginationConstants) {
         var vm = this;
 
         vm.loadPage = loadPage;
@@ -24,6 +24,9 @@
             companyService.getUsersByCompanyId($stateParams.companyId, pagingParams.page - 1, vm.itemsPerPage, sort())
                 .then(function (response) {
                     var data = response.data;
+                    _.forEach(data, function(user) {
+                        user.type = LanguageUtil.translateRole(user.type);
+                    });
                     var headers = response.headers;
 
                     vm.links = LinkParser.parse(headers('Link'));

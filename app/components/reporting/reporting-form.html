@@ -15,10 +15,11 @@
             </div>
             <span ng-show="reportForm.reporter.$error.emailValidator && reportForm.reporter.$dirty && !reportForm.reporter.$error.reporterEmailValidator"
                 class="help-block" style="color: black; font-size: 10pt; margin:0px;">Nepravilno formirana email adresa.</span>
-            <span ng-show="reportForm.reporter.$error.reporterEmailValidator" class="help-block" style="color: black; font-size: 10pt; margin:0px;">Već ste prijavili oglas sa navedene adrese</span>
+            <span ng-show="reportForm.reporter.$error.reporterEmailValidator" id="already-reported-msg" class="help-block" 
+                style="color: black; font-size: 10pt; margin:0px;">Već ste prijavili oglas sa navedene adrese</span>
         </div>
         <div ng-class="{'has-error': reportForm.content.$invalid && reportForm.content.$dirty}">
-            <textarea spellcheck="false" class="form-control" rows="3" name='content' ng-model="reportingFormVm.report.content" placeholder="Komentar" required></textarea>
+            <textarea spellcheck="false" id="report-content" class="form-control" rows="3" name='content' ng-model="reportingFormVm.report.content" placeholder="Komentar" required></textarea>
             <span ng-show="reportForm.content.$error.required && reportForm.content.$dirty" class="help-block" style="color: black; font-size: 10pt; margin:0px;">Obavezni ste da ostavite komentar</span>
         </div>
 
@@ -34,7 +35,7 @@
                 <label><input type="radio" ng-model="reportingFormVm.report.type" name="optradio" value="wrong-price"> Cijena koju je postavio je lažna</label>
             </div>
             <div class="radio">
-                <label><input type="radio" ng-model="reportingFormVm.report.type" name="optradio" value="wronf-information"> Informacije na oglasu su lažne (kvadratura, stanje objekta...)</label>
+                <label><input type="radio" ng-model="reportingFormVm.report.type" name="optradio" value="wrong-information"> Informacije na oglasu su lažne (kvadratura, stanje objekta...)</label>
             </div>
             <div class="radio">
                 <label><input type="radio" ng-model="reportingFormVm.report.type" name="optradio" value="already-sold"> Predmet oglašavanja je već prodat </label>
@@ -45,6 +46,7 @@
         </div>
     </div>
     <div class="modal-footer">
-        <button class="btn btn-danger" type="button" ng-disabled="(!reportingFormVm.emailInput && (reportForm.content.$invalid || !reportForm.content.$dirty)) || (reportingFormVm.emailInput && (!reportForm.reporter.$dirty || reportForm.$invalid))" ng-click="reportingFormVm.ok();">Prijavi</button>
+        <button class="btn btn-danger" type="button" id="add-report-btn"
+            ng-disabled="(!reportingFormVm.emailInput && (reportForm.content.$invalid || !reportForm.content.$dirty)) || (reportingFormVm.emailInput && (!reportForm.reporter.$dirty || reportForm.$invalid))" ng-click="reportingFormVm.ok();">Prijavi</button>
     </div>
 </form>

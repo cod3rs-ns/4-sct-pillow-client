@@ -5,9 +5,9 @@
         .module('awt-cts-client')
         .controller('AnnouncementFormController', AnnouncementFormController);
 
-    AnnouncementFormController.$inject = ['$http', '$scope', '$state', '$stateParams', '$localStorage', '$log', '_', 'ngToast', 'FileUploader', 'announcementService', 'reportingService', 'WizardHandler', 'DatePickerService', 'CONFIG'];
+    AnnouncementFormController.$inject = ['$state', '$stateParams', '$localStorage', '$location', '$log', '_', 'FileUploader', 'Notification', 'announcementService', 'reportingService', 'WizardHandler', 'DatePickerService', 'CONFIG'];
 
-    function AnnouncementFormController($http, $scope, $state, $stateParams, $localStorage, $log, _, ngToast, FileUploader, announcementService, reportingService, WizardHandler, DatePickerService, CONFIG) {
+    function AnnouncementFormController($state, $stateParams, $localStorage, $location, $log, _, FileUploader, Notification,  announcementService, reportingService, WizardHandler, DatePickerService, CONFIG) {
 
         var announcementFormVm = this;
 
@@ -15,7 +15,7 @@
         announcementFormVm.similars = [];
         announcementFormVm.similarsDisabled = true;
 
-        // Datepicker configuration        
+        // Datepicker configuration
         announcementFormVm.datePickerConfig = datePickerConfig;
 
         announcementFormVm.submitAnnouncement = submitAnnouncement;
@@ -29,6 +29,10 @@
         activate();
 
         function activate() {
+            if ($localStorage.role !== 'advertiser') {
+                $location.path('/unauthorized');
+            }
+
             announcementFormVm.state = $state.current.name;
 
             announcementFormVm.uploader = new FileUploader({
@@ -41,7 +45,7 @@
             setUploaderFilters();
             createUploaderCallbacks();
 
-            if (announcementFormVm.state == 'addAnnouncement') {
+            if (announcementFormVm.state === 'addAnnouncement') {
                 announcementFormVm.announcement = createInitialAnnouncement();
                 announcementFormVm.datePickerConfig();
                 announcementFormVm.uploaded = false;
@@ -52,27 +56,13 @@
                     .then(function(response) {
                         announcementFormVm.announcement = response.data;
                         _.forEach(response.data.images, function(image, index) {
-                            var url = image.imagePath;
-
-                            $http.get(url, { responseType: "blob" })
-                                .then(function successCallback(response) {
-                                    var mimetype = response.data.type;
-                                    var file = new File([response.data], "Slika" + (index + 1), { type: mimetype });
-                                    var dummy = new FileUploader.FileItem(announcementFormVm.uploader, {});
-
-                                    dummy._file = file;
-                                    dummy.progress = 100;
-                                    dummy.isUploaded = true;
-                                    dummy.isSuccess = true;
-                                    dummy.file = {
-                                        size: response.data.size,
-                                        name: 'Slika' + (index + 1),
-                                        realImg: image
-                                    };
-                                    announcementFormVm.uploader.queue.push(dummy);
-                                }, function errorCallback(data, status, headers, config) {
-                                    $log.info("Wrong image url.");
-                                });
+                            announcementService.dummyImageUpload(image, index, announcementFormVm.uploader)
+                              .then(function(response) {
+                                  $log.info('Dummy upload completed...');
+                              })
+                              .catch(function(error) {
+                                  $log.error(error);
+                              });
                         });
                         announcementFormVm.uploader.progress = 100;
                     })
@@ -84,12 +74,12 @@
 
         function submitAnnouncement() {
             var notUploaded = announcementFormVm.uploader.getNotUploadedItems();
-            
-            if (announcementFormVm.chosenSimilarRealEstateId != null){
+
+            if (!_.isNull(announcementFormVm.chosenSimilarRealEstateId)) {
                 announcementFormVm.announcement.realEstate.id = announcementFormVm.chosenSimilarRealEstateId;
             }
 
-            if (announcementFormVm.state == "updateAnnouncement" && _.isEmpty(notUploaded)) {
+            if (announcementFormVm.state === "updateAnnouncement" && _.isEmpty(notUploaded)) {
                 updateAnnouncement(announcementFormVm.announcement);
             }
             else {
@@ -116,10 +106,7 @@
                 fn: function(item) {
                     var retVal = item.size <= 5242880; // 5 MB
                     if (!retVal) {
-                        ngToast.create({
-                            className: 'danger',
-                            content: '<p>Veličina fajla mora biti manja od <strong>5MB</strong>.</p>'
-                        });
+                      Notification.error({ message: '<p class="danger" id="wrong-file-size">Veličina fajla mora biti manja od <strong>5MB</strong>.</p>' });
                     }
                     return retVal;
                 }
@@ -130,10 +117,7 @@
                 fn: function(item) {
                     var retVal = announcementFormVm.uploader.queue.length == 4; // 4 images per announcement
                     if (retVal) {
-                        ngToast.create({
-                            className: 'danger',
-                            content: '<p>Ne možete postaviti više od <strong>4</strong> slike.</p>'
-                        });
+                        Notification.error({ message: '<p class="danger" id="wrong-number-image">Ne možete postaviti više od <strong>4</strong> slike.</p>' });
                     }
                     return !retVal;
                 }
@@ -202,20 +186,17 @@
             // Callbacks for one image upload
             announcementFormVm.uploader.onSuccessItem = function(fileItem, response, status, headers) {
                 announcementFormVm.announcement.images.push({ id: null, imagePath: response });
-                $log.info('Item upload completed.', fileItem, response, status, headers);
             };
 
             announcementFormVm.uploader.onCompleteAll = function() {
                 announcementFormVm.uploaded = true;
 
-                if (announcementFormVm.state == 'addAnnouncement') {
+                if (announcementFormVm.state === 'addAnnouncement') {
                     addNewAnnouncement();
                 }
                 else {
                     updateAnnouncement();
                 }
-
-                $log.info('All uploads completed.');
             };
         }
 
@@ -229,7 +210,7 @@
                     announcementFormVm.chosenSimilarRealEstateId = null;
                     announcementFormVm.similars = response.data;
 
-                    if (announcementFormVm.state != 'addAnnouncement') {
+                    if (announcementFormVm.state !== 'addAnnouncement') {
                         _.remove(announcementFormVm.similars, function(realEstate) {
                             return realEstate.id == announcementFormVm.announcement.realEstate.id;
                         });
@@ -260,23 +241,17 @@
         function canExitFirtsStep() {
             var formValid = !announcementFormVm.announcementForm.$invalid && !announcementFormVm.realEstateForm.$invalid;
             if (!formValid) {
-                ngToast.create({
-                    className: 'danger',
-                    content: '<p>Morate popuniti sva polja ispravno da biste prešli na sljedeći korak.</p>'
-                });
+                Notification.error({ message: '<p class="danger" id="required-fields">Morate popuniti sva polja ispravno da biste prešli na sljedeći korak.</p>' });
                 return false;
             } else {
                 var address = announcementFormVm.announcement.realEstate.location.city + ' ' + announcementFormVm.announcement.realEstate.location.street + ' ' +
-                    + announcementFormVm.announcement.realEstate.location.streetNumber + ' ' + announcementFormVm.announcement.realEstate.location.country;
+                    announcementFormVm.announcement.realEstate.location.country;
 
                 return findLocation(address)
                     .then(function(response) {
                         return response;
                     }, function(response) {
-                        ngToast.create({
-                            className: 'danger',
-                            content: '<p>Adresa koju ste unijeli je nevalidna.</p>'
-                        });
+                        Notification.error({ message: '<p class="danger" id="wrong-address">Adresa koju ste unijeli je nevalidna.</p>' });
                         return response;
                     });
             }

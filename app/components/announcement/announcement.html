@@ -1,3 +1,8 @@
+<span ng-init="val5 = 5;"></span>
+<span ng-init="val4 = 4;"></span>
+<span ng-init="val3 = 3;"></span>
+<span ng-init="val2 = 2;"></span>
+<span ng-init="val1 = 1;"></span>
 <div class="container" id="announcement" style="margin-top: 10px;">
     <div class="row">
         <div class="col-md-9">
@@ -7,26 +12,48 @@
                   <small class="pull-right">Datum objavljivanja: {{announcementVm.announcement.dateAnnounced | date:'dd. MM. yyyy.' }} godine</small></h4>
             </div>
             <div class="row">
-                <div class="col-xs-12 col-md-1" style="padding: 0px;" >
-                    <div class="average-rating">
+                <div class="col-xs-12 col-md-1" id="list-rate-ann" style="padding: 0px;" ng-mouseleave="announcementVm.hoverOut('announcement')" ng-mouseover="announcementVm.hoverIn('announcement')">
+                    <div class="average-rating" ng-show="announcementVm.averageRating.announcement">
                         <p>{{announcementVm.votes.announcement.average | number: 1}}</p>
                         <span class="glyphicon glyphicon-star" aria-hidden="true"></span>
+                    </div>
+                    <div class="average-rating count-votes" ng-show="!announcementVm.averageRating.announcement">
+                        <div class="row">
+                            <div class="vote-no">{{announcementVm.votesAnnouncementGrouped[5] || 0}}</div>
+                            <div star-rating class="star-rating" ng-model="val5" readonly="true" max="5"></div>
+                        </div>
+                        <div class="row">
+                            <div class="vote-no">{{announcementVm.votesAnnouncementGrouped[4] || 0}}</div>
+                            <div star-rating class="star-rating" ng-model="val4" readonly="true" max="5"></div>
+                        </div>
+                        <div class="row">
+                            <div class="vote-no">{{announcementVm.votesAnnouncementGrouped[3] || 0}}</div>
+                            <div star-rating class="star-rating" ng-model="val3" readonly="true" max="5"></div>
+                        </div>
+                        <div class="row">
+                            <div class="vote-no">{{announcementVm.votesAnnouncementGrouped[2] || 0}}</div>
+                            <div star-rating class="star-rating" ng-model="val2" readonly="true" max="5"></div>
+                        </div>
+                        <div class="row">
+                            <div class="vote-no">{{announcementVm.votesAnnouncementGrouped[1] || 0}}</div>
+                            <div star-rating class="star-rating" ng-model="val1" readonly="true" max="5"></div>
+                        </div>
                     </div>
                 </div>
                 <div class="col-xs-12 col-md-11">
                     <h1>
                         <span ng-show="announcementVm.announcement.verified == '1'" class="glyphicon glyphicon-ok-circle color-success"></span>
-                        {{announcementVm.announcement.name}}
+                        <span id="announcement-name-value">{{announcementVm.announcement.name}}</span>
 
-                        <button type="button" class="btn btn-default pull-right" ng-if="announcementVm.isMyAdvertisement" ui-sref="updateAnnouncement({announcementId: announcementVm.announcement.id})">
+                        <button id="update-announcement" type="button" class="btn btn-default pull-right" ng-if="announcementVm.isMyAdvertisement" ui-sref="updateAnnouncement({announcementId: announcementVm.announcement.id})">
                             <span class="glyphicon glyphicon-pencil" aria-hidden="true"></span> Ažuriraj oglas
                         </button>
                     </h1>
                     <h6>{{announcementVm.address.city + ' (' + announcementVm.address.cityRegion + ')' + ', ' + announcementVm.address.country}}</h6>
 
-                    <span ng-if="announcementVm.isAnnouncementMarkEnabled">
+                    <span ng-if="!announcementVm.isMyAdvertisement && announcementVm.isAnnouncementMarkEnabled">
                         Vaša ocjena:
-                        <div class="star-rating" style="margin-left: -6px" ng-model="announcementVm.rating.announcement" readonly="!announcementVm.isAnnouncementMarkEnabled" data-max="5" star-rating on-rating-select="announcementVm.voteAnnouncement(rating)"></div>
+                        <div id="announcement-rate-update" class="star-rating" style="margin-left: -6px" ng-model="announcementVm.rating.announcement" data-max="5" star-rating on-rating-select="announcementVm.voteAnnouncement(rating)"></div>
                     </span>
                 </div>
             </div>
@@ -54,12 +81,65 @@
                 </div>
             </div>
             <hr/>
+            <div class="row">
+                <div>{{re}}</div>
+                <div class="col-md-2 col-sm-6">
+                    <span class="glyphicon glyphicon-modal-window"></span>
+                    Klima uređaj
+                    <p class="announcement-info">
+                      <span ng-show="announcementVm.announcement.realEstate.airConditioner == '1'" class="glyphicon glyphicon-ok" aria-hidden="true"></span>
+                      <span ng-hide="announcementVm.announcement.realEstate.airConditioner == '1'" class="glyphicon glyphicon-remove" aria-hidden="true"></span>
+                    </p>
+                </div>
+                <div class="col-md-2 col-sm-6">
+                    <span class="glyphicon glyphicon-blackboard"></span>
+                    Kablovska TV
+                    <p class="announcement-info">
+                      <span ng-show="announcementVm.announcement.realEstate.cabletv == '1'" class="glyphicon glyphicon-ok" aria-hidden="true"></span>
+                      <span ng-hide="announcementVm.announcement.realEstate.cabletv == '1'" class="glyphicon glyphicon-remove" aria-hidden="true"></span>
+                    </p>
+                </div>
+                <div class="col-md-2 col-sm-6">
+                    <span class="glyphicon glyphicon glyphicon-list-alt"></span>
+                    Interfon
+                    <p class="announcement-info">
+                      <span ng-show="announcementVm.announcement.realEstate.intercom == '1'" class="glyphicon glyphicon-ok" aria-hidden="true"></span>
+                      <span ng-hide="announcementVm.announcement.realEstate.intercom == '1'" class="glyphicon glyphicon-remove" aria-hidden="true"></span>
+                    </p>
+                </div>
+                <div class="col-md-2 col-sm-6">
+                    <span class="glyphicon glyphicon-signal"></span>
+                    Internet
+                    <p class="announcement-info">
+                      {{re.internet}}
+                      <span ng-show="announcementVm.announcement.realEstate.internet == '1'" class="glyphicon glyphicon-ok" aria-hidden="true"></span>
+                      <span ng-hide="announcementVm.announcement.realEstate.internet == '1'" class="glyphicon glyphicon-remove" aria-hidden="true"></span>
+                    </p>
+                </div>
+                <div class="col-md-2 col-sm-6">
+                    <span class="glyphicon glyphicon glyphicon-phone-alt"></span>
+                    Telefon
+                    <p class="announcement-info">
+                      <span ng-show="announcementVm.announcement.realEstate.phone == '1'" class="glyphicon glyphicon-ok" aria-hidden="true"></span>
+                      <span ng-hide="announcementVm.announcement.realEstate.phone == '1'" class="glyphicon glyphicon-remove" aria-hidden="true"></span>
+                    </p>
+                </div>
+                <div class="col-md-2 col-sm-6">
+                    <span class="glyphicon glyphicon-facetime-video"></span>
+                    Video nadzor
+                    <p class="announcement-info">
+                      <span ng-show="announcementVm.announcement.realEstate.videoSurveillance == '1'" class="glyphicon glyphicon-ok" aria-hidden="true"></span>
+                      <span ng-hide="announcementVm.announcement.realEstate.videoSurveillance == '1'" class="glyphicon glyphicon-remove" aria-hidden="true"></span>
+                    </p>
+                </div>
+            </div>
+            <hr/>
             <div>
               <uib-tabset type="pills">
                   <uib-tab heading="Galerija slika">
-                    <div uib-carousel active="active" interval="5000" no-wrap="false" style="margin-top: 10px;">
+                    <div uib-carousel active="active" interval="5000" no-wrap="false" style="height:400px; margin-top: 10px;">
                       <div uib-slide ng-repeat="slide in announcementVm.images track by slide.id" index="slide.id">
-                        <img ng-src="{{slide.image}}" style="margin:auto; width:100%;">
+                        <img ng-src="{{slide.image}}" style="height:400px; margin:auto; width:100%;">
                       </div>
                     </div>
                   </uib-tab>
@@ -70,7 +150,7 @@
               </uib-tabset>
             </div>
             <h4>Detaljan opis oglasa</h4>
-            <p>{{announcementVm.announcement.description}}</p>
+            <div ng-bind-html="announcementVm.announcement.description"></div>
         </div>
         <div class="col-md-3" style="text-align: center;">
             <div class="advertiser-info" style="margin-bottom: 10px;"
@@ -87,13 +167,37 @@
                 <span ng-if="announcementVm.announcement.author.companyVerified" class="label label-success">Verifikovan</span>
                 <span ng-if="!announcementVm.announcement.author.companyVerified" class="label label-warning">Nije verifikovan</span>
 
-                <div class="average-rating">
-                    <p>{{announcementVm.votes.announcer.average | number: 1}}</p>
-                    <span class="glyphicon glyphicon-star" aria-hidden="true"></span>
+                <div style="text-align: center;" id="list-rate-announcer" ng-mouseleave="announcementVm.hoverOut('announcer')" ng-mouseover="announcementVm.hoverIn('announcer')">
+                    <div class="average-rating" ng-show="announcementVm.averageRating.announcer">
+                        <p>{{announcementVm.votes.announcer.average | number: 1}}</p>
+                        <span class="glyphicon glyphicon-star" aria-hidden="true"></span>
+                    </div>
+                    <div class="average-rating count-votes" style="margin-left: 35%;" ng-show="!announcementVm.averageRating.announcer">
+                        <div class="row">
+                            <div class="vote-no">{{announcementVm.votesAnnouncerGrouped[5] || 0}}</div>
+                            <div star-rating class="star-rating" ng-model="val5" readonly="true" max="5"></div>
+                        </div>
+                        <div class="row">
+                            <div class="vote-no">{{announcementVm.votesAnnouncerGrouped[4] || 0}}</div>
+                            <div star-rating class="star-rating" ng-model="val4" readonly="true" max="5"></div>
+                        </div>
+                        <div class="row">
+                            <div class="vote-no">{{announcementVm.votesAnnouncerGrouped[3] || 0}}</div>
+                            <div star-rating class="star-rating" ng-model="val3" readonly="true" max="5"></div>
+                        </div>
+                        <div class="row">
+                            <div class="vote-no">{{announcementVm.votesAnnouncerGrouped[2] || 0}}</div>
+                            <div star-rating class="star-rating" ng-model="val2" readonly="true" max="5"></div>
+                        </div>
+                        <div class="row">
+                            <div class="vote-no">{{announcementVm.votesAnnouncerGrouped[1] || 0}}</div>
+                            <div star-rating class="star-rating" ng-model="val1" readonly="true" max="5"></div>
+                        </div>
+                    </div>
                 </div>
-                <span ng-if="announcementVm.isAnnouncerMarkEnabled">
+                <span ng-if="!announcementVm.isMyAdvertisement && announcementVm.isAnnouncerMarkEnabled">
                     Vaša ocjena:
-                    <div star-rating class="star-rating" ng-model="announcementVm.rating.announcer" readonly="!announcementVm.isAnnouncerMarkEnabled" max="5" on-rating-select="announcementVm.voteAnnouncer(rating)"></div>
+                    <div star-rating class="star-rating" id="announcer-rate-update" ng-model="announcementVm.rating.announcer" max="5" on-rating-select="announcementVm.voteAnnouncer(rating)"></div>
                 </span>
 
                 <!-- Dodatne informacije -->
@@ -113,13 +217,13 @@
                     tooltip-enable="announcementVm.alreadyReported"
                     ng-if = "announcementVm.announcement.verified == 'not-verified' && !announcementVm.isMyAdvertisement"
                     ng-show="announcementVm.announcement.verified == 'not-verified' && announcementVm.$storage.role != 'verifier'">
-                <button type="button" class="btn btn-danger btn-report" ng-disabled="announcementVm.alreadyReported" ng-click="announcementVm.reportAnnouncement()">
+                <button type="button" class="btn btn-danger btn-report" id="report-btn" ng-disabled="announcementVm.alreadyReported" ng-click="announcementVm.reportAnnouncement()">
                     <span class="glyphicon glyphicon-thumbs-down color-white"></span>
                     Prijavi oglas
                 </button>
             </div>
             <div ng-show="announcementVm.announcement.verified == 'not-verified' && announcementVm.$storage.role == 'verifier'">
-                <button type="button" class="btn btn-success btn-report" ng-click="announcementVm.verifyAnnouncement()">
+                <button id="verify-button" type="button" class="btn btn-success btn-report" ng-click="announcementVm.verifyAnnouncement()">
                     <span class="glyphicon glyphicon-thumbs-up color-white"></span>
                     Verifikuj
                 </button>
@@ -128,8 +232,7 @@
         </div>
     </div>
 
-    <h3 ng-show="announcementVm.comments.length == 0">Niko još nije ostavio komentar... Budite prvi... </h3>
-    <h2 ng-show="announcementVm.comments.length > 0">Komentari</h2>
+    <h3 ng-show="announcementVm.comments.length > 0">Komentari</h3>
 
     <div class="row" style="margin-top: 20px;" ng-repeat="comment in announcementVm.comments">
         <div class="media">
@@ -141,7 +244,7 @@
             <div class="media-body">
                 <h5 class="media-heading">
                     {{comment.author.name}}
-                    <button type="button" class="btn btn-link pull-right" ng-show="comment.isMy && announcementVm.editing == undefined"
+                    <button type="button" id="delete-comment" class="btn btn-link pull-right" ng-show="comment.isMy && announcementVm.editing == undefined"
                       ng-click="announcementVm.deleteComment(comment.id)">
                         <span class="glyphicon glyphicon-remove color-danger"></span>
                     </button>
@@ -150,7 +253,7 @@
                         <span class="glyphicon glyphicon-pencil color-gray"></span>
                     </button>
                 </h5>
-                <h6>Objavljen: {{comment.date | date:'dd. MM. yyyy.'}}</h6>
+                <h6 id="date-commented">Objavljen: {{comment.date | date:'dd.MM.yyyy.'}}</h6>
                 <p ng-if="!(comment.isMy && announcementVm.editing == comment.id)">{{comment.content}}</p>
                 <textarea id="comment-edit" class="form-control" rows="5"
                     ng-init="announcementVm.editedComment = comment.content"
@@ -168,7 +271,8 @@
 
     <h2>Napišite Vaše mišljenje</h2>
     <textarea id="comment" class="form-control" rows="5" ng-model="announcementVm.comment"></textarea>
-    <button type="button" class="btn btn-primary pull-right" style="margin-top: 10px;" ng-click="announcementVm.addComment();">
+    <button type="button" id="add-comment" class="btn btn-primary pull-right"
+        style="margin-top: 10px;" ng-click="announcementVm.addComment();">
         Ostavi komentar
     </button>
 </div>

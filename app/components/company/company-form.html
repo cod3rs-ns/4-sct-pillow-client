@@ -12,34 +12,43 @@
         <div class="col-md-3 col-md-offset-2" style="text-align: center;">
             <img class="thumbnail" ng-src="{{companyFormVm.imageSource}}" height="250px" width="250px"/>
         </div>
-        <div class="col-md-5 col-md-offest-1" style="text-align: center;" style="margin-top:20px; padding-top:15px;">
-            <form role="form" class="registration-form">
-                <div class="form-group">
+        <div class="col-md-5 col-md-offest-1" style="text-align: left;">
+            <form role="form" id="companyForm" name="companyForm" novalidate>
+                <div class="form-group" ng-class="{ 'has-error' : companyForm.companyName.$invalid && companyForm.companyName.$dirty }">
                     <div class="input-group">
                         <span class="input-group-addon" id="basic-addon1"> <i class="glyphicon glyphicon-home"></i></span>
-                        <input type="text" ng-model="companyFormVm.company.name" placeholder="Naziv..." class="form-control" id="company-name">
+                        <input type="text" ng-model="companyFormVm.company.name" name="companyName"
+                        placeholder="Naziv..." class="form-control" id="company-name" required>
+                        <span ng-show="companyForm.companyName.$invalid && companyForm.companyName.$dirty" class="glyphicon glyphicon-remove form-control-feedback"></span>
                     </div>
+                    <span ng-show="companyForm.companyName.$invalid && companyForm.companyName.$dirty" class="help-block" style="font-size: 10pt; margin:0px;">Ime je obavezno.</span>
                 </div>
 
-                <div class="form-group">
+                <div class="form-group" ng-class="{ 'has-error' : companyForm.companyAddress.$invalid && companyForm.companyAddress.$dirty }">
                     <div class="input-group">
                         <span class="input-group-addon" id="basic-addon1"> <i class="glyphicon glyphicon-map-marker"></i></span>
-                        <input type="text" ng-model="companyFormVm.company.address" placeholder="Lokacija..." class="form-control" id="company-address">
+                        <input type="text" ng-model="companyFormVm.company.address" placeholder="Lokacija..." name="companyAddress"
+                        class="form-control" id="company-address" required>
+                        <span ng-show="companyForm.companyAddress.$invalid && companyForm.companyAddress.$dirty" class="glyphicon glyphicon-remove form-control-feedback"></span>
                     </div>
+                    <span id="required-address" ng-show="companyForm.companyAddress.$invalid && companyForm.companyAddress.$dirty" class="help-block" style="font-size: 10pt; margin:0px;">Adresa je obavezna.</span>
                 </div>
 
-                <div class="form-group">
+                <div class="form-group" ng-class="{ 'has-error' : companyForm.companyPhone.$invalid && companyForm.companyPhone.$dirty }">
                     <div class="input-group">
                         <span class="input-group-addon" id="basic-addon1"> <i class="glyphicon glyphicon-earphone"></i></span>
-                        <input type="text" ng-model="companyFormVm.company.phoneNumber" placeholder="Broj telefona..." class="form-control" id="company-phone">
+                        <input type="text" ng-model="companyFormVm.company.phoneNumber" placeholder="Broj telefona..."
+                        class="form-control" id="company-phone" name="companyPhone" required>
+                        <span ng-show="companyForm.companyPhone.$invalid && companyForm.companyPhone.$dirty" class="glyphicon glyphicon-remove form-control-feedback"></span>
                     </div>
+                    <span ng-show="companyForm.companyPhone.$invalid && companyForm.companyPhone.$dirty" class="help-block" style="font-size: 10pt; margin:0px;">Telefon je obavezan.</span>
                 </div>
 
                 <div class="form-group">
                     <div class="input-group">
-                        <input type="text" ng-model="companyFormVm.fileName" class="form-control image-preview-filename" disabled="disabled">
+                        <input id="logo-url" type="text" ng-model="companyFormVm.fileName" class="form-control image-preview-filename" disabled="disabled">
                         <!-- don't give a name === doesn't send on POST/GET -->
-                        <span class="input-group-btn">
+                        <span id="choose-logo" class="input-group-btn">
                         <!-- image-preview-clear button -->
                         <button type="button" ng-click="companyFormVm.clearFile();" ng-show="companyFormVm.clearHide" class="btn btn-default image-preview-clear">
                             <span class="glyphicon glyphicon-remove"></span> Obriši
@@ -55,11 +64,12 @@
                         </span>
                     </div>
                 </div>
+
                 <div class="row" ng-if="companyFormVm.state=='addCompany'">
                     <div class="form-group col-xs-6">
                         <div class="input-group">
                             <span class="input-group-addon" id="basic-addon1"> <i class="glyphicon glyphicon-user"></i></span>
-                            <input type="text" ng-model="companyFormVm.selectedItem" placeholder="Unesite ime i prezime korisnika" uib-typeahead="user for user in companyFormVm.getUsers($viewValue)" 
+                            <input id="company-user" type="text" ng-model="companyFormVm.selectedItem" placeholder="Unesite ime i prezime korisnika" uib-typeahead="user for user in companyFormVm.getUsers($viewValue)"
                                 typeahead-loading="loadingLocations" typeahead-no-results="noResults" typeahead-template-url="customTemplate.html" typeahead-on-select="companyFormVm.onSelectedUserCallback($item, $model, $label)" class="form-control">
                         </div>
                     </div>
@@ -71,7 +81,7 @@
                     </div>
                 </div>
 
-                <button type="button" class="btn btn-success" ng-click="companyFormVm.submitForm();" style="margin-top:18px; float:right">{{companyFormVm.submitBtnName}}</button>
+                <button id="add-company-btn" type="button" class="btn btn-success" ng-disabled="!companyFormVm.selectedUser.username || !companyFormVm.fileName || companyForm.$invalid" ng-click="companyFormVm.submitForm();" style="margin-top:18px; float:right">{{companyFormVm.submitBtnName}}</button>
             </form>
         </div>
     </div>

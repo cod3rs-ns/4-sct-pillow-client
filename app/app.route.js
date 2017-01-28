@@ -10,7 +10,9 @@ angular
         'angular-jwt',
         'mgo-angular-wizard',
         'ngToast',
-        'angularTrix'
+        'angularTrix',
+        'ngStomp',
+        'ui-notification'
     ])
     .factory('_', ['$window',
         function ($window) {
@@ -168,6 +170,14 @@ angular
                         templateUrl: "app/components/error-templates/403.html",
                     }
                 }
+            })
+            .state('pageNotFound', {
+                url: '/page-not-found',
+                views: {
+                    'content@': {
+                        templateUrl: "app/components/error-templates/404.html",
+                    }
+                }
             });
 
         $httpProvider.interceptors.push(['$q', '$location', '$localStorage', '_', function ($q, $location, $localStorage, _) {
@@ -187,7 +197,6 @@ angular
                     // If you get Unauthorized on login page you should just write message
                     if ("/login" !== $location.path()) {
                         if (response.status === 401 || response.status === 403) {
-                            console.log(_.kebabCase(response.data.error));
                             $location.path('/' + _.kebabCase(response.data.error));
                         }
 

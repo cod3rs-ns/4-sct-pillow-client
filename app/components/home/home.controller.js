@@ -5,9 +5,9 @@
         .module('awt-cts-client')
         .controller('HomeController', HomeController);
 
-    HomeController.$inject = ['$state', '$document', '$timeout', '$location', '$log', '_', 'announcementService', 'LinkParser', 'pagingParams', 'paginationConstants'];
+    HomeController.$inject = ['$state', '$timeout', '$location', '$log', '_', 'LanguageUtil', 'announcementService', 'LinkParser', 'pagingParams', 'paginationConstants'];
 
-    function HomeController($state, $document, $timeout, $location, $log, _, announcementService, LinkParser, pagingParams, paginationConstants) {
+    function HomeController($state, $timeout, $location, $log, _, LanguageUtil, announcementService, LinkParser, pagingParams, paginationConstants) {
         var homeVm = this;
 
         homeVm.announcements = {};
@@ -27,11 +27,14 @@
         homeVm.find = find;
         homeVm.initMap = initMap;
         homeVm.showMapResult = showMapResult;
-        homeVm.redirect = redirect;
+        homeVm.translateType = translateType;
 
         activate();
 
         function activate () {
+
+            homeVm.paginationView = true;
+
             if (_.isNull(pagingParams.search)) {
                 homeVm.getAllAnnouncements();
             }
@@ -42,7 +45,13 @@
                 _.forEach(_.split(homeVm.currentSearch, "&"), function(param) {
                     if (!_.isEmpty(param)) {
                         var splitted = _.split(param, "=");
-                        homeVm.search[splitted[0]] = splitted[1];
+
+                        var value = _.parseInt(splitted[1]);
+                        if (_.isNaN(value)) {
+                            value = splitted[1];
+                        }
+                        
+                        homeVm.search[splitted[0]] = value;
                     }
                 });
 
@@ -56,6 +65,9 @@
                     var headers = response.headers;
 
                     homeVm.announcements = response.data;
+                    _.forEach(homeVm.announcements, function(announcement) {
+                        formatAnnouncement(announcement);
+                    });
                     homeVm.totalItems = response.headers('X-Total-Count');
 
                     homeVm.links = LinkParser.parse(headers('Link'));
@@ -173,6 +185,7 @@
             homeVm.currentSearch = searchTerm;
             pagingParams.page = 1;
             pagingParams.search = searchTerm;
+            homeVm.paginationView = true;
 
             homeVm.searchAnnouncements(searchTerm);
         }
@@ -183,6 +196,9 @@
                     var headers = response.headers;
 
                     homeVm.announcements = response.data;
+                    _.forEach(homeVm.announcements, function(announcement) {
+                        formatAnnouncement(announcement);
+                    });
                     homeVm.totalItems = response.headers('X-Total-Count');
 
                     homeVm.links = LinkParser.parse(headers('Link'));
@@ -190,6 +206,8 @@
                     homeVm.queryCount = homeVm.totalItems;
 
                     homeVm.page = pagingParams.page;
+
+                    homeVm.transition();
                 })
                 .catch(function (error) {
                     $log.error(error);
@@ -204,6 +222,9 @@
                     homeVm.mapAnnouncements = announcements;
 
                     _.forEach(response.data, function(announcement) {
+
+                        formatAnnouncement(announcement);
+
                         var location = announcement.realEstate.location;
                         var position = {
                           lat: location.latitude,
@@ -232,25 +253,17 @@
 
         function showMapResult() {
             homeVm.announcements = homeVm.mapAnnouncements;
+            homeVm.paginationView = false;
         }
 
         function formatContent(announcement) {
-            return '<div class="media">' +
-              '<div class="media-left">' +
-                '<a href="#">' +
-                  '<img class="media-object" src="' + 'http://avatarbox.net/avatars/img11/we_love_house_avatar_picture_68917.jpg' + '" alt="...">' +
-                '</a>' +
-              '</div>' +
+            return '<div class="media" style="width: 200px! important;">' +
               '<div class="media-body">' +
                 '<h4 class="media-heading">' + announcement.name + '</h4>' +
-                announcement.description +
+                '<p>' + announcement.description + '</p>' +
+                '<h6>' + announcement.price + ' RSD </h6>'
               '</div>' +
             '</div>';
-        }
-
-        function redirect(id) {
-            $log.log(':)');
-            $location.path('/announcement/' + id);
         }
 
         function handleLocationError(browserHasGeolocation, tooltip, pos) {
@@ -258,6 +271,25 @@
 
             tooltip.setPosition(pos);
             tooltip.setContent(content);
-      }
+        }
+
+        function translateType(type) {
+            return LanguageUtil.translateAdvertisementType(type);
+        }
+
+        function formatAnnouncement(announcement) {
+            var momentExpDate = moment(new Date(announcement.expirationDate));
+            announcement.expiredMessage = momentExpDate.fromNow();
+            if (momentExpDate.isAfter(moment())) {
+                announcement.expirationClass = 'color-success';
+                // check if expiration date is close (by 7 days)
+                if (moment(new Date(announcement.expirationDate)).subtract(7, 'days').isBefore(moment())) {
+                    announcement.expirationClass = 'color-warning';
+                };
+            }
+            else {
+                announcement.expirationClass = 'color-danger';
+            };
+        }
     }
 })();

@@ -2,9 +2,9 @@ angular
     .module('awt-cts-client')
     .service('announcementService', announcementService);
 
-announcementService.$inject = ['$http', '$log', 'CONFIG'];
+announcementService.$inject = ['$http', '$log', 'FileUploader', 'CONFIG'];
 
-function announcementService($http, $log, CONFIG) {
+function announcementService($http, $log, FileUploader, CONFIG) {
     var service = {
         getAnnouncements: getAnnouncements,
         getAnnouncementById: getAnnouncementById,
@@ -18,7 +18,8 @@ function announcementService($http, $log, CONFIG) {
         searchAnnouncements: searchAnnouncements,
         alreadyReported: alreadyReported,
         updateAnnouncement: updateAnnouncement,
-        verifyAnnouncement: verifyAnnouncement
+        verifyAnnouncement: verifyAnnouncement,
+        dummyImageUpload: dummyImageUpload
     };
 
     return service;
@@ -58,12 +59,12 @@ function announcementService($http, $log, CONFIG) {
         return $http.get(CONFIG.SERVICE_URL + '/real-estates/similar',
             {
                 params: {
-                    area: realEstate.area,
+                    area:    realEstate.area,
                     country: realEstate.location.country,
-                    city: realEstate.location.city,
-                    region: realEstate.location.cityRegion,
-                    street: realEstate.location.street,
-                    number: realEstate.location.streetNumber
+                    city:    realEstate.location.city,
+                    region:  realEstate.location.cityRegion,
+                    street:  realEstate.location.street,
+                    number:  realEstate.location.streetNumber
                 }
             })
             .then(function successCallback(response) {
@@ -217,7 +218,7 @@ function announcementService($http, $log, CONFIG) {
 
     /**
      * Verifies announcement.
-     * 
+     *
      * @param {integer} announcementId
      * @returns response
      */
@@ -230,4 +231,33 @@ function announcementService($http, $log, CONFIG) {
                 throw response.headers('X-SCT-Alert');
             });
     };
+
+    /**
+     * Function that uploads dummy image.
+     *
+     * @param {object} image
+     * @param {int}    index
+     * @param {object} uploader
+     */
+     function dummyImageUpload(image, index, uploader) {
+         $http.get(image.imagePath, { responseType: "blob" })
+             .then(function successCallback(response) {
+                 var mimetype = response.data.type;
+                 var file = new File([response.data], "Slika" + (index + 1), { type: mimetype });
+                 var dummy = new FileUploader.FileItem(uploader, {});
+
+                 dummy._file = file;
+                 dummy.progress = 100;
+                 dummy.isUploaded = true;
+                 dummy.isSuccess = true;
+                 dummy.file = {
+                     size: response.data.size,
+                     name: 'Slika' + (index + 1),
+                     realImg: image
+                 };
+                 uploader.queue.push(dummy);
+             }, function errorCallback(data, status, headers, config) {
+                 $log.error("Wrong image url.");
+             });
+     };
 }

@@ -117,7 +117,7 @@
                     </a>
                 </div>
                 <div class="col-md-1">
-                    <button uib-tooltip="Zahtjev za članstvom u kompaniji" tooltip-placement="bottom" ng-click="companyVm.requestMembership();" 
+                    <button id="company-membership-request" uib-tooltip="Zahtjev za članstvom u kompaniji" tooltip-placement="bottom" ng-click="companyVm.requestMembership();"
                         ng-disabled="companyVm.disableMembership" ng-if="companyVm.showMembership"
                         class="btn btn-success pull-right">
                         <span class="glyphicon glyphicon-flag"></span>
@@ -147,7 +147,7 @@
         </div>
     </div>
     </div>
-    <div class="row">
+    <div class="row" style="margin-top: 16px;">
         <uib-tabset>
             <uib-tab heading="Članovi agencije" select="companyVm.selectedTab('members');" active="companyVm.activeTabIndex">
                 <div ui-view="companyMembers">

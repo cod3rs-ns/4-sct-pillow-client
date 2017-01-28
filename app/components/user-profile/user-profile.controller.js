@@ -5,9 +5,9 @@
         .module('awt-cts-client')
         .controller('UserProfileController', UserProfileController);
 
-    UserProfileController.$inject = ['companyService', 'announcementService', 'ngToast', 'DatePickerService', '_', 'userService', '$stateParams', '$localStorage', '$state', '$log', 'LinkParser', 'pagingParams', 'paginationConstants', 'FileUploader', 'CONFIG'];
+    UserProfileController.$inject = ['companyService', 'announcementService', 'ngToast', 'DatePickerService', '_', 'userService', '$stateParams', '$localStorage', '$state', '$log', 'LinkParser', 'pagingParams', 'paginationConstants', 'FileUploader', 'Notification', 'CONFIG'];
 
-    function UserProfileController(companyService, announcementService, ngToast, DatePickerService, _, userService, $stateParams, $localStorage, $state, $log, LinkParser, pagingParams, paginationConstants, FileUploader, CONFIG) {
+    function UserProfileController(companyService, announcementService, ngToast, DatePickerService, _, userService, $stateParams, $localStorage, $state, $log, LinkParser, pagingParams, paginationConstants, FileUploader, Notification, CONFIG) {
         var userVm = this;
         /** User for whom Profile page is displayed */
         userVm.user = {};
@@ -134,10 +134,7 @@
             companyService.resolveMembershipRequest(userId, true)
                 .then(function (response) {
                     activate();
-                    ngToast.create({
-                        className: 'success',
-                        content: '<strong>Korisnikov zahtev prihvaćen.</strong>'
-                    });
+                    Notification.success('<strong id="mem-req-accept">Korisnikov zahtev prihvaćen.</strong>');
                 })
                 .catch(function (error) {
                     $log.error(error);
@@ -152,10 +149,7 @@
             companyService.resolveMembershipRequest(userId, false)
                 .then(function (response) {
                     activate();
-                    ngToast.create({
-                        className: 'danger',
-                        content: '<strong>Korisnikov zahtev odbijen.</strong>'
-                    });
+                    Notification.success('<strong id="mem-req-reject">Korisnikov zahtev odbijen.</strong>');
                 })
                 .catch(function (error) {
                     $log.error(error);
@@ -176,17 +170,11 @@
             };
             announcementService.extendExpirationDate(annId, map)
                 .then(function (response) {
-                    ngToast.create({
-                        className: 'success',
-                        content: '<p>Datum isteka oglasa produžen do: <strong>' + expString + '</strong></p>'
-                    });
+                    Notification.success('<p id="exp-date-message">Datum isteka oglasa produžen do: <strong>' + expString + '</strong></p>');
                     activate();
                 })
                 .catch(function (error) {
-                    ngToast.create({
-                        className: 'danger',
-                        content: '<p><strong>GREŠKA! </strong>' + error + '</p>'
-                    });
+                    Notification.error('<p id="exp-date-error-msg"><strong>GREŠKA! </strong>' + error + '</p>');
                 });
         };
 
@@ -234,10 +222,7 @@
             userVm.user.password = userVm.newPassword;
             userService.updateUser(userVm.user)
                 .then(function (response) {
-                    ngToast.create({
-                        className: 'success',
-                        content: '<strong>Uspešno ste promenili lozinku!</strong>'
-                    });
+                    Notification.success('<strong id="pass-changed">Uspešno ste promenili lozinku!</strong>');
                     userVm.passEditState = false;
                 })
                 .catch(function (error) {
@@ -257,10 +242,7 @@
             userVm.user.phoneNumber = userVm.editUser.phoneNumber;
             userService.updateUser(userVm.user)
                 .then(function (response) {
-                    ngToast.create({
-                        className: 'success',
-                        content: '<strong>Uspešno ste ažurirali informacije!</strong>'
-                    });
+                    Notification.success('<strong id="success-updated-inf">Uspešno ste ažurirali informacije.</strong>');
                     userVm.infoEditState = false;
                 })
                 .catch(function (error) {
@@ -358,10 +340,7 @@
             userVm.user.imagePath = response;
             userService.updateUser(userVm.user)
                 .then(function (response) {
-                    ngToast.create({
-                        className: 'success',
-                        content: '<strong>Uspešno ste promenili profilnu sliku!</strong>'
-                    });
+                    Notification.success('<strong id="img-success">Uspešno ste promenili profilnu sliku!</strong>');
                 })
                 .catch(function (error) {
                     ngToast.create({

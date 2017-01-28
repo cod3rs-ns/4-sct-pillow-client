@@ -5,11 +5,11 @@
         .module('awt-cts-client')
         .controller('AnnouncementController', AnnouncementController);
 
-    AnnouncementController.$inject = ['$stateParams', '$timeout', '$log', '$uibModal', '$document', '$localStorage', 'ngToast', '_', 'CommentsUtil', 'MarksUtil',
-        'announcementService', 'commentService', 'markService', 'reportingService'];
+    AnnouncementController.$inject = ['$stateParams', '$timeout', '$log', '$uibModal', '$document', '$localStorage', '_', 'CommentsUtil', 'MarksUtil',
+        'LanguageUtil', 'announcementService', 'commentService', 'markService', 'reportingService', 'Notification'];
 
-    function AnnouncementController($stateParams, $timeout, $log, $uibModal, $document, $localStorage, ngToast, _, CommentsUtil, MarksUtil,
-        announcementService, commentService, markService, reportingService) {
+    function AnnouncementController($stateParams, $timeout, $log, $uibModal, $document, $localStorage, _, CommentsUtil, MarksUtil,
+        LanguageUtil, announcementService, commentService, markService, reportingService, Notification) {
         var announcementVm = this;
 
         announcementVm.announcement = {};
@@ -35,6 +35,10 @@
                 'count': 0
             }
         };
+        announcementVm.averageRating = {
+            'announcement': true,
+            'announcer': true
+        }
 
         announcementVm.$storage = $localStorage.$default({
             role: 'guest'
@@ -50,6 +54,8 @@
         announcementVm.checkIfUserAlreadyReportAnnouncement = checkIfUserAlreadyReportAnnouncement;
         announcementVm.cancel = cancel;
         announcementVm.verifyAnnouncement = verifyAnnouncement;
+        announcementVm.hoverIn = hoverIn;
+        announcementVm.hoverOut = hoverOut;
 
         activate();
 
@@ -61,6 +67,17 @@
             announcementService.getAnnouncementById(announcementId)
                 .then(function (response) {
                     announcementVm.announcement = response.data;
+
+                    // Do translations
+                    var type = announcementVm.announcement.realEstate.heatingType;
+                    announcementVm.announcement.realEstate.heatingType = LanguageUtil.translateHeatingType(type);
+
+                    type = announcementVm.announcement.type;
+                    announcementVm.announcement.type = LanguageUtil.translateAdvertisementType(type);
+
+                    type = announcementVm.announcement.realEstate.type;
+                    announcementVm.announcement.realEstate.type = LanguageUtil.translateRealEstateType(type);
+
                     announcementVm.address = response.data.realEstate.location;
 
                     announcementVm.isMyAdvertisement = $localStorage.user === announcementVm.announcement.author.username;
@@ -91,6 +108,10 @@
                             announcementVm.votes.announcement.average = MarksUtil.average(marks);
                             announcementVm.votes.announcement.count = MarksUtil.count(marks);
 
+                            announcementVm.votesAnnouncementGrouped = _.countBy(marks, function(mark) {
+                              return mark.value;
+                            }) || {};
+
                             var myVote = MarksUtil.getMyVote(marks);
 
                             announcementVm.vote.announcement = myVote;
@@ -109,6 +130,10 @@
 
                             announcementVm.votes.announcer.average = MarksUtil.average(marks);
                             announcementVm.votes.announcer.count = MarksUtil.count(marks);
+
+                            announcementVm.votesAnnouncerGrouped = _.countBy(marks, function(mark) {
+                              return mark.value;
+                            }) || {};
 
                             var myVote = MarksUtil.getMyVote(marks);
 
@@ -218,9 +243,13 @@
                     .then(function (response) {
                         announcementVm.vote.announcement = response.data;
                         var votes = announcementVm.votes.announcement;
+                        var value = response.data.value;
 
                         announcementVm.votes.announcement.average =
-                            MarksUtil.updateAverage(response.data.value, votes.count++, votes.average);
+                            MarksUtil.updateAverage(value, votes.count++, votes.average);
+
+                        announcementVm.votesAnnouncementGrouped =
+                            MarksUtil.groupByCount(announcementVm.votesAnnouncementGrouped, value);
                     })
                     .catch(function (error) {
                         $log.error(error);
@@ -235,9 +264,13 @@
                     .then(function (response) {
                         announcementVm.vote.announcement = response.data;
                         var votes = announcementVm.votes.announcement;
+                        var value = response.data.value;
 
                         announcementVm.votes.announcement.average =
-                            MarksUtil.updateAverage(response.data.value, votes.count, votes.average, oldVal);
+                            MarksUtil.updateAverage(value, votes.count, votes.average, oldVal);
+
+                        announcementVm.votesAnnouncementGrouped =
+                            MarksUtil.groupByCount(announcementVm.votesAnnouncementGrouped, value, oldVal);
                     })
                     .catch(function (error) {
                         $log.error(error);
@@ -256,9 +289,13 @@
                     .then(function (response) {
                         announcementVm.vote.announcer = response.data;
                         var votes = announcementVm.votes.announcer;
+                        var value = response.data.value;
 
                         announcementVm.votes.announcer.average =
-                            MarksUtil.updateAverage(response.data.value, votes.count++, votes.average);
+                            MarksUtil.updateAverage(value, votes.count++, votes.average);
+
+                        announcementVm.votesAnnouncerGrouped =
+                            MarksUtil.groupByCount(announcementVm.votesAnnouncerGrouped, value);
                     })
                     .catch(function (error) {
                         $log.error(error);
@@ -273,9 +310,13 @@
                     .then(function (response) {
                         announcementVm.vote.announcer = response.data;
                         var votes = announcementVm.votes.announcer;
+                        var value = response.data.value;
 
                         announcementVm.votes.announcer.average =
-                            MarksUtil.updateAverage(response.data.value, votes.count, votes.average, oldVal);
+                            MarksUtil.updateAverage(value, votes.count, votes.average, oldVal);
+
+                        announcementVm.votesAnnouncerGrouped =
+                            MarksUtil.groupByCount(announcementVm.votesAnnouncerGrouped, value, oldVal);
                     })
                     .catch(function (error) {
                         $log.error(error);
@@ -303,10 +344,7 @@
                 report.createdAt = _.now();
                 reportingService.createReport(report)
                     .then(function (response) {
-                        ngToast.create({
-                            className: 'success',
-                            content: '<strong>Oglas je uspješno prijavljen.</strong>'
-                        });
+                        Notification.success({ message: '<p id="success-reported">Oglas je uspješno prijavljen.</p>' });
                         if (!_.isUndefined($localStorage.user))
                             announcementVm.alreadyReported = true;
                         $log.info('Report is successfully created' + response.data);
@@ -334,17 +372,19 @@
             announcementService.verifyAnnouncement($stateParams.announcementId)
                 .then(function (response) {
                     announcementVm.getAnnouncement($stateParams.announcementId);
-                    ngToast.create({
-                        className: 'success',
-                        content: '<strong>Oglas je uspješno verifikovan.</strong>'
-                    });
+                    Notification.success('<p id="success-verify"><strong>Oglas je uspješno verifikovan.</strong></p>');
                 })
                 .catch(function (error) {
-                    ngToast.create({
-                        className: 'danger',
-                        content: '<p><strong>GREŠKA! </strong>' + error + '</p>'
-                    });
+                    Notification.error('<p><strong>GREŠKA! </strong>' + error + '</p>');
                 });
+        };
+
+        function hoverIn(key) {
+            announcementVm.averageRating[key] = false;
+        };
+
+        function hoverOut(key) {
+            announcementVm.averageRating[key] = true;
         };
     }
 })();

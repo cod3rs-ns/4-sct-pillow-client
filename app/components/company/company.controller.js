@@ -5,9 +5,9 @@
         .module('awt-cts-client')
         .controller('CompanyController', CompanyController);
 
-    CompanyController.$inject = ['$state', '$localStorage', '$log', '$stateParams', 'ngToast', 'companyService', 'announcementService', 'userService'];
+    CompanyController.$inject = ['$state', '$localStorage', '$log', '$stateParams', 'Notification', 'companyService', 'announcementService', 'userService'];
 
-    function CompanyController($state, $localStorage, $log, $stateParams, ngToast, companyService, announcementService, userService) {
+    function CompanyController($state, $localStorage, $log, $stateParams, Notification, companyService, announcementService, userService) {
 
         var companyVm = this;
 
@@ -75,10 +75,7 @@
             companyService.requestMembership(companyVm.company.id)
                 .then(function (response) {
                     companyVm.disableMembership = true;
-                    ngToast.create({
-                        className: 'success',
-                        content: '<p>Uspješno ste zatražili članstvo u kompaniji.</p>'
-                    });
+                    Notification.success('<p id="request-sent">Uspješno ste zatražili članstvo u kompaniji.</p>');
                 })
                 .catch(function (error) {
                     $log.error(error);
@@ -86,19 +83,21 @@
         }
 
         function findUser() {
-            userService.getUser($localStorage.user)
-                .then(function (response) {
-                    companyVm.loggedUser = response.data;
-                    if (companyVm.loggedUser.company == null) {
-                        companyVm.disableMembership = false;
-                    }
-                    else {
-                        companyVm.disableMembership = companyVm.loggedUser.company.id == companyVm.company.id;
-                    }
-                })
-                .catch(function (error) {
-                    $log.error(error);
-                });
+            if ($localStorage.user) {
+                userService.getUser($localStorage.user)
+                    .then(function (response) {
+                        companyVm.loggedUser = response.data;
+                        if (companyVm.loggedUser.company == null) {
+                            companyVm.disableMembership = false;
+                        }
+                        else {
+                            companyVm.disableMembership = companyVm.loggedUser.company.id == companyVm.company.id;
+                        }
+                    })
+                    .catch(function (error) {
+                        $log.error(error);
+                    });
+            }
         }
 
     }

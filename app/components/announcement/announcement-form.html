@@ -20,9 +20,9 @@
 
                             <div class="form-group">
                                 <div class="btn-group">
-                                    <label class="btn btn-primary" ng-model="announcementFormVm.announcement.type" uib-btn-radio="'buy'" uib-uncheckable="uncheckable">Kupovina</label>
-                                    <label class="btn btn-primary" ng-model="announcementFormVm.announcement.type" uib-btn-radio="'sale'" uncheckable>Prodaja</label>
-                                    <label class="btn btn-primary" ng-model="announcementFormVm.announcement.type" uib-btn-radio="'rent'" uncheckable>Iznajmljivanje</label>
+                                    <label id="type-buy" class="btn btn-primary" ng-model="announcementFormVm.announcement.type" uib-btn-radio="'buy'" uib-uncheckable="uncheckable">Kupovina</label>
+                                    <label id="type-sale" class="btn btn-primary" ng-model="announcementFormVm.announcement.type" uib-btn-radio="'sale'" uncheckable>Prodaja</label>
+                                    <label id="type-rent" class="btn btn-primary" ng-model="announcementFormVm.announcement.type" uib-btn-radio="'rent'" uncheckable>Iznajmljivanje</label>
                                 </div>
                             </div>
 
@@ -39,7 +39,7 @@
                             <div class="form-group" style="text-align:left;" ng-class="{ 'has-error' : announcementForm.price.$invalid && announcementForm.price.$dirty }">
                                 <div class="input-group">
                                     <span class="input-group-addon" id="basic-addon1"> <i class="glyphicon glyphicon-eur"></i></span>
-                                    <input type="number" ng-model="announcementFormVm.announcement.price" placeholder="Cena..." class="form-control" id="ann-phone"
+                                    <input type="number" ng-model="announcementFormVm.announcement.price" placeholder="Cena..." class="form-control" id="ann-price"
                                         name="price" required min="1">
                                     <span ng-show="announcementForm.price.$invalid && announcementForm.price.$dirty " class="glyphicon glyphicon-remove form-control-feedback"></span>
                                 </div>
@@ -56,13 +56,13 @@
                                         ng-required="true" current-text="Danas" close-text="Zatvori" clear-text="Obriši" alt-input-formats="announcementFormVm.datePickerConfig.altInputFormats"
                                     />
                                     <span class="input-group-btn">
-                                    <button type="button" class="btn btn-default" ng-click="announcementFormVm.datePickerConfig.open()"><i class="glyphicon glyphicon-calendar"></i></button>
+                                    <button id="date-picker-btn" type="button" class="btn btn-default" ng-click="announcementFormVm.datePickerConfig.open()"><i class="glyphicon glyphicon-calendar"></i></button>
                                     </span>
                                 </p>
                             </div>
 
                             <div class="form-group" style="text-align:left; margin-top:15px;">
-                                <trix-editor spellcheck="false" style="height: 10em; overflow-y: auto;" placeholder="Unesite opis..." angular-trix ng-model="announcementFormVm.announcement.description"
+                                <trix-editor id="ann-desc" spellcheck="false" style="height: 10em; overflow-y: auto;" placeholder="Unesite opis..." angular-trix ng-model="announcementFormVm.announcement.description"
                                     class="trix-content"></trix-editor>
                             </div>
                         </form>
@@ -90,7 +90,7 @@
                                 <div class="form-group col-xs-6">
                                     <div class="selectContainer input-group">
                                         <span class="input-group-addon" id="basic-addon1"> <i class="glyphicon glyphicon-fire"></i></span>
-                                        <select class="form-control" name="role" ng-model="announcementFormVm.announcement.realEstate.heatingType">
+                                        <select id="re-heating-type" class="form-control" name="role" ng-model="announcementFormVm.announcement.realEstate.heatingType">
                                             <option value="central">Centralno</option>
                                             <option value="remote">Daljinsko</option>
                                             <option value="direct">Etažno</option>
@@ -100,18 +100,18 @@
                             </div>
                             <div class="form-group">
                                 <div class="btn-group">
-                                    <label class="btn btn-primary" ng-model="announcementFormVm.announcement.realEstate.type" uib-btn-radio="'house'" uib-uncheckable="uncheckable">Kuća</label>
-                                    <label class="btn btn-primary" ng-model="announcementFormVm.announcement.realEstate.type" uib-btn-radio="'apartment'" uncheckable>Stan</label>
-                                    <label class="btn btn-primary" ng-model="announcementFormVm.announcement.realEstate.type" uib-btn-radio="'warehouse'"
+                                    <label id="re-type-house" class="btn btn-primary" ng-model="announcementFormVm.announcement.realEstate.type" uib-btn-radio="'house'" uib-uncheckable="uncheckable">Kuća</label>
+                                    <label id="re-type-apartment" class="btn btn-primary" ng-model="announcementFormVm.announcement.realEstate.type" uib-btn-radio="'apartment'" uncheckable>Stan</label>
+                                    <label id="re-type-warehouse" class="btn btn-primary" ng-model="announcementFormVm.announcement.realEstate.type" uib-btn-radio="'warehouse'"
                                         uncheckable>Skladište</label>
-                                    <label class="btn btn-primary" ng-model="announcementFormVm.announcement.realEstate.type" uib-btn-radio="'other'" uncheckable>Ostalo</label>
+                                    <label id="re-type-other" class="btn btn-primary" ng-model="announcementFormVm.announcement.realEstate.type" uib-btn-radio="'other'" uncheckable>Ostalo</label>
                                 </div>
                             </div>
 
                             <div class="form-group" style="text-align:left;" ng-class="{ 'has-error' : realEstateForm.country.$invalid && realEstateForm.country.$dirty }">
                                 <div class="input-group">
                                     <span class="input-group-addon" id="basic-addon1"> <i class="glyphicon glyphicon-globe"></i></span>
-                                    <input type="text" ng-model="announcementFormVm.announcement.realEstate.location.country" placeholder="Država..." 
+                                    <input id="re-country" type="text" ng-model="announcementFormVm.announcement.realEstate.location.country" placeholder="Država..."
                                         class="form-control" name="country" required>
                                     <span ng-show="realEstateForm.country.$invalid && realEstateForm.country.$dirty" class="glyphicon glyphicon-remove form-control-feedback"></span>
                                 </div>
@@ -122,7 +122,7 @@
                                 <div class="form-group col-xs-6"  style="text-align:left;" ng-class="{ 'has-error' : realEstateForm.city.$invalid && realEstateForm.city.$dirty }">
                                     <div class="input-group">
                                         <span class="input-group-addon" id="basic-addon1"> <i class="glyphicon glyphicon-stats"></i></span>
-                                        <input type="text" ng-model="announcementFormVm.announcement.realEstate.location.city" placeholder="Grad..." 
+                                        <input id="re-city" type="text" ng-model="announcementFormVm.announcement.realEstate.location.city" placeholder="Grad..."
                                             class="form-control" name="city" required>
                                         <span ng-show="realEstateForm.city.$invalid && realEstateForm.city.$dirty" class="glyphicon glyphicon-remove form-control-feedback"></span>
                                     </div>
@@ -132,7 +132,7 @@
                                 <div class="form-group col-xs-6"  style="text-align:left;" ng-class="{ 'has-error' : realEstateForm.region.$invalid && realEstateForm.region.$dirty }">
                                     <div class="input-group">
                                         <span class="input-group-addon" id="basic-addon1"> <i class="glyphicon glyphicon-equalizer"></i></span>
-                                        <input type="text" ng-model="announcementFormVm.announcement.realEstate.location.cityRegion" placeholder="Region..." 
+                                        <input id="re-region" type="text" ng-model="announcementFormVm.announcement.realEstate.location.cityRegion" placeholder="Region..."
                                             class="form-control" name="region" required>
                                         <span ng-show="realEstateForm.region.$invalid && realEstateForm.region.$dirty" class="glyphicon glyphicon-remove form-control-feedback"></span>
                                     </div>
@@ -144,7 +144,7 @@
                                 <div class="form-group col-xs-8"  style="text-align:left;" ng-class="{ 'has-error' : realEstateForm.street.$invalid && realEstateForm.street.$dirty }">
                                     <div class="input-group">
                                         <span class="input-group-addon" id="basic-addon1"> <i class="glyphicon glyphicon-map-marker"></i></span>
-                                        <input type="text" ng-model="announcementFormVm.announcement.realEstate.location.street" placeholder="Ulica..." 
+                                        <input id="re-street" type="text" ng-model="announcementFormVm.announcement.realEstate.location.street" placeholder="Ulica..."
                                             class="form-control" name="street" required>
                                         <span ng-show="realEstateForm.street.$invalid && realEstateForm.street.$dirty" class="glyphicon glyphicon-remove form-control-feedback"></span>
                                     </div>
@@ -153,9 +153,9 @@
                                 <div class="form-group col-xs-4"  style="text-align:left;" ng-class="{ 'has-error' : realEstateForm.streetNumber.$invalid && realEstateForm.streetNumber.$dirty }">
                                     <div class="input-group">
                                         <span class="input-group-addon" id="basic-addon1"> <i class="glyphicon glyphicon-road"></i></span>
-                                        <input type="text" ng-model="announcementFormVm.announcement.realEstate.location.streetNumber" placeholder="Broj..." 
+                                        <input id="re-street-no" type="text" ng-model="announcementFormVm.announcement.realEstate.location.streetNumber" placeholder="Broj..."
                                             class="form-control" name="streetNumber" required>
-                                        <span ng-show="realEstateForm.streetNumber.$invalid && realEstateForm.streetNumber.$dirty" class="glyphicon glyphicon-remove form-control-feedback"></span>                                    
+                                        <span ng-show="realEstateForm.streetNumber.$invalid && realEstateForm.streetNumber.$dirty" class="glyphicon glyphicon-remove form-control-feedback"></span>
                                     </div>
                                     <p ng-show="realEstateForm.streetNumber.$invalid && realEstateForm.streetNumber.$dirty" class="help-block" style="font-size: 10pt; margin:0px;">Broj ulice je obavezan.</p>
                                 </div>
@@ -199,8 +199,8 @@
 
             <div class="row" style="text-align:center; margin-bottom:20px;">
                 <button type="button" style="margin-right:25px;" class="btn btn-default" wz-reset ui-sref="home">Odustani</button>
-                <button type="button" style="margin-left:25px;" class="btn btn-default" ng-click="announcementFormVm.getSimilarRealEstates()" ng-disabled="announcementForm.$invalid || realEstateForm.$invalid">Nastavi
-                    <span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span>    
+                <button id="continue-btn" type="button" style="margin-left:25px;" class="btn btn-default" ng-click="announcementFormVm.getSimilarRealEstates()" ng-disabled="announcementForm.$invalid || realEstateForm.$invalid">Nastavi
+                    <span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span>
                 </button>
             </div>
         </wz-step>
@@ -211,13 +211,13 @@
                     biste je selektovali. </h5>
                 <div class="row form-group product-chooser">
                     <div class="col-xs-12 col-sm-12 col-md-4 col-lg-4" ng-repeat="realEstate in announcementFormVm.similars">
-                        <div ng-class="{ 'selected' : announcementFormVm.chosenSimilarRealEstateId == realEstate.id, 'product-chooser-item': true }"
+                        <div name="similar-real-estate" ng-class="{ 'selected' : announcementFormVm.chosenSimilarRealEstateId == realEstate.id, 'product-chooser-item': true }"
                             ng-click="announcementFormVm.chooseSimilarRealEstate(realEstate.id);">
                             <img ng-src="http://localhost:8091/api/real-estates/{{realEstate.id}}/image" class="img-rounded col-xs-4 col-sm-4 col-md-12 col-lg-12"
                                 alt="Real Estate" style="height:170pt !important;">
                             <div class="col-xs-8 col-sm-8 col-md-12 col-lg-12">
                                 <span class="title">{{realEstate.name}}</span>
-                                <span class="description"> 
+                                <span class="description">
                                     <table>
                                         <tr>
                                             <td valign="top"><span class="glyphicon glyphicon-map-marker" style="float:left;">&nbsp;</span></td>
@@ -241,10 +241,10 @@
                 </div>
                 <div class="row" style="text-align:center; margin-bottom:20px;">
                     <button type="button" style="margin-right:25px;" class="btn btn-default" wz-previous>
-                        <span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span> Prethodna    
+                        <span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span> Prethodna
                     </button>
-                    <button type="button" style="margin-left:25px;" class="btn btn-default" wz-next> &nbsp;Nastavi&nbsp;
-                        <span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span>    
+                    <button id="similar-realestate-continue-btn" type="button" style="margin-left:25px;" class="btn btn-default" wz-next> &nbsp;Nastavi&nbsp;
+                        <span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span>
                     </button>
                 </div>
 
@@ -254,7 +254,7 @@
             <div class="row" style="text-align: center;">
                 <div class="col-md-10 col-md-offset-1" style="text-align: center;" style="margin-top:20px; padding-top:15px;">
                     <div ng-show="announcementFormVm.uploader.isHTML5" style="background: #EEEEEE;">
-                        <div class="well my-drop-zone" nv-file-over="" style="height:125px; vertical-align:center; border-style: dashed; border-width:2px; border-color:#BBBBBB; position:relative"
+                        <div id="drop-images" class="well my-drop-zone" nv-file-over="" style="height:125px; vertical-align:center; border-style: dashed; border-width:2px; border-color:#BBBBBB; position:relative"
                             uploader="announcementFormVm.uploader">
                             <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);">
                                 <img src="assets/img/arrow.jpg" width="30px" height="35px">
@@ -271,7 +271,7 @@
                         <div>
                             Status slanja:
                             <div class="progress" style="">
-                                <div class="progress-bar" role="progressbar" ng-style="{ 'width': announcementFormVm.uploader.progress + '%' }"></div>
+                                <div id="progress-bar" class="progress-bar" role="progressbar" ng-style="{ 'width': announcementFormVm.uploader.progress + '%' }"></div>
                             </div>
                         </div>
                         <p>Ukupan broj: {{ announcementFormVm.uploader.queue.length }}</p>
@@ -305,7 +305,7 @@
                                     </td>
                                     <td nowrap>
                                         <span width="50px;"> &nbsp; </span>
-                                        <button type="button" class="btn btn-danger btn-xs" ng-click="announcementFormVm.deleteItemFromQueue(item);" ng-disabled="announcementFormVm.uploaded">
+                                        <button name="delete-image-button" type="button" class="btn btn-danger btn-xs" ng-click="announcementFormVm.deleteItemFromQueue(item);" ng-disabled="announcementFormVm.uploaded">
                                             <span class="glyphicon glyphicon-trash"></span> Obriši
                                         </button>
                                     </td>
@@ -325,9 +325,9 @@
 
             <div class="row" style="text-align:center; margin-bottom:20px;">
                 <button type="button" style="margin-right:25px;" class="btn btn-default" wz-previous>
-                    <span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span> Prethodna    
+                    <span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span> Prethodna
                 </button>
-                <button type="button" style="margin-left:25px;" class="btn btn-default" ng-disabled="announcementFormVm.uploader.queue.length == 0"
+                <button id="finish-btn" type="button" style="margin-left:25px;" class="btn btn-default" ng-disabled="announcementFormVm.uploader.queue.length == 0"
                     wz-finish> &nbsp;&nbsp;&nbsp;&nbsp; Završi &nbsp;&nbsp;&nbsp;&nbsp;</button>
             </div>
         </wz-step>

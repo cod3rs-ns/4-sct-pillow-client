@@ -89,7 +89,7 @@
                             </div>
                         </div>
                         <div class="form-bottom">
-                            <form role="form" ng-submit="signingVm.register();" class="registration-form" name="registrationForm" novalidate>
+                            <form role="form" id="registration-form" ng-submit="signingVm.register();" class="registration-form" name="registrationForm" novalidate>
                                 <div class="form-group" ng-class="{ 'has-error' : registrationForm.username.$invalid && registrationForm.username.$dirty }">
                                     <div class="input-group">
                                         <span class="input-group-addon" id="basic-addon1"> <i class="glyphicon glyphicon-user"></i></span>
@@ -108,8 +108,8 @@
                                         <input type="password" ng-model="signingVm.registrationUser.password" name="password" placeholder="Šifra..." class="form-control" id="sign-up-password" required ng-minlength="6">
                                         <span ng-show="registrationForm.password.$invalid && registrationForm.password.$dirty" class="glyphicon glyphicon-remove form-control-feedback"></span>
                                     </div>
-                                    <p ng-show="registrationForm.password.$error.required && registrationForm.password.$dirty" class="help-block" style="color: white; font-size: 10pt; margin:0px;">Šifra je obavezna.</p>
-                                    <p ng-show="registrationForm.password.$error.minlength && registrationForm.password.$dirty && !registrationForm.password.$error.required" class="help-block" style="color: white; font-size: 10pt; margin:0px;">Šifra mora sadržati bar 6 karaktera.</p>
+                                    <span ng-show="registrationForm.password.$error.required && registrationForm.password.$dirty" class="help-block" style="color: white; font-size: 10pt; margin:0px;">Šifra je obavezna.</span>
+                                    <span ng-show="registrationForm.password.$error.minlength && registrationForm.password.$dirty && !registrationForm.password.$error.required" class="help-block" style="color: white; font-size: 10pt; margin:0px;">Šifra mora sadržati bar 6 karaktera.</span>
                                 </div>
 
                                 <div class="form-group" ng-class="{ 'has-error' : (registrationForm.passwordRetyped.$invalid || signingVm.passwordRetyped != signingVm.registrationUser.password) && registrationForm.passwordRetyped.$dirty }">
@@ -119,31 +119,31 @@
                                          placeholder="Ponovite šifru..." class="form-control" id="sign-up-re-password" required>
                                         <span ng-show="(registrationForm.passwordRetyped.$invalid || signingVm.passwordRetyped != signingVm.registrationUser.password)  && registrationForm.passwordRetyped.$dirty" class="glyphicon glyphicon-remove form-control-feedback"></span>
                                     </div>
-                                    <p ng-show="(registrationForm.passwordRetyped.$invalid || signingVm.passwordRetyped != signingVm.registrationUser.password) && registrationForm.passwordRetyped.$dirty" class="help-block" style="color: white; font-size: 10pt; margin:0px;">Šifra se ne poklapa.</p>
+                                    <span ng-show="(registrationForm.passwordRetyped.$invalid || signingVm.passwordRetyped != signingVm.registrationUser.password) && registrationForm.passwordRetyped.$dirty" class="help-block" style="color: white; font-size: 10pt; margin:0px;">Šifra se ne poklapa.</span>
                                 </div>
 
                                 <div class="form-group" ng-class="{ 'has-error' : registrationForm.firstName.$invalid && registrationForm.firstName.$dirty }">
                                     <div class="input-group">
                                         <span class="input-group-addon" id="basic-addon1"> <i class="glyphicon glyphicon-user"></i></span>
-                                        <input type="text" ng-model="signingVm.registrationUser.firstName" name="firstName" placeholder="Ime..." class="form-control" id="form-first-name" required>
+                                        <input type="text" ng-model="signingVm.registrationUser.firstName" name="firstName" placeholder="Ime..." class="form-control" id="sign-up-first-name" required>
                                         <span ng-show="registrationForm.firstName.$invalid && registrationForm.firstName.$dirty" class="glyphicon glyphicon-remove form-control-feedback"></span>
                                     </div>
-                                    <p ng-show="registrationForm.firstName.$invalid && registrationForm.firstName.$dirty" class="help-block" style="color: white; font-size: 10pt; margin:0px;">Ime je obavezno.</p>
+                                    <span ng-show="registrationForm.firstName.$invalid && registrationForm.firstName.$dirty" class="help-block" style="color: white; font-size: 10pt; margin:0px;">Ime je obavezno.</span>
                                 </div>
 
                                 <div class="form-group" ng-class="{ 'has-error' : registrationForm.lastName.$invalid && registrationForm.lastName.$dirty }">
                                     <div class="input-group">
                                         <span class="input-group-addon" id="basic-addon1"> <i class="glyphicon glyphicon-user"></i></span>
-                                        <input type="text" ng-model="signingVm.registrationUser.lastName" name="lastName" placeholder="Prezime..." class="form-control" id="form-last-name" required>
+                                        <input type="text" ng-model="signingVm.registrationUser.lastName" name="lastName" placeholder="Prezime..." class="form-control" id="sign-up-last-name" required>
                                         <span ng-show="registrationForm.lastName.$invalid && registrationForm.lastName.$dirty" class="glyphicon glyphicon-remove form-control-feedback"></span>
                                     </div>
-                                    <p ng-show="registrationForm.lastName.$invalid && registrationForm.lastName.$dirty" class="help-block" style="color: white; font-size: 10pt; margin:0px;">Prezime je obavezno.</p>
+                                    <span ng-show="registrationForm.lastName.$invalid && registrationForm.lastName.$dirty" class="help-block" style="color: white; font-size: 10pt; margin:0px;">Prezime je obavezno.</span>
                                 </div>
 
                                 <div class="form-group">
                                     <div class="selectContainer input-group">
                                         <span class="input-group-addon" id="basic-addon1"> <i class="glyphicon glyphicon-list-alt"></i></span>
-                                        <select class="form-control" name="role" ng-model="signingVm.registrationUser.type">
+                                        <select class="form-control" name="role" ng-model="signingVm.registrationUser.type" id="sign-up-type">
 									                          <option value="advertiser">Oglašavač</option>
 									                          <option value="verifier">Verifikator</option>
                                         </select>
@@ -154,18 +154,18 @@
                                     <div class="input-group" ng-class="{ 'has-error': registrationForm.email.$invalid && registrationForm.email.$dirty}">
                                         <span class="input-group-addon" id="basic-addon1"> <i class="glyphicon glyphicon-envelope"></i></span>
                                         <input type="text" ng-model="signingVm.registrationUser.email" 
-                                        name="email" placeholder="Email..." class="form-control" id="email" 
+                                        name="email" placeholder="Email..." class="form-control" id="sign-up-email"
                                             field-unique required>
                                         <span ng-show="registrationForm.email.$invalid && registrationForm.email.$dirty" class="glyphicon glyphicon-remove form-control-feedback"></span>
                                     </div>
                                     <span ng-show="registrationForm.email.$invalid && registrationForm.email.$dirty && !registrationForm.email.$error.unique" class="help-block" style="color: white; font-size: 10pt; margin:0px;">Nepravilno formirana email adresa.</span>
-                                    <span ng-show="registrationForm.email.$error.unique" class="help-block" style="color: white; font-size: 10pt; margin:0px;">Navedena email adresa već postoji.</span>
+                                    <span id="email-already-exists" ng-show="registrationForm.email.$error.unique" class="help-block" style="color: white; font-size: 10pt; margin:0px;">Navedena email adresa već postoji.</span>
                                 </div>
 
                                 <div class="form-group">
                                     <div class="input-group" ng-class="{'has-error': registrationForm.phone.$invalid && registrationForm.phone.$dirty}">
                                         <span class="input-group-addon" id="basic-addon1"> <i class="glyphicon glyphicon-earphone"></i></span>
-                                        <input type="text" ng-model="signingVm.registrationUser.phoneNumber" name="phone" placeholder="Kontakt telefon..." class="form-control" id="form-phone" required>
+                                        <input type="text" ng-model="signingVm.registrationUser.phoneNumber" name="phone" placeholder="Kontakt telefon..." class="form-control" id="sign-up-phone" required>
                                         <span ng-show="registrationForm.phone.$invalid && registrationForm.phone.$dirty" class="glyphicon glyphicon-remove form-control-feedback"></span>
                                     </div>
                                     <span ng-show="registrationForm.phone.$invalid && registrationForm.phone.$dirty" class="help-block" style="color: white; font-size: 10pt; margin:0px;">Telefon je obavezan.</span>
